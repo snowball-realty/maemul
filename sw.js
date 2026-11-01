@@ -1,5 +1,5 @@
 // 매물대장 오프라인 지원: 앱 화면은 인터넷이 끊겨도 열리고, 데이터는 기기에 보관됩니다.
-const CACHE = "maemul-v12";
+const CACHE = "maemul-v14";
 const SHELL = ["./", "./index.html", "./config.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 const CDN = ["cdnjs.cloudflare.com", "cdn.jsdelivr.net", "fonts.googleapis.com", "fonts.gstatic.com"];
 
