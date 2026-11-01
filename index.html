@@ -144,6 +144,15 @@ svg.lucide{width:1.15em;height:1.15em;stroke-width:1.9;flex:none;vertical-align:
   padding:calc(18px + var(--safe-t)) clamp(18px,3.2vw,44px) 16px;margin:0 calc(-1 * clamp(18px,3.2vw,44px));
   background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
 .topbar h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.15}
+.logo-lockup{display:flex;align-items:center;gap:12px}
+.logo-lockup .sb{width:42px;height:42px;flex:none}
+.logo-lockup b{display:block;font-size:22px;font-weight:400;letter-spacing:-.03em;color:var(--brand-ink);line-height:1.15}
+.logo-lockup b strong{font-weight:800}
+.logo-lockup small{display:block;font-size:9px;letter-spacing:.34em;color:var(--ink-2);margin-top:3px;font-weight:500}
+.summary{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.summary .chip{background:var(--card);border:1px solid var(--glass-line);box-shadow:var(--hi),var(--shadow-1);color:var(--ink-2);font-weight:500;height:34px}
+.summary .chip b{color:var(--ink);font-weight:700}
+.summary .chip.alert b{color:var(--danger)}
 .topbar .sub{font-size:13.5px;color:var(--ink-3);margin-top:2px}
 .top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
 .icon-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--glass-line);background:var(--card);box-shadow:var(--hi),var(--shadow-1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:grid;place-items:center;color:var(--ink-2);position:relative}
@@ -174,6 +183,10 @@ svg.lucide{width:1.15em;height:1.15em;stroke-width:1.9;flex:none;vertical-align:
 .tile.t-창고{background:var(--wh-bg);color:var(--wh)} .tile.t-이축권{background:var(--kwon-bg);color:var(--kwon);border-radius:50%}
 .tile .plus{position:absolute;right:-5px;bottom:-5px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--card-solid);color:var(--ink-2);
   font-size:11px;font-weight:700;display:grid;place-items:center;box-shadow:var(--shadow-1)}
+/* 중요 매물: 아이콘 안쪽 오른쪽 위의 작은 금색 별 (아이콘 밖으로 나가지 않음) */
+.tile .star-badge{position:absolute;top:3px;right:3px;width:13px;height:13px;display:grid;place-items:center;line-height:0}
+.tile .star-badge svg.lucide{width:13px;height:13px;fill:#F7B500;color:#D99400;stroke-width:1.6;filter:drop-shadow(0 0 1.5px rgba(255,255,255,.95))}
+.tile.lg .star-badge{top:5px;right:5px;width:17px;height:17px} .tile.lg .star-badge svg.lucide{width:17px;height:17px}
 .tile.lg{width:66px;height:66px;font-size:26px;border-radius:21px}
 .tile.t-아파트{background:var(--apt-bg);color:var(--apt)} .tile.t-원룸{background:var(--room-bg);color:var(--room)} .tile.t-상가{background:var(--shop-bg);color:var(--shop)}
 .tile svg.lucide{width:22px;height:22px} .tile.lg svg.lucide{width:30px;height:30px}
@@ -258,7 +271,7 @@ svg.lucide{width:1.15em;height:1.15em;stroke-width:1.9;flex:none;vertical-align:
    ========================================================= */
 .list-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .search{position:relative;flex:1 1 280px;min-width:0}
-.search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+.search svg{position:absolute;z-index:1;left:16px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
 .search input{width:100%;height:46px;border:1px solid var(--glass-line);border-radius:999px;background:var(--card);box-shadow:var(--hi),var(--shadow-1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:0 16px 0 44px;font-size:15px}
 .search input::placeholder{color:var(--ink-3)}
 .seg{display:inline-flex;padding:3px;border-radius:14px;background:var(--fill);gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none}
@@ -275,7 +288,7 @@ svg.lucide{width:1.15em;height:1.15em;stroke-width:1.9;flex:none;vertical-align:
 .list-meta{display:flex;align-items:center;gap:10px;margin:2px 4px 10px;font-size:13.5px;color:var(--ink-2);flex-wrap:wrap}
 .list-meta select{margin-left:auto;border:0;background:transparent;color:var(--ink-2);font-size:13.5px;font-weight:500;padding:4px 2px;cursor:pointer}
 .table{overflow:hidden}
-.thead,.trow{display:grid;grid-template-columns:minmax(240px,2.2fr) 1.1fr 1fr 1.25fr 1fr 1.1fr 20px;gap:16px;align-items:center;padding:0 20px}
+.thead,.trow{display:grid;grid-template-columns:minmax(200px,2.2fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) 92px minmax(0,1fr) minmax(0,1.15fr) 18px;gap:14px;align-items:center;padding:0 20px}
 .thead{height:44px;font-size:12.5px;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--line)}
 .trow{width:100%;min-height:76px;border:0;background:transparent;text-align:left;color:inherit;border-bottom:1px solid var(--line);padding-top:12px;padding-bottom:12px;transition:background .12s}
 .trow:last-child{border-bottom:0}
@@ -285,13 +298,18 @@ svg.lucide{width:1.15em;height:1.15em;stroke-width:1.9;flex:none;vertical-align:
 .c-main .s{font-size:13px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .c-type{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--ink-2)}
 .c-k{font-weight:600;font-size:14.5px}
+.c-k,.c-k+div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .c-k+div{font-size:12.5px;color:var(--ink-3)}
-.c-state{display:flex;gap:6px;flex-wrap:wrap}
+.c-move{min-width:0}
+.c-move .tag{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.c-type>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-state{display:flex;gap:6px}
 .c-owner{font-size:14px;min-width:0}
 .c-owner div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .c-owner .faint{font-size:12.5px}
 .chev{color:var(--ink-3)}
 .lbl-m{display:none}
+.m-move{display:none;white-space:nowrap;font-size:12px}
 
 /* =========================================================
    지역 요약 / 일정 / 지도
@@ -417,7 +435,8 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 @media (max-width:1180px){
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .types-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .thead,.trow{grid-template-columns:minmax(220px,2fr) 1fr 1.2fr 1fr 1fr 20px}
+  .thead,.trow{grid-template-columns:minmax(200px,2fr) minmax(0,.9fr) minmax(0,1.3fr) 92px minmax(0,1fr) 18px}
+  .c-type,.thead span:nth-child(2){display:none}
   .c-owner,.thead .h-owner{display:none}
 }
 @media (max-width:900px){
@@ -428,6 +447,11 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .main{padding:0 16px calc(100px + var(--safe-b))}
   .topbar{margin:0 -16px;padding:calc(12px + var(--safe-t)) 16px 14px}
   .topbar h1{font-size:30px}
+  .logo-lockup .sb{width:36px;height:36px}
+  .logo-lockup b{font-size:18.5px}
+  .logo-lockup small{font-size:7.5px;letter-spacing:.28em}
+  .summary{gap:6px}
+  .summary .chip{height:30px;font-size:12.5px;padding:0 10px}
   .grid-2{grid-template-columns:1fr}
   /* 모바일: 6개 유형 카드를 작게 */
   .types-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -449,15 +473,34 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   /* 목록 → 카드 */
   .table{background:transparent;box-shadow:none;border-radius:0;overflow:visible;display:grid;gap:10px}
   .thead{display:none}
-  .trow{grid-template-columns:1fr auto;grid-template-areas:"main main" "price state" "area type";gap:10px 12px;padding:16px;border:0;border-radius:var(--r-lg);background:var(--card);box-shadow:var(--shadow-2)}
+  .table{gap:8px}
+  .trow{grid-template-columns:1fr auto;grid-template-areas:"main price" "meta state";gap:6px 10px;padding:11px 13px;min-height:0;border:0;border-radius:16px;background:var(--card);box-shadow:var(--shadow-1)}
+  .trow .tile{width:36px;height:36px;border-radius:11px;font-size:15px}
+  .trow .tile svg.lucide{width:18px;height:18px}
+  .trow .tile .star-badge{width:11px;height:11px;top:2px;right:2px} .trow .tile .star-badge svg.lucide{width:11px;height:11px}
+  .trow .tile .plus{min-width:17px;height:17px;font-size:10px;right:-4px;bottom:-4px}
+  .c-main{gap:10px}
+  .list-meta .swipe-hint{display:inline-flex;align-items:center;gap:4px;font-size:12px}
+  .search{flex:1 1 0}
+  .c-area>*{flex:none}
+  .c-area .m-move{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .c-area .c-k+div{display:none}
+  .c-main .t{font-size:14.5px} .c-main .s{font-size:12px}
   .trow:last-child{border-bottom:0}
   .trow:hover{background:var(--card)}
   .trow:active{transform:scale(.99)}
-  .c-main{grid-area:main} .c-price{grid-area:price} .c-state{grid-area:state;justify-content:flex-end;align-self:start}
-  .c-area{grid-area:area} .c-type{grid-area:type;justify-content:flex-end}
-  .chev,.c-owner{display:none}
-  .lbl-m{display:inline;font-size:12px;color:var(--ink-3);font-weight:500;margin-right:6px}
-  .c-price .c-k{font-size:17px}
+  .c-main{grid-area:main;min-width:0}
+  .c-price{grid-area:price;text-align:right;align-self:center}
+  .c-price .c-k{font-size:15px} .c-price .c-k+div{font-size:11.5px}
+  /* 둘째 줄: 면적과 입주를 한 줄로 */
+  .c-area{grid-area:meta;display:flex;align-items:center;gap:6px;min-width:0;padding-left:46px;font-size:12.5px}
+  .c-area .c-k{font-size:13px} .c-area .c-k+div{font-size:12px}
+  .c-move{display:none}
+  .c-state{grid-area:state;justify-content:flex-end;align-items:center}
+  .c-state .tag{height:22px;font-size:11.5px}
+  .chev,.c-owner,.c-type{display:none}
+  .lbl-m{display:inline;font-size:11.5px;color:var(--ink-3);font-weight:500;margin-right:4px}
+  .trow .m-move{display:inline-flex}
   .map-card{height:calc(100vh - 200px - var(--safe-b))}
   .tabbar{display:grid;grid-template-columns:repeat(5,1fr);align-items:center;position:fixed;left:0;right:0;bottom:0;z-index:20;
     padding:6px 8px calc(6px + var(--safe-b));background:var(--glass);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-top:1px solid var(--line)}
@@ -546,6 +589,11 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   html.printing .bf{font-size:10.5pt}
   .bf-figs,.bf-cols,.bf-kv tr,.bf-note,.bf-foot{break-inside:avoid}
 }
+#results.swipe-l{animation:swL .26s cubic-bezier(.2,.8,.2,1)}
+#results.swipe-r{animation:swR .26s cubic-bezier(.2,.8,.2,1)}
+@keyframes swL{from{transform:translateX(36px);opacity:.25}to{transform:none;opacity:1}}
+@keyframes swR{from{transform:translateX(-36px);opacity:.25}to{transform:none;opacity:1}}
+.swipe-hint{display:none}
 @keyframes slideU{from{transform:translateY(60px);opacity:.3}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -590,6 +638,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
     <header class="topbar">
       <div>
         <h1 id="pageTitle">대시보드</h1>
+        <div class="logo-lockup" id="pageLogo" hidden><svg class="sb" aria-hidden="true"><use href="#snowball"/></svg><div><b><strong>눈덩이</strong>공인중개사사무소</b><small>SNOWBALL REAL ESTATE AGENCY</small></div></div>
         <div class="sub" id="pageSub"></div>
       </div>
       <div class="top-actions">
@@ -896,7 +945,7 @@ const areaPrefix = a => String(a || "").trim().split(/\s+/).slice(0, -1).join(" 
 const baseArea = it => isRes(it) ? (it.excl ?? null) : totLand(it);
 const unitPrice = it => { const l = baseArea(it); return it.price && l ? Math.round(it.price / (l / PY)) : null; };
 const hasRent = it => it.deposit != null || it.rent != null;
-const tile = (it, lg = false) => `<span class="tile t-${esc(it.type)}${lg ? " lg" : ""}" title="${esc(isRes(it) ? it.type : it.jimok || it.type)}">${isRes(it) ? ic(TYPE_IC[it.type]) : esc(markOf(it))}${isMulti(it) ? `<span class="plus">+${it.extra.length}</span>` : ""}</span>`;
+const tile = (it, lg = false) => `<span class="tile t-${esc(it.type)}${lg ? " lg" : ""}" title="${esc(isRes(it) ? it.type : it.jimok || it.type)}">${isRes(it) ? ic(TYPE_IC[it.type]) : esc(markOf(it))}${it.star ? `<span class="star-badge" aria-label="중요 매물">${ic("star")}</span>` : ""}${isMulti(it) ? `<span class="plus">+${it.extra.length}</span>` : ""}</span>`;
 const stateTag = it => { const s = STATE[it.state] || STATE.진행; return `<span class="tag ${s.cls}">${s.label}</span>`; };
 const coTag = it => it.src === "co" ? `<span class="tag co">${ic("handshake")}공동중개</span>` : "";
 function regionKey(area, level){
@@ -1102,6 +1151,7 @@ function upcoming(){
 }
 function render(){
   $("#pageTitle").textContent = TITLES[view];
+  $("#pageTitle").hidden = view === "home"; $("#pageLogo").hidden = view !== "home";
   $("#pageSub").textContent = view === "home" ? new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" }) : "";
   $$("[data-view]").forEach(b => b.setAttribute("aria-current", b.dataset.view === view ? "page" : "false"));
   $("#tabMore").setAttribute("aria-current", ["region", "schedule"].includes(view) ? "page" : "false");
@@ -1125,14 +1175,18 @@ function renderHome(){
   const v = $("#view");
   const draft = { text: $("#taskText")?.value || "", due: $("#taskDue")?.value || "", focus: document.activeElement?.id };
   const td = today();
-  const hour = new Date().getHours();
+  const todayCalls = upcoming().filter(x => x.l.next === td).length;
   const open = tasks.filter(t => !t.done).sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999") || (a.created || 0) - (b.created || 0));
   const done = tasks.filter(t => t.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
   const recent = [...items].sort((a, b) => (b.updated || 0) - (a.updated || 0)).slice(0, 6);
   const starred = items.filter(x => x.star).sort((a, b) => (b.updated || 0) - (a.updated || 0));
   const shown = TYPES;
   v.innerHTML = `
-    <div class="card hello"><div class="globe">${SB()}</div><div><b>${hour < 12 ? "좋은 아침입니다" : hour < 18 ? "오늘도 수고 많으십니다" : "오늘 하루도 고생하셨습니다"}</b><span>매물 ${items.length}건, 남은 할 일 ${open.length}건, 오늘 연락할 상담 ${upcoming().filter(x => x.l.next === td).length}건</span></div></div>
+    <div class="summary">
+      <span class="chip">${ic("building-2")}매물 <b class="num">${items.length}</b></span>
+      <span class="chip">${ic("list-todo")}할 일 <b class="num">${open.length}</b></span>
+      <button class="chip${todayCalls ? " alert" : ""}" type="button" data-view="schedule">${ic("phone")}오늘 상담 <b class="num">${todayCalls}</b></button>
+    </div>
     <div class="types-grid">${shown.map(t => {
       const arr = items.filter(x => x.type === t), live = arr.filter(x => x.state === "진행").length;
       return `<button class="card tcard" type="button" data-goto-type="${t}">
@@ -1218,20 +1272,27 @@ function agendaItem({ it, l }){
 }
 
 /* ---------- 매물 표/카드 ---------- */
+// 금액(만원)을 짧게: 5000 → 5,000 / 25000 → 2.5억
+const manShort = m => m == null ? "–" : m >= 10000 ? `${+(m / 10000).toFixed(m % 10000 ? 1 : 0)}억` : m.toLocaleString("ko-KR");
+const rentShort = it => `보 ${manShort(it.deposit)} / 월 ${manShort(it.rent)}`;
 function tableHTML(list){
   return `<div class="card table" role="list">
-    <div class="thead"><span>매물</span><span>유형</span><span>면적</span><span>가격</span><span>상태</span><span class="h-owner">소유자</span><span></span></div>
+    <div class="thead"><span>매물</span><span>유형</span><span>면적</span><span>가격</span><span>상태</span><span>입주</span><span class="h-owner">소유자·출처</span><span></span></div>
     ${list.map(it => {
       const l = totLand(it), up = unitPrice(it);
+      const areaMain = isRes(it) ? (it.excl != null ? fmt(it.excl / PY) + "평" : "–") : (l != null ? fmt(l / PY) + "평" : "–");
+      const areaSub = isRes(it) ? `${it.excl != null ? fmt(it.excl) + "㎡" : ""}${it.floor != null ? ` ${it.floor}층` : ""}` : (l != null ? fmt(l) + "㎡" : "");
+      const priceMain = it.price != null ? won(it.price) : hasRent(it) ? rentShort(it) : "가격 미정";
+      const priceSub = it.price != null && hasRent(it) ? rentShort(it) : up != null ? `평당 ${fmt(up)}만` : "";
+      const move = it.type !== "토지" && it.moveIn ? esc(it.moveIn) : "";
       return `<button class="trow" role="listitem" data-open="${esc(it.id)}" type="button">
-        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${starIc(it)}${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() : areaPrefix(it.area) || it.zone || "")}</div></span></span>
-        <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}${esc(it.type)}${it.jimok && it.type !== "이축권" && !isRes(it) ? `<span class="faint">${esc(it.jimok)}</span>` : ""}</span>
-        <span class="c-area">${isRes(it)
-          ? `<div class="c-k num"><span class="lbl-m">전용</span>${it.excl != null ? fmt(it.excl / PY) + "평" : "–"}</div><div class="num">${it.excl != null ? fmt(it.excl) + "㎡" : ""}${it.floor != null ? ` ${it.floor}층` : ""}</div>`
-          : `<div class="c-k num"><span class="lbl-m">토지</span>${l != null ? fmt(l / PY) + "평" : "–"}</div><div class="num">${l != null ? fmt(l) + "㎡" : ""}</div>`}</span>
-        <span class="c-price"><div class="c-k num">${it.price != null ? won(it.price) : (hasRent(it) ? "임대" : "가격 미정")}</div><div class="num">${up != null ? "평당 " + fmt(up) + "만" : hasRent(it) ? `보증금 ${fmt(it.deposit)}만 / 월 ${fmt(it.rent)}만` : ""}</div></span>
-        <span class="c-state">${stateTag(it)}${coTag(it)}${it.type !== "토지" && it.moveIn ? `<span class="tag plain">${ic("calendar-check")}입주 ${esc(it.moveIn)}</span>` : ""}</span>
-        <span class="c-owner"><div>${esc(it.owner || "–")}</div><div class="faint num">${esc(it.src === "co" ? it.agName || "" : it.phone || "")}</div></span>
+        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() : areaPrefix(it.area) || it.zone || "")}</div></span></span>
+        <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}<span>${esc(it.type)}${it.jimok && !isRes(it) && TYPES.includes(it.type) ? ` <span class="faint">${esc(it.jimok)}</span>` : ""}</span></span>
+        <span class="c-area"><div class="c-k num"><span class="lbl-m">${isRes(it) ? "전용" : "토지"}</span>${areaMain}</div><div class="num">${areaSub}</div>${move ? `<span class="m-move faint">입주 ${move}</span>` : ""}</span>
+        <span class="c-price"><div class="c-k num">${priceMain}</div><div class="num">${priceSub}</div></span>
+        <span class="c-state">${stateTag(it)}</span>
+        <span class="c-move">${move ? `<span class="tag plain">${ic("calendar-check")}${move}</span>` : `<span class="faint">–</span>`}</span>
+        <span class="c-owner"><div>${it.src === "co" ? `<span class="tag co" style="height:20px;font-size:11.5px">공동</span> ${esc(it.agName || "")}` : esc(it.owner || "–")}</div><div class="faint num">${esc(it.src === "co" ? it.agPhone || "" : it.phone || "")}</div></span>
         <span class="chev">${ic("chevron-right")}</span>
       </button>`;
     }).join("")}
@@ -1249,7 +1310,7 @@ function renderList(){
     <div class="list-tools">
       <div class="seg" role="group" aria-label="유형">${["", ...TYPES].map(t => `<button type="button" data-type="${t}" aria-pressed="${F.type === t}">${t ? ic(TYPE_IC[t]) + t : "전체"}</button>`).join("")}</div>
     </div>
-    <div class="list-meta"><span id="resCount"></span><span id="regionChip"></span>
+    <div class="list-meta"><span id="resCount"></span><span id="regionChip"></span><span class="swipe-hint faint">${ic("move-horizontal")}좌우로 밀어 유형 전환</span>
       <select id="sortSel" aria-label="정렬">
         <option value="recent">최근 수정순</option><option value="priceDesc">매매가 높은순</option><option value="priceAsc">매매가 낮은순</option>
         <option value="areaDesc">토지면적 큰순</option><option value="unitAsc">평당가 낮은순</option></select></div>
@@ -1258,9 +1319,38 @@ function renderList(){
   $("#q").addEventListener("input", e => { F.q = e.target.value; updateResults(); });
   $("#sortSel").onchange = e => { F.sort = e.target.value; updateResults(); };
   $("#filterBtn").onclick = openFilter;
-  v.querySelectorAll("[data-type]").forEach(b => b.onclick = () => { F.type = b.dataset.type; v.querySelectorAll("[data-type]").forEach(x => x.setAttribute("aria-pressed", x === b)); updateResults(); });
+  v.querySelectorAll("[data-type]").forEach(b => b.onclick = () => setType(b.dataset.type));
   updateResults();
 }
+/* 휴대폰: 매물 목록에서 좌우로 밀면 유형 버튼을 누른 것처럼 전환 */
+const TYPE_TABS = ["", ...TYPES];
+function setType(t, dir = 0){
+  F.type = t;
+  const v = $("#view");
+  v.querySelectorAll("[data-type]").forEach(x => { const on = x.dataset.type === t; x.setAttribute("aria-pressed", on); if (on) x.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); });
+  updateResults();
+  const box = $("#results");
+  if (box && dir) { box.classList.remove("swipe-l", "swipe-r"); void box.offsetWidth; box.classList.add(dir > 0 ? "swipe-l" : "swipe-r"); }
+}
+(function(){
+  let sx = 0, sy = 0, st = 0, track = false;
+  const main = document.querySelector(".main");
+  main.addEventListener("touchstart", e => {
+    if (view !== "list" || e.touches.length !== 1) { track = false; return; }
+    // 가로로 스크롤되는 버튼 줄이나 입력칸에서 시작한 동작은 제외
+    if (e.target.closest(".seg, input, select, textarea")) { track = false; return; }
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now(); track = true;
+  }, { passive: true });
+  main.addEventListener("touchend", e => {
+    if (!track || view !== "list") return; track = false;
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5 || Date.now() - st > 700) return;
+    const i = TYPE_TABS.indexOf(F.type), next = i + (dx < 0 ? 1 : -1);
+    if (next < 0 || next >= TYPE_TABS.length) return;
+    setType(TYPE_TABS[next], dx < 0 ? 1 : -1);
+    if (navigator.vibrate) navigator.vibrate(8);
+  }, { passive: true });
+})();
 function updateResults(){
   const box = $("#results"); if (!box) return;
   const list = filtered();
@@ -1386,7 +1476,7 @@ function renderDetail(){
     row("map-pin", "주소", esc(addr))].join("") : "";
   $("#sheetTitle").textContent = it.type + " 매물";
   $("#sheetBody").innerHTML = `
-    <div class="d-head">${tile(it, true)}<div style="min-width:0"><h2>${starIc(it)}${esc(titleOf(it))}</h2><div class="tags">${stateTag(it)}${coTag(it)}<span class="tag plain">${ic(TYPE_IC[it.type])}${esc(it.type)}${it.jimok && !isRes(it) ? " " + esc(it.jimok) : ""}</span></div></div></div>
+    <div class="d-head">${tile(it, true)}<div style="min-width:0"><h2>${esc(titleOf(it))}</h2><div class="tags">${stateTag(it)}${coTag(it)}<span class="tag plain">${ic(TYPE_IC[it.type])}${esc(it.type)}${it.jimok && !isRes(it) ? " " + esc(it.jimok) : ""}</span></div></div></div>
     <div class="figs">
       ${isRes(it) ? `
       <div class="fig"><small>${ic("maximize")}전용면적</small><b class="num">${it.excl != null ? fmt(it.excl / PY) + "평" : "–"}</b><span class="u num">${it.excl != null ? fmt(it.excl) + "㎡" : ""}</span></div>
@@ -1403,7 +1493,7 @@ function renderDetail(){
       ${it.phone ? `<a class="btn sm" href="tel:${esc(digits(it.phone))}">${ic("phone")}소유자 전화</a>` : ""}
     </div>
     <div class="actions" style="margin-top:8px">
-      <button class="btn sm primary" type="button" id="briefBtn">${ic("printer")}브리핑 인쇄</button>
+      <button class="btn sm aqua" type="button" id="briefBtn">${ic("printer")}브리핑 인쇄</button>
       <button class="btn sm" type="button" id="dupBtn">${ic("copy-plus")}매물 복사</button>
       <button class="btn sm" type="button" id="starBtn" style="${it.star ? "background:#FFF4D1;color:#9A6B00" : ""}">${ic("star")}${it.star ? "중요 해제" : "중요 표시"}</button>
     </div>
