@@ -387,6 +387,15 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
 .pcard .rm{width:34px;height:40px;border:0;border-radius:10px;background:var(--danger-bg);color:var(--danger);display:grid;place-items:center}
 .pcard .rep{width:34px;height:40px;display:grid;place-items:center;font-size:11px;color:var(--ink-3);font-weight:600}
 .pcard .p-area-wrap{grid-column:1/-2}
+.switch-row{display:flex;align-items:center;gap:12px;cursor:pointer}
+.sw-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#FFF4D1;color:#C08A00;flex:none} .sw-ic svg.lucide{width:16px;height:16px}
+.sw-txt{flex:1;min-width:0} .sw-txt b{display:block;font-size:15px;font-weight:600} .sw-txt small{font-size:12.5px;color:var(--ink-3)}
+.switch{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:999px;background:var(--fill-2);position:relative;flex:none;cursor:pointer;transition:background .2s;margin:0}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:transform .2s}
+.switch:checked{background:#34C759} .switch:checked::after{transform:translateX(20px)}
+svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.15em;margin-right:4px}
+.d-tabs{display:flex;align-items:center;gap:10px;margin:0 4px 12px;flex-wrap:wrap}
+.d-tabs .btn{margin-left:auto}
 .psum{font-size:13.5px;color:var(--aqua-ink);font-weight:500;padding:0 4px}
 
 /* 더보기 메뉴 */
@@ -478,12 +487,71 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
   .composer .fgrid.three{grid-template-columns:1fr 1fr}
   .composer .fgrid.three .field:first-child{grid-column:1/-1}
 }
+/* =========================================================
+   고객 브리핑 (미리보기 + 인쇄)
+   ========================================================= */
+.modal.wide{width:min(1080px,100vw)}
+.brief-wrap{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
+.brief-opts{display:grid;gap:12px;position:sticky;top:0}
+.brief-preview{background:#E9EDF2;border-radius:var(--r-lg);padding:18px;overflow:auto}
+.paper{background:#fff;color:#1A2430;width:100%;max-width:794px;margin:0 auto;padding:34px 38px;border-radius:6px;box-shadow:0 10px 30px rgba(15,30,50,.15)}
+#printRoot{display:none}
+.bf{font-family:var(--font);color:#1A2430;font-size:13px;line-height:1.55;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.bf-head{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:2px solid #15283D}
+.bf-logo{width:38px;height:38px;color:#15222A;display:block}
+.bf-brand b{display:block;font-size:16px;letter-spacing:-.02em;color:#15222A}
+.bf-brand small{display:block;font-size:8.5px;letter-spacing:.32em;color:#56636F}
+.bf-doc{margin-left:auto;text-align:right}
+.bf-doc b{display:block;font-size:15px;color:#15283D}
+.bf-doc small{font-size:11px;color:#6B7785}
+.bf-title{margin:20px 0 14px}
+.bf-type{display:inline-block;font-size:11.5px;font-weight:700;color:#fff;background:linear-gradient(165deg,#4F79B2,#132A44);padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.bf-title h1{margin:0 0 4px;font-size:23px;letter-spacing:-.03em;line-height:1.25;color:#101A26}
+.bf-title p{margin:0;color:#56636F;font-size:13px}
+.bf-figs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #D7DEE6;border-radius:10px;overflow:hidden;margin-bottom:16px}
+.bf-fig{padding:11px 14px;border-right:1px solid #D7DEE6;border-bottom:1px solid #D7DEE6;margin:0 -1px -1px 0}
+.bf-fig small{display:block;font-size:11px;color:#6B7785}
+.bf-fig b{display:block;font-size:17px;letter-spacing:-.02em;color:#101A26;font-variant-numeric:tabular-nums}
+.bf-fig span{font-size:11px;color:#6B7785}
+.bf-fig.hl{background:#F1F6FB}
+.bf-fig.hl b{color:#15283D}
+.bf-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.bf-cols.one{grid-template-columns:1fr}
+.bf-map{height:230px;border-radius:10px;overflow:hidden;border:1px solid #D7DEE6;background:#F3F5F8}
+.bf-map img{max-width:none}
+.bf h2{font-size:13px;margin:0 0 6px;color:#15283D;letter-spacing:-.01em}
+.bf-kv{width:100%;border-collapse:collapse;font-size:12.5px}
+.bf-kv th,.bf-kv td{padding:6px 8px;border-bottom:1px solid #E4E9EF;text-align:left;vertical-align:top}
+.bf-kv th{width:34%;color:#56636F;font-weight:500;background:#F7F9FB}
+.bf-parcels{margin-top:14px}
+.bf-parcels td.r,.bf-parcels th.r{text-align:right}
+.bf-note{margin-top:16px;padding:12px 14px;border-radius:10px;background:#F1F6FB;border-left:3px solid #12A9BF;white-space:pre-wrap;font-size:12.5px}
+.bf-foot{margin-top:22px;padding-top:12px;border-top:1px solid #D7DEE6;display:flex;gap:16px;align-items:flex-end;justify-content:space-between}
+.bf-contact b{display:block;font-size:14px;color:#15283D}
+.bf-contact span{font-size:12px;color:#3A4654}
+.bf-legal{font-size:9.5px;color:#7C8794;max-width:58%;text-align:right;margin:0}
+@media (max-width:900px){
+  .brief-wrap{grid-template-columns:1fr}
+  .brief-opts{position:static}
+  .brief-preview{padding:10px}
+  .paper{padding:20px 18px}
+  .bf-figs{grid-template-columns:repeat(2,1fr)}
+  .bf-cols{grid-template-columns:1fr}
+}
+@media print{
+  @page{size:A4;margin:12mm}
+  html.printing body{background:#fff!important}
+  html.printing body>*:not(#printRoot):not(#sprite){display:none!important}
+  html.printing #printRoot{display:block}
+  html.printing .bf{font-size:10.5pt}
+  .bf-figs,.bf-cols,.bf-kv tr,.bf-note,.bf-foot{break-inside:avoid}
+}
 @keyframes slideU{from{transform:translateY(60px);opacity:.3}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<svg id="sprite" width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <mask id="sbMask" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#fff"/><polygon points="-.15,.695 .5,.175 1.15,.695 1.15,.825 .5,.305 -.15,.825" fill="#000"/></mask>
     <symbol id="snowball" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="currentColor" mask="url(#sbMask)"/></symbol>
@@ -573,6 +641,7 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
           <label><input type="radio" name="type" value="창고"><span><i data-lucide="warehouse"></i>창고</span></label>
           <label><input type="radio" name="type" value="원룸"><span><i data-lucide="bed-single"></i>원룸</span></label>
         </div>
+        <label class="switch-row"><span class="sw-ic"><i data-lucide="star"></i></span><span class="sw-txt"><b>중요 매물로 표시</b><small>대시보드 ‘중요 매물’ 탭에 모입니다</small></span><input type="checkbox" name="star" class="switch"></label>
         <div class="seg full" role="radiogroup" aria-label="거래 상태">
           <label><input type="radio" name="state" value="진행" checked><span>계약가능</span></label>
           <label><input type="radio" name="state" value="보류"><span>보류</span></label>
@@ -597,7 +666,6 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
           <label class="field"><span><i data-lucide="receipt"></i>관리비 (만원)</span><input name="fee" type="number" step="any" inputmode="decimal"></label>
           <label class="field shop-only"><span><i data-lucide="briefcase"></i>현재 업종</span><input name="bizType" placeholder="음식점, 공실"></label>
           <label class="field shop-only"><span><i data-lucide="coins"></i>권리금 (만원)</span><input name="premium" type="number" inputmode="numeric"><em class="conv" data-conv="premium"></em></label>
-          <label class="field wide"><span><i data-lucide="calendar-check"></i>입주 가능일</span><input name="moveIn" placeholder="즉시, 협의, 2026-12-01"></label>
         </div>
       </div>
 
@@ -607,6 +675,13 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
           <button class="btn sm aqua" type="button" id="addParcel"><i data-lucide="plus"></i>필지 추가</button>
           <span class="psum" id="psum"></span>
+        </div>
+      </div>
+
+      <div id="moveInBox">
+        <div class="group-title">입주</div>
+        <div class="fgroup fgrid">
+          <label class="field wide"><span><i data-lucide="calendar-check"></i>입주 가능일</span><input name="moveIn" placeholder="즉시, 협의, 2026-12-01"></label>
         </div>
       </div>
 
@@ -665,6 +740,7 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
         <label class="field"><span>거래 상태</span><select data-f="state"><option value="">전체</option><option value="진행">계약가능</option><option value="보류">보류</option><option value="완료">계약완료</option></select></label>
         <label class="field"><span>지목</span><select data-f="jimok" id="fJimok"><option value="">전체</option></select></label>
         <label class="field"><span>거래 구분</span><select data-f="deal"><option value="">매매·임대 전체</option><option value="sale">매매가 있음</option><option value="rent">임대가 있음</option></select></label>
+        <label class="field"><span>중요 매물</span><select data-f="star"><option value="">전체</option><option value="1">중요 매물만</option></select></label>
         <label class="field"><span>매물 출처</span><select data-f="src"><option value="">전체</option><option value="own">직접 매물</option><option value="co">공동중개</option></select></label>
       </div>
       <div class="group-title">토지면적</div>
@@ -712,6 +788,42 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
   </div>
 </dialog>
 
+<!-- ================= 고객 브리핑 모달 ================= -->
+<dialog class="modal wide" id="briefDlg" aria-labelledby="briefTitle">
+  <div class="modal-in">
+    <div class="navbar">
+      <button class="btn ghost l" type="button" data-close="briefDlg">닫기</button>
+      <div class="title" id="briefTitle">고객 브리핑 자료</div>
+      <button class="btn ghost r" type="button" id="printBtn" style="font-weight:700"><i data-lucide="printer"></i>인쇄</button>
+    </div>
+    <div class="sheet-body">
+      <div class="brief-wrap">
+        <div class="brief-opts">
+          <div class="group-title" style="margin-top:8px">표시할 내용</div>
+          <div class="fgroup">
+            <label class="switch-row"><span class="sw-txt"><b>가격 표시</b><small>매매가, 평당가, 보증금, 월세</small></span><input type="checkbox" class="switch" id="bfPrice" checked></label>
+            <label class="switch-row"><span class="sw-txt"><b>정확한 지번 표시</b><small>끄면 ‘○○동 일대’로만 표시</small></span><input type="checkbox" class="switch" id="bfJibun" checked></label>
+            <label class="switch-row" id="bfMapRow"><span class="sw-txt"><b>위치 지도</b><small>카카오 지도 이미지</small></span><input type="checkbox" class="switch" id="bfMap" checked></label>
+          </div>
+          <div class="group-title">담당자 (이 기기에 기억)</div>
+          <div class="fgroup">
+            <label class="field"><span>담당자</span><input id="bfName" placeholder="대표 공인중개사 홍길동"></label>
+            <label class="field"><span>연락처</span><input id="bfPhone" type="tel" placeholder="010-0000-0000"></label>
+            <label class="field"><span>사무소 주소</span><input id="bfAddr" placeholder="경기도 안산시 단원구 …"></label>
+          </div>
+          <div class="group-title">고객 안내 문구</div>
+          <div class="fgroup">
+            <label class="field"><span>이 자료에만 들어갑니다</span><textarea id="bfNote" placeholder="예: 대로변 코너, 대형 트레일러 진입 가능. 잔금 일정 협의 가능."></textarea></label>
+          </div>
+          <p class="faint" style="font-size:12.5px;margin:4px 6px 0">소유자 이름·연락처, 상담 기록, 공동중개 부동산 정보, 내부 메모는 브리핑 자료에 들어가지 않습니다.</p>
+        </div>
+        <div class="brief-preview"><div class="paper" id="briefPaper"></div></div>
+      </div>
+    </div>
+  </div>
+</dialog>
+<div id="printRoot"></div>
+
 <input type="file" id="impFile" accept=".xlsx,.xls,.csv" hidden>
 <datalist id="zones">
   <option>제1종일반주거지역</option><option>제2종일반주거지역</option><option>준주거지역</option><option>일반상업지역</option>
@@ -754,6 +866,7 @@ const isRes = it => BLDG_TYPES.includes(it.type);
 const TYPE_IC = { 아파트: "building", 토지: "trees", 상가: "store", 공장: "factory", 창고: "warehouse", 원룸: "bed-single", 이축권: "scroll-text" };
 
 const TYPE_TINT = { 상가: ["var(--shop-bg)", "var(--shop)"], 토지: ["var(--land-bg)", "var(--land)"], 공장: ["var(--fac-bg)", "var(--fac)"], 창고: ["var(--wh-bg)", "var(--wh)"], 아파트: ["var(--apt-bg)", "var(--apt)"], 원룸: ["var(--room-bg)", "var(--room)"], 이축권: ["var(--kwon-bg)", "var(--kwon)"] };
+const starIc = it => it.star ? `<i data-lucide="star" class="star-ic" aria-label="중요 매물"></i>` : "";
 const SB = (cls = "") => `<svg class="sb ${cls}" aria-hidden="true"><use href="#snowball"/></svg>`;
 const STATE = { 진행: { label: "계약가능", cls: "ok" }, 보류: { label: "보류", cls: "hold" }, 완료: { label: "계약완료", cls: "done" } };
 const PY = 3.305785;
@@ -796,8 +909,8 @@ function regionKey(area, level){
 }
 
 /* ---------- 상태 ---------- */
-let items = [], view = "home", detailId = null;
-const F = { q: "", type: "", jimok: "", state: "", deal: "", src: "", aMin: "", aMax: "", pMin: "", pMax: "", unit: "py", sort: "recent", region: "", regionLevel: "gu" };
+let items = [], view = "home", detailId = null, dashTab = "recent";
+const F = { star: "", q: "", type: "", jimok: "", state: "", deal: "", src: "", aMin: "", aMax: "", pMin: "", pMax: "", unit: "py", sort: "recent", region: "", regionLevel: "gu" };
 for (const [n] of JIMOK) $("#fJimok").add(new Option(n, n));
 
 /* =========================================================
@@ -953,6 +1066,7 @@ function filtered(opt = {}){
     if (F.type && it.type !== F.type) return false;
     if (F.jimok && !parcels(it).some(p => p.jimok === F.jimok)) return false;
     if (F.state && it.state !== F.state) return false;
+    if (F.star && !it.star) return false;
     if (F.src && (it.src || "own") !== F.src) return false;
     if (F.deal === "sale" && it.price == null) return false;
     if (F.deal === "rent" && !hasRent(it)) return false;
@@ -975,7 +1089,7 @@ function filtered(opt = {}){
     areaDesc: (a, b) => (baseArea(b) ?? -1) - (baseArea(a) ?? -1), unitAsc: (a, b) => (unitPrice(a) ?? Infinity) - (unitPrice(b) ?? Infinity) };
   return list.sort(by[F.sort] || by.recent);
 }
-const activeFilterCount = () => ["jimok", "state", "deal", "src", "aMin", "aMax", "pMin", "pMax"].filter(k => F[k] !== "").length;
+const activeFilterCount = () => ["star", "jimok", "state", "deal", "src", "aMin", "aMax", "pMin", "pMax"].filter(k => F[k] !== "").length;
 
 /* =========================================================
    화면 그리기
@@ -1015,6 +1129,7 @@ function renderHome(){
   const open = tasks.filter(t => !t.done).sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999") || (a.created || 0) - (b.created || 0));
   const done = tasks.filter(t => t.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
   const recent = [...items].sort((a, b) => (b.updated || 0) - (a.updated || 0)).slice(0, 6);
+  const starred = items.filter(x => x.star).sort((a, b) => (b.updated || 0) - (a.updated || 0));
   const shown = TYPES;
   v.innerHTML = `
     <div class="card hello"><div class="globe">${SB()}</div><div><b>${hour < 12 ? "좋은 아침입니다" : hour < 18 ? "오늘도 수고 많으십니다" : "오늘 하루도 고생하셨습니다"}</b><span>매물 ${items.length}건, 남은 할 일 ${open.length}건, 오늘 연락할 상담 ${upcoming().filter(x => x.l.next === td).length}건</span></div></div>
@@ -1042,13 +1157,23 @@ function renderHome(){
       </div>
     </div>
     <div class="section">
-      <div class="section-head"><h2>최근 업데이트</h2><button class="btn ghost sm" data-view="list" type="button">매물 목록 ${ic("chevron-right")}</button></div>
-      ${items.length ? tableHTML(recent) : emptyHero()}
+      <div class="d-tabs">
+        <div class="seg" role="tablist" aria-label="대시보드 매물 보기">
+          <button type="button" role="tab" data-dtab="recent" aria-pressed="${dashTab === "recent"}" aria-selected="${dashTab === "recent"}">${ic("clock")}최근 업데이트</button>
+          <button type="button" role="tab" data-dtab="star" aria-pressed="${dashTab === "star"}" aria-selected="${dashTab === "star"}">${ic("star")}중요 매물 ${starred.length}</button>
+        </div>
+        <button class="btn ghost sm" type="button" ${dashTab === "star" ? 'id="goStar"' : 'data-view="list"'}>${dashTab === "star" ? "중요 매물 전체" : "매물 목록"} ${ic("chevron-right")}</button>
+      </div>
+      ${!items.length ? emptyHero() : dashTab === "recent" ? tableHTML(recent)
+        : starred.length ? tableHTML(starred.slice(0, 8))
+        : `<div class="card empty"><div class="em-ic">${ic("star")}</div><h3>중요 매물이 없습니다</h3><p>매물 등록·수정 화면에서 ‘중요 매물로 표시’를 켜거나, 매물 상세의 ‘중요 표시’ 버튼을 누르세요.</p></div>`}
     </div>`;
   // 동기화로 화면이 다시 그려져도 입력 중인 할 일은 유지
   $("#taskText").value = draft.text; $("#taskDue").value = draft.due;
   if (draft.focus === "taskText" || draft.focus === "taskDue") $("#" + draft.focus).focus();
   v.querySelectorAll("[data-goto-type]").forEach(b => b.onclick = () => { resetFilters(); F.type = b.dataset.gotoType; go("list"); });
+  v.querySelectorAll("[data-dtab]").forEach(b => b.onclick = () => { dashTab = b.dataset.dtab; render(); });
+  if ($("#goStar")) $("#goStar").onclick = () => { resetFilters(); F.star = "1"; go("list"); };
   $("#taskForm").onsubmit = e => {
     e.preventDefault();
     const text = $("#taskText").value.trim();
@@ -1099,13 +1224,13 @@ function tableHTML(list){
     ${list.map(it => {
       const l = totLand(it), up = unitPrice(it);
       return `<button class="trow" role="listitem" data-open="${esc(it.id)}" type="button">
-        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() : areaPrefix(it.area) || it.zone || "")}</div></span></span>
+        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${starIc(it)}${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() : areaPrefix(it.area) || it.zone || "")}</div></span></span>
         <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}${esc(it.type)}${it.jimok && it.type !== "이축권" && !isRes(it) ? `<span class="faint">${esc(it.jimok)}</span>` : ""}</span>
         <span class="c-area">${isRes(it)
           ? `<div class="c-k num"><span class="lbl-m">전용</span>${it.excl != null ? fmt(it.excl / PY) + "평" : "–"}</div><div class="num">${it.excl != null ? fmt(it.excl) + "㎡" : ""}${it.floor != null ? ` ${it.floor}층` : ""}</div>`
           : `<div class="c-k num"><span class="lbl-m">토지</span>${l != null ? fmt(l / PY) + "평" : "–"}</div><div class="num">${l != null ? fmt(l) + "㎡" : ""}</div>`}</span>
         <span class="c-price"><div class="c-k num">${it.price != null ? won(it.price) : (hasRent(it) ? "임대" : "가격 미정")}</div><div class="num">${up != null ? "평당 " + fmt(up) + "만" : hasRent(it) ? `보증금 ${fmt(it.deposit)}만 / 월 ${fmt(it.rent)}만` : ""}</div></span>
-        <span class="c-state">${stateTag(it)}${coTag(it)}</span>
+        <span class="c-state">${stateTag(it)}${coTag(it)}${it.type !== "토지" && it.moveIn ? `<span class="tag plain">${ic("calendar-check")}입주 ${esc(it.moveIn)}</span>` : ""}</span>
         <span class="c-owner"><div>${esc(it.owner || "–")}</div><div class="faint num">${esc(it.src === "co" ? it.agName || "" : it.phone || "")}</div></span>
         <span class="chev">${ic("chevron-right")}</span>
       </button>`;
@@ -1150,7 +1275,7 @@ function updateResults(){
   $("#filterCount").textContent = `조건에 맞는 매물 ${list.length}건`;
   icons();
 }
-function resetFilters(){ Object.assign(F, { q: "", type: "", jimok: "", state: "", deal: "", src: "", aMin: "", aMax: "", pMin: "", pMax: "", region: "" }); syncFilterInputs(); }
+function resetFilters(){ Object.assign(F, { star: "", q: "", type: "", jimok: "", state: "", deal: "", src: "", aMin: "", aMax: "", pMin: "", pMax: "", region: "" }); syncFilterInputs(); }
 
 /* ---------- 지도 ---------- */
 async function renderMap(){
@@ -1245,6 +1370,7 @@ function renderDetail(){
     it.src === "co" ? row("handshake", "매물 출처", "공동중개") : "",
     it.src === "co" ? row("building-2", "부동산명", esc(it.agName)) : "",
     it.src === "co" ? row("phone", "부동산 전화", tel(it.agPhone)) : "",
+    it.type !== "토지" ? row("calendar-check", "입주 가능일", esc(it.moveIn)) : "",
     row("layers", "용도지역", esc(it.zone)),
     row("user", "소유자", esc(it.owner)),
     row("phone", "소유자 전화", tel(it.phone)),
@@ -1256,11 +1382,11 @@ function renderDetail(){
     it.type !== "상가" ? row("door-open", "방 / 욕실", it.rooms != null || it.baths != null ? `${it.rooms ?? "–"}개 / ${it.baths ?? "–"}개` : "") : "",
     it.type === "상가" ? row("briefcase", "현재 업종", esc(it.bizType)) : "",
     it.type === "상가" ? row("coins", "권리금", it.premium != null ? won(it.premium) : "") : "",
-    row("receipt", "관리비", it.fee != null ? fmt(it.fee) + "만원" : ""), row("calendar-check", "입주 가능일", esc(it.moveIn)),
+    row("receipt", "관리비", it.fee != null ? fmt(it.fee) + "만원" : ""),
     row("map-pin", "주소", esc(addr))].join("") : "";
   $("#sheetTitle").textContent = it.type + " 매물";
   $("#sheetBody").innerHTML = `
-    <div class="d-head">${tile(it, true)}<div style="min-width:0"><h2>${esc(titleOf(it))}</h2><div class="tags">${stateTag(it)}${coTag(it)}<span class="tag plain">${ic(TYPE_IC[it.type])}${esc(it.type)}${it.jimok && !isRes(it) ? " " + esc(it.jimok) : ""}</span></div></div></div>
+    <div class="d-head">${tile(it, true)}<div style="min-width:0"><h2>${starIc(it)}${esc(titleOf(it))}</h2><div class="tags">${stateTag(it)}${coTag(it)}<span class="tag plain">${ic(TYPE_IC[it.type])}${esc(it.type)}${it.jimok && !isRes(it) ? " " + esc(it.jimok) : ""}</span></div></div></div>
     <div class="figs">
       ${isRes(it) ? `
       <div class="fig"><small>${ic("maximize")}전용면적</small><b class="num">${it.excl != null ? fmt(it.excl / PY) + "평" : "–"}</b><span class="u num">${it.excl != null ? fmt(it.excl) + "㎡" : ""}</span></div>
@@ -1275,6 +1401,11 @@ function renderDetail(){
       <a class="btn sm" href="https://map.naver.com/p/search/${encodeURIComponent(addr)}" target="_blank" rel="noopener">${ic("navigation")}네이버지도</a>
       <button class="btn sm" type="button" id="copyBtn">${ic("copy")}주소 복사</button>
       ${it.phone ? `<a class="btn sm" href="tel:${esc(digits(it.phone))}">${ic("phone")}소유자 전화</a>` : ""}
+    </div>
+    <div class="actions" style="margin-top:8px">
+      <button class="btn sm primary" type="button" id="briefBtn">${ic("printer")}브리핑 인쇄</button>
+      <button class="btn sm" type="button" id="dupBtn">${ic("copy-plus")}매물 복사</button>
+      <button class="btn sm" type="button" id="starBtn" style="${it.star ? "background:#FFF4D1;color:#9A6B00" : ""}">${ic("star")}${it.star ? "중요 해제" : "중요 표시"}</button>
     </div>
     <div class="minimap" id="miniMap" hidden></div>
     ${isMulti(it) ? `<div class="group-title">필지와 건물 ${ps.length}건</div><div class="group scroll-x"><table class="ptable"><thead><tr><th>소재지·지번</th><th>지목</th><th class="r">토지</th><th class="r">건물</th></tr></thead>
@@ -1304,6 +1435,9 @@ function renderDetail(){
   const body = $("#sheetBody");
   $("#copyBtn").onclick = async () => { try { await navigator.clipboard.writeText(ps.map(p => `${p.area || it.area || ""} ${p.jibun || ""}`.trim()).join("\n")); toast("주소를 복사했습니다"); } catch { toast("복사하지 못했습니다. 주소를 길게 눌러 선택하세요"); } };
   $("#sheetEdit").onclick = () => openForm(it);
+  $("#dupBtn").onclick = () => openForm(it, true);
+  $("#starBtn").onclick = async () => { await save({ ...it, star: !it.star }); toast(it.star ? "중요 매물에서 뺐습니다" : "중요 매물로 표시했습니다"); };
+  $("#briefBtn").onclick = () => openBrief(it);
   $("#delBtn").onclick = () => { if (!confirm(`${titleOf(it)} 매물을 삭제할까요?\n상담 기록도 함께 지워집니다.`)) return; detailId = null; $("#sheet").close(); removeItem(it.id); toast("매물을 삭제했습니다"); };
   body.querySelectorAll("[data-sib]").forEach(b => b.onclick = () => { detailId = b.dataset.sib; renderDetail(); body.scrollTop = 0; });
   $("#logBtn").onclick = async () => {
@@ -1345,10 +1479,11 @@ function readParcels(){
     landM2: num(d.querySelector(".p-land").value), bldgM2: num(d.querySelector(".p-bldg").value)
   }));
 }
-function openForm(it){
-  editing = it || null;
+function openForm(it, copy = false){
+  editing = copy ? null : (it || null);
   form.reset(); $("#prows").innerHTML = "";
-  $("#formTitle").textContent = it ? "매물 수정" : "새 매물";
+  $("#formTitle").textContent = copy ? "매물 복사" : it ? "매물 수정" : "새 매물";
+  form.elements.star.checked = !!it?.star;
   if (it) {
     for (const k of FIELDS) if (it[k] != null && form.elements[k]) form.elements[k].value = it[k];
     // 예전에 등록된 이축권 등 없어진 유형은 토지로 바꿔 수정하도록 안내
@@ -1358,12 +1493,14 @@ function openForm(it){
   } else prow({ jimok: "대" }, true);
   syncForm(); formDlg.showModal(); icons();
   form.querySelector(".sheet-body").scrollTop = 0;
+  if (copy) toast("복사본입니다. 호수·지번 등 바뀐 부분만 고쳐 저장하세요 (상담 기록은 복사되지 않습니다)");
 }
 function syncForm(){
   const t = fv("type");
   $("#factoryBox").hidden = !(t === "공장" || t === "창고");
   const bldg = BLDG_TYPES.includes(t);
   $("#resBox").hidden = !bldg;
+  $("#moveInBox").hidden = t === "토지";
   $("#resTitle").textContent = t === "상가" ? "상가 정보" : "주거 정보";
   form.querySelectorAll(".res-only").forEach(el => el.hidden = t === "상가");
   form.querySelectorAll(".shop-only").forEach(el => el.hidden = t !== "상가");
@@ -1392,7 +1529,9 @@ form.addEventListener("submit", async e => {
   if (!main.jibun) { $("#prows .p-jibun").focus(); toast("대표 필지의 지번을 입력하세요"); return; }
   const f = Object.fromEntries(new FormData(form));
   for (const k of ["price", "deposit", "rent", "height", "power", "road", "excl", "floor", "floors", "rooms", "baths", "fee", "premium"]) f[k] = num(f[k]);
-  if (!BLDG_TYPES.includes(f.type)) for (const k of ["bName", "unitNo", "moveIn"]) f[k] = "";
+  if (!BLDG_TYPES.includes(f.type)) for (const k of ["bName", "unitNo"]) f[k] = "";
+  if (f.type === "토지") f.moveIn = "";
+  f.star = form.elements.star.checked;
   if (f.type !== "상가") { f.bizType = ""; f.premium = null; } else { f.rooms = null; f.baths = null; }
   if (f.src !== "co") { f.agName = ""; f.agPhone = ""; }
   const extra = ps.slice(1).filter(p => p.jibun || p.landM2 != null || p.bldgM2 != null).map(p => ({ ...p, id: uid() }));
@@ -1400,9 +1539,103 @@ form.addEventListener("submit", async e => {
   const wasEdit = !!editing;
   formDlg.close();
   await save(it);
-  toast(wasEdit ? "변경 내용을 저장했습니다" : "매물을 등록했습니다");
+  toast(wasEdit ? "변경 내용을 저장했습니다" : $("#formTitle").textContent === "매물 복사" ? "복사한 매물을 새로 등록했습니다" : "매물을 등록했습니다");
   openDetail(it.id);
 });
+
+/* =========================================================
+   고객 브리핑 (A4 인쇄용)
+   고객에게 나가는 자료이므로 소유자 정보·상담 기록·공동중개 정보·내부 메모는 넣지 않음
+   ========================================================= */
+let briefId = null;
+const BKEY = "maemul-brief";
+function openBrief(it){
+  briefId = it.id;
+  let saved = {}; try { saved = JSON.parse(localStorage.getItem(BKEY) || "{}"); } catch {}
+  $("#bfName").value = saved.name || ""; $("#bfPhone").value = saved.phone || ""; $("#bfAddr").value = saved.addr || "";
+  $("#bfNote").value = ""; $("#bfPrice").checked = true; $("#bfJibun").checked = true; $("#bfMap").checked = true;
+  $("#bfMapRow").hidden = !CONFIG.KAKAO_JS_KEY;
+  renderBrief(); $("#briefDlg").showModal(); icons();
+}
+function briefHTML(it){
+  const showPrice = $("#bfPrice").checked, showJibun = $("#bfJibun").checked, withMap = $("#bfMap").checked && !!CONFIG.KAKAO_JS_KEY;
+  const dong = String(it.area || "").trim().split(/\s+/).slice(-1)[0] || "";
+  const title = isRes(it) && it.bName ? (showJibun ? `${it.bName} ${it.unitNo || ""}`.trim() : it.bName)
+    : showJibun ? titleOf(it) : `${dong} ${it.type}`;
+  const address = showJibun ? `${it.area || ""} ${it.jibun || ""}`.trim() : `${it.area || ""} 일대`;
+  const land = totLand(it), bldg = totBldg(it), up = unitPrice(it);
+  const fig = (label, val, sub = "", hl = false) => val ? `<div class="bf-fig${hl ? " hl" : ""}"><small>${label}</small><b>${val}</b>${sub ? `<span>${sub}</span>` : ""}</div>` : "";
+  const figs = [
+    showPrice && it.price != null ? fig(isMulti(it) ? "일괄 매매가" : "매매가", won(it.price), up != null ? `${isRes(it) ? "전용 " : ""}평당 ${fmt(up)}만원` : "", true) : "",
+    showPrice && hasRent(it) ? fig("임대", `${it.deposit != null ? won(it.deposit) : "–"}`, it.rent != null ? `월 ${won(it.rent)}` : "", true) : "",
+    isRes(it) ? fig("전용면적", it.excl != null ? fmt(it.excl / PY) + "평" : "", it.excl != null ? fmt(it.excl) + "㎡" : "")
+              : fig(isMulti(it) ? "토지 합계" : "토지면적", land != null ? fmt(land / PY) + "평" : "", land != null ? fmt(land) + "㎡" : ""),
+    isRes(it) ? fig("층", it.floor != null ? it.floor + "층" : "", it.floors != null ? `총 ${it.floors}층` : "")
+              : fig(isMulti(it) ? "건물 합계" : "건물면적", bldg != null ? fmt(bldg / PY) + "평" : "", bldg != null ? fmt(bldg) + "㎡" : ""),
+    fig("용도지역", esc(it.zone || "")),
+    it.type !== "토지" ? fig("입주 가능일", esc(it.moveIn || "")) : "",
+    showPrice && it.type === "상가" && it.premium != null ? fig("권리금", won(it.premium)) : "",
+    showPrice && it.fee != null ? fig("관리비", fmt(it.fee) + "만원") : ""
+  ].filter(Boolean);
+  const kv = (k, v) => v ? `<tr><th>${k}</th><td>${v}</td></tr>` : "";
+  const rows = [
+    kv("유형", esc(it.type)),
+    !isRes(it) ? kv("지목", esc(it.jimok || "")) : "",
+    isRes(it) ? kv(it.type === "상가" ? "건물명" : "단지명", esc(it.bName || "")) : "",
+    isRes(it) && showJibun ? kv("동·호수", esc(it.unitNo || "")) : "",
+    it.type !== "상가" && isRes(it) && (it.rooms != null || it.baths != null) ? kv("방 / 욕실", `${it.rooms ?? "–"}개 / ${it.baths ?? "–"}개`) : "",
+    it.type === "상가" ? kv("현재 업종", esc(it.bizType || "")) : "",
+    isRes(it) && land != null ? kv("대지면적", `${fmt(land)}㎡ (${fmt(land / PY)}평)`) : "",
+    it.type === "공장" || it.type === "창고" ? [kv("층고", it.height != null ? it.height + "m" : ""), kv("호이스트", esc(it.hoist || "")),
+      kv("수전용량", it.power != null ? it.power + "kW" : ""), kv("진입로 폭", it.road != null ? it.road + "m" : ""),
+      kv("대형차 진입", esc(it.truck || "")), kv("공장등록", esc(it.reg || ""))].join("") : ""
+  ].join("");
+  const ps = parcels(it);
+  const parcelTable = isMulti(it) && showJibun ? `<div class="bf-parcels"><h2>필지와 건물 (${ps.length}건)</h2><table class="bf-kv"><thead><tr><th style="width:auto">지번</th><th style="width:auto">지목</th><th class="r" style="width:auto">토지</th><th class="r" style="width:auto">건물</th></tr></thead><tbody>
+    ${ps.map(p => `<tr><td>${esc(`${p.area || it.area || ""} ${p.jibun || ""}`.trim().split(/\s+/).slice(-2).join(" "))}</td><td>${esc(p.jimok || "–")}</td><td class="r">${p.landM2 != null ? fmt(p.landM2) + "㎡" : "–"}</td><td class="r">${p.bldgM2 != null ? fmt(p.bldgM2) + "㎡" : "–"}</td></tr>`).join("")}
+    </tbody></table></div>` : "";
+  const name = $("#bfName").value.trim(), phone = $("#bfPhone").value.trim(), oaddr = $("#bfAddr").value.trim(), note = $("#bfNote").value.trim();
+  const d = new Date();
+  return `<div class="bf">
+    <header class="bf-head"><svg class="bf-logo" aria-hidden="true"><use href="#snowball"/></svg>
+      <div class="bf-brand"><b>눈덩이공인중개사사무소</b><small>SNOWBALL REAL ESTATE AGENCY</small></div>
+      <div class="bf-doc"><b>매물 브리핑</b><small>${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일</small></div></header>
+    <section class="bf-title"><span class="bf-type">${esc(it.type)}${it.state === "진행" ? " · 계약가능" : ""}</span><h1>${esc(title)}</h1><p>${esc(address)}</p></section>
+    ${figs.length ? `<section class="bf-figs">${figs.join("")}</section>` : ""}
+    <section class="bf-cols${withMap && rows ? "" : " one"}">
+      ${withMap ? `<div class="bf-map" id="bfMapBox"></div>` : ""}
+      ${rows ? `<div><h2>상세 정보</h2><table class="bf-kv">${rows}</table></div>` : ""}
+    </section>
+    ${parcelTable}
+    ${note ? `<div class="bf-note">${esc(note)}</div>` : ""}
+    <footer class="bf-foot">
+      <div class="bf-contact">${name ? `<b>${esc(name)}</b>` : `<b>눈덩이공인중개사사무소</b>`}<span>${[phone, oaddr].filter(Boolean).map(esc).join("<br>")}</span></div>
+      <p class="bf-legal">본 자료는 상담을 돕기 위한 참고 자료입니다. 면적, 가격, 용도지역 등 정확한 내용은 등기사항전부증명서, 토지이용계획확인서, 건축물대장 등 공부로 확인하시기 바랍니다.</p>
+    </footer>
+  </div>`;
+}
+async function renderBrief(){
+  const it = items.find(x => x.id === briefId); if (!it) return;
+  $("#briefPaper").innerHTML = briefHTML(it);
+  const box = $("#bfMapBox");
+  if (box && await loadKakao()) {
+    const pos = await geocode(`${it.area} ${it.jibun}`.trim());
+    if (!pos || !document.body.contains(box)) { if (box) box.innerHTML = `<p style="padding:16px;color:#6B7785;font-size:12px">주소로 위치를 찾지 못했습니다</p>`; return; }
+    new kakao.maps.StaticMap(box, { center: pos, level: $("#bfJibun").checked ? 3 : 5, marker: $("#bfJibun").checked ? { position: pos } : false });
+  }
+}
+["bfPrice", "bfJibun", "bfMap"].forEach(id => $("#" + id).addEventListener("change", renderBrief));
+["bfName", "bfPhone", "bfAddr", "bfNote"].forEach(id => $("#" + id).addEventListener("input", () => {
+  try { localStorage.setItem(BKEY, JSON.stringify({ name: $("#bfName").value, phone: $("#bfPhone").value, addr: $("#bfAddr").value })); } catch {}
+  clearTimeout(renderBrief.t); renderBrief.t = setTimeout(renderBrief, 250);
+}));
+$("#printBtn").onclick = () => {
+  $("#printRoot").innerHTML = $("#briefPaper").innerHTML;
+  document.documentElement.classList.add("printing");
+  const imgs = [...$("#printRoot").querySelectorAll("img")];
+  Promise.all(imgs.map(im => im.complete ? 0 : new Promise(r => { im.onload = im.onerror = r; setTimeout(r, 2500); }))).then(() => window.print());
+};
+window.addEventListener("afterprint", () => { document.documentElement.classList.remove("printing"); $("#printRoot").innerHTML = ""; });
 
 /* =========================================================
    필터 모달
@@ -1414,13 +1647,13 @@ function syncFilterInputs(){
 function openFilter(){ syncFilterInputs(); $("#filterCount").textContent = `조건에 맞는 매물 ${filtered().length}건`; $("#filterDlg").showModal(); }
 $$("[data-f]").forEach(el => el.addEventListener("input", () => { F[el.dataset.f] = el.value; updateResults(); }));
 $$("[data-unit]").forEach(b => b.onclick = () => { F.unit = b.dataset.unit; syncFilterInputs(); updateResults(); });
-$("#fReset").onclick = () => { Object.assign(F, { jimok: "", state: "", deal: "", src: "", aMin: "", aMax: "", pMin: "", pMax: "" }); syncFilterInputs(); updateResults(); };
+$("#fReset").onclick = () => { Object.assign(F, { star: "", jimok: "", state: "", deal: "", src: "", aMin: "", aMax: "", pMin: "", pMax: "" }); syncFilterInputs(); updateResults(); };
 $("#filterDlg").addEventListener("close", () => { if (view !== "list") render(); });
 
 /* =========================================================
    엑셀
    ========================================================= */
-const COLS = [["유형","type"],["소재지","area"],["지번","jibun"],["지목","jimok"],["토지면적(㎡)","landM2"],["건물면적(㎡)","bldgM2"],["용도지역","zone"],["매매가(만원)","price"],["보증금(만원)","deposit"],["월임대료(만원)","rent"],["소유자","owner"],["전화번호","phone"],["상태","state"],["출처","src"],["부동산명","agName"],["부동산전화","agPhone"],["층고(m)","height"],["호이스트","hoist"],["수전용량(kW)","power"],["진입로폭(m)","road"],["대형차진입","truck"],["공장등록","reg"],["단지명","bName"],["동호수","unitNo"],["전용면적(㎡)","excl"],["해당층","floor"],["총층","floors"],["방수","rooms"],["욕실수","baths"],["관리비(만원)","fee"],["입주가능일","moveIn"],["업종","bizType"],["권리금(만원)","premium"],["메모","memo"]];
+const COLS = [["유형","type"],["소재지","area"],["지번","jibun"],["지목","jimok"],["토지면적(㎡)","landM2"],["건물면적(㎡)","bldgM2"],["용도지역","zone"],["매매가(만원)","price"],["보증금(만원)","deposit"],["월임대료(만원)","rent"],["소유자","owner"],["전화번호","phone"],["상태","state"],["출처","src"],["부동산명","agName"],["부동산전화","agPhone"],["층고(m)","height"],["호이스트","hoist"],["수전용량(kW)","power"],["진입로폭(m)","road"],["대형차진입","truck"],["공장등록","reg"],["단지명","bName"],["동호수","unitNo"],["전용면적(㎡)","excl"],["해당층","floor"],["총층","floors"],["방수","rooms"],["욕실수","baths"],["관리비(만원)","fee"],["입주가능일","moveIn"],["업종","bizType"],["권리금(만원)","premium"],["중요","star"],["메모","memo"]];
 const NUMS = new Set(["landM2", "bldgM2", "price", "deposit", "rent", "height", "power", "road", "excl", "floor", "floors", "rooms", "baths", "fee", "premium"]);
 const norm = s => String(s).replace(/\s|\(.*?\)/g, "");
 const pick = (row, h) => { const key = Object.keys(row).find(c => norm(c) === norm(h)); return key == null ? "" : row[key]; };
@@ -1439,6 +1672,7 @@ async function importExcel(file){
       it.type = TYPES.includes(it.type) ? it.type : "토지";
       it.state = toState(it.state);
       it.src = /공동|타|co/.test(it.src || "") ? "co" : "own";
+      it.star = /^(o|y|v|1|true|중요|★|☆)$/i.test(String(it.star || "").trim());
       if (it.jimok && !SYMBOL[it.jimok]) it.jimok = "잡종지";
       added.push(it);
     }
@@ -1463,7 +1697,7 @@ function exportExcel(){
   if (!window.XLSX) { toast("엑셀 모듈을 불러오지 못했습니다"); return; }
   if (!items.length) { toast("저장할 매물이 없습니다"); return; }
   const wb = XLSX.utils.book_new();
-  const main = items.map(it => ({ ...Object.fromEntries(COLS.map(([h, k]) => [h, k === "src" ? (it.src === "co" ? "공동중개" : "직접") : k === "state" ? (STATE[it.state]?.label || "계약가능") : (it[k] ?? "")])),
+  const main = items.map(it => ({ ...Object.fromEntries(COLS.map(([h, k]) => [h, k === "src" ? (it.src === "co" ? "공동중개" : "직접") : k === "state" ? (STATE[it.state]?.label || "계약가능") : k === "star" ? (it.star ? "O" : "") : (it[k] ?? "")])),
     "필지수": parcels(it).length, "토지합계(㎡)": totLand(it) ?? "", "건물합계(㎡)": totBldg(it) ?? "" }));
   const extra = items.flatMap(it => (it.extra || []).map(p => ({ 대표소재지: it.area, 대표지번: it.jibun, 소재지: p.area || "", 지번: p.jibun, 지목: p.jimok, "토지면적(㎡)": p.landM2 ?? "", "건물면적(㎡)": p.bldgM2 ?? "" })));
   const logs = items.flatMap(it => (it.logs || []).map(l => ({ 소재지: it.area, 지번: it.jibun, 상담일: l.date, 상대: l.who, "제시가(만원)": l.offer ?? "", 다음연락: l.next, 내용: l.text })));
