@@ -12,10 +12,10 @@ window.MAEMUL_CONFIG = {
 
   // 구글 클라우드 콘솔 → Google 인증 플랫폼 → 클라이언트 → 클라이언트 ID
   // 예: "123456789012-abcdefghijk.apps.googleusercontent.com"
-  GOOGLE_CLIENT_ID: "",
+  GOOGLE_CLIENT_ID: "168107854439-b30ktmtrsbqkrd2fk9hc81v4lbutf9lp.apps.googleusercontent.com",
 
   // 카카오디벨로퍼스 → 앱 → 플랫폼 키 → JavaScript 키 (영문·숫자 32자리)
   // 비워 두면 앱 안 지도만 꺼지고 나머지는 정상 작동합니다.
-  KAKAO_JS_KEY: ""
+  KAKAO_JS_KEY: "441aeca0cd739c6bbafe7a5abea96438"
 
 };
