@@ -155,10 +155,49 @@ svg.lucide{width:1.15em;height:1.15em;stroke-width:1.9;flex:none;vertical-align:
 small.spread{display:flex;justify-content:space-between;letter-spacing:0;line-height:1.2}
 small.spread i{font-style:normal}
 .today-date{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:var(--aqua-ink);background:var(--aqua-soft);height:30px;padding:0 12px;border-radius:999px;white-space:nowrap}
+.cnt-pill{min-width:24px;height:24px;padding:0 8px;border-radius:999px;background:#FFF4D1;color:#9A6B00;font-size:13px;font-weight:700;display:grid;place-items:center}
+/* 중요 매물 띠 */
+.star-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.scard{border:0;text-align:left;color:inherit;padding:14px;display:grid;gap:12px;transition:transform .12s}
+.scard:active{transform:scale(.98)}
+.scard-top{display:flex;align-items:center;gap:12px;min-width:0}
+.scard-top b{display:block;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scard-top small{display:block;font-size:12.5px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scard-bot{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.scard-price{display:block;font-weight:700;font-size:16px;letter-spacing:-.02em;white-space:nowrap}
+.scard-bot small{display:block;font-size:12px;color:var(--ink-3)}
+.star-empty{display:flex;align-items:center;gap:10px;padding:16px 18px;font-size:14px;color:var(--ink-2)}
+.star-empty svg.lucide{color:#E6A800}
+#doneCard{scroll-margin-top:100px}
+/* 할 일 · 완료한 일 배지 */
+.badges{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.badge{border:0;text-align:left;color:inherit;padding:18px;display:grid;gap:10px;align-content:start;position:relative;overflow:hidden;transition:transform .12s}
+.badge:active{transform:scale(.98)}
+.badge::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,color-mix(in srgb,var(--aqua) 14%,transparent),transparent 70%)}
+.done-badge::after{background:radial-gradient(circle,rgba(52,199,89,.14),transparent 70%)}
+.badge-top{display:flex;align-items:center;gap:10px}
+.badge-top>svg.lucide{margin-left:auto;color:var(--ink-3)}
+.badge-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center}
+.badge-ic svg.lucide{width:20px;height:20px}
+.badge-ic.aqua{background:var(--aqua-soft);color:var(--aqua-ink)} .badge-ic.green{background:var(--ok-bg);color:var(--ok)}
+.badge-name{font-size:16px;font-weight:700;letter-spacing:-.02em}
+.badge-num{font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.badge-num small{font-size:14px;font-weight:600;color:var(--ink-2);margin-left:4px;letter-spacing:0}
+.badge-tags{display:flex;gap:6px;flex-wrap:wrap;min-height:24px;align-items:center}
+.badge-next{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-2);background:var(--fill);border-radius:10px;padding:8px 10px;min-width:0}
+.badge-next span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge-next svg.lucide{width:14px;height:14px;flex:none;color:var(--ink-3)}
+.todo-badge .badge-next svg.lucide{color:#E8730C}
+.badge-next.done span{text-decoration:line-through;color:var(--ink-3)}
+.badge-bar{height:5px;border-radius:999px;background:var(--fill);overflow:hidden}
+.badge-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--aqua),#34C759)}
 .summary{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .summary .chip{background:var(--card);border:1px solid var(--glass-line);box-shadow:var(--hi),var(--shadow-1);color:var(--ink-2);font-weight:500;height:34px}
 .summary .chip b{color:var(--ink);font-weight:700}
 .summary .chip.alert b{color:var(--danger)}
+.summary .star-chip svg.lucide{color:#E6A800;fill:#F5B800}
+.summary .star-chip b{color:#9A6B00}
 .topbar .sub{font-size:13.5px;color:var(--ink-3);margin-top:2px}
 .top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
 .icon-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--glass-line);background:var(--card);box-shadow:var(--hi),var(--shadow-1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:grid;place-items:center;color:var(--ink-2);position:relative}
@@ -211,7 +250,7 @@ small.spread i{font-style:normal}
 .hello::after{content:"";position:absolute;right:-60px;top:-80px;width:240px;height:240px;border-radius:50%;
   background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.7),color-mix(in srgb,var(--aqua) 10%,transparent) 60%,transparent 70%);pointer-events:none}
 .types-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-.tcard{padding:16px;border:0;text-align:left;color:inherit;display:grid;gap:14px;align-content:start;transition:transform .12s}
+.tcard{padding:18px 16px;min-height:150px;border:0;text-align:left;color:inherit;display:grid;gap:16px;align-content:start;transition:transform .12s}
 .tcard:active{transform:scale(.98)}
 .tcard-top{display:flex;align-items:center;gap:10px}
 .tcard-top .tile{width:40px;height:40px;border-radius:13px}
@@ -512,11 +551,15 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .logo-lockup b{font-size:18.5px}
   .logo-lockup small{font-size:7.5px}
   .summary{gap:6px}
-  .summary .chip{height:30px;font-size:12.5px;padding:0 10px}
+  .summary{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px 2px}
+  .summary::-webkit-scrollbar{display:none}
+  .summary{gap:5px}
+  .summary .chip{height:30px;font-size:11.5px;padding:0 8px;gap:3px;flex:none}
+  .summary .chip svg.lucide{width:13px;height:13px}
   .grid-2{grid-template-columns:1fr}
   /* 모바일: 6개 유형 카드를 작게 */
   .types-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  .tcard{padding:10px 11px;gap:6px;border-radius:16px}
+  .tcard{padding:13px 12px;gap:10px;border-radius:16px;min-height:112px}
   .tcard-top{gap:7px}
   .tcard-top .tile{width:26px;height:26px;border-radius:9px}
   .tcard-top .tile svg.lucide{width:14px;height:14px}
@@ -526,6 +569,16 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .tcard-sub{font-size:11.5px}
   .tcard-sub .tag{display:none}
   .tacts{opacity:1}
+  .star-strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;gap:10px;margin:0 -16px;padding:2px 16px 8px;scrollbar-width:none}
+  .star-strip::-webkit-scrollbar{display:none}
+  .scard{flex:0 0 78%;scroll-snap-align:start;padding:12px}
+  .badges{gap:10px;grid-template-columns:1fr}
+  .badge{padding:14px;gap:8px}
+  .badge-ic{width:32px;height:32px;border-radius:10px} .badge-ic svg.lucide{width:17px;height:17px}
+  .badge-name{font-size:15px}
+  .badge-num{font-size:28px}
+  .badge-num small{font-size:12.5px}
+  .badge-next{font-size:12.5px;padding:7px 8px}
   .tacts button{width:28px;height:28px}
   .due.none{opacity:1}
   .task{padding:9px 4px}
@@ -681,6 +734,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <button class="nav-item" data-view="list" type="button"><i data-lucide="list"></i>매물 목록<span class="count" id="navCount"></span></button>
       <button class="nav-item" data-view="map" type="button"><i data-lucide="map"></i>지도</button>
       <button class="nav-item" data-view="region" type="button"><i data-lucide="bar-chart-3"></i>지역별 요약</button>
+      <button class="nav-item" data-view="todo" type="button"><i data-lucide="list-todo"></i>할 일<span class="count" id="navTodo"></span></button>
       <button class="nav-item" data-view="schedule" type="button"><i data-lucide="calendar-days"></i>상담 일정<span class="count" id="navSched"></span></button>
     </nav>
     <div class="nav-label">데이터</div>
@@ -884,6 +938,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <div class="group-title">보기</div>
       <div class="group">
         <button class="grow btnrow" type="button" data-view="region"><span class="ico"><i data-lucide="bar-chart-3"></i></span>지역별 요약<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
+        <button class="grow btnrow" type="button" data-view="todo"><span class="ico"><i data-lucide="list-todo"></i></span>할 일<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
         <button class="grow btnrow" type="button" data-view="schedule"><span class="ico"><i data-lucide="calendar-days"></i></span>상담 일정<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
       </div>
       <div class="group-title">데이터</div>
@@ -1206,7 +1261,7 @@ const activeFilterCount = () => ["star", "jimok", "state", "deal", "src", "aMin"
 /* =========================================================
    화면 그리기
    ========================================================= */
-const TITLES = { home: "대시보드", list: "매물 목록", map: "지도", region: "지역별 요약", schedule: "상담 일정" };
+const TITLES = { home: "대시보드", list: "매물 목록", map: "지도", region: "지역별 요약", schedule: "상담 일정", todo: "할 일" };
 function upcoming(){
   const out = [];
   for (const it of items) for (const l of it.logs || []) if (l.next) out.push({ it, l });
@@ -1217,11 +1272,12 @@ function render(){
   $("#pageTitle").hidden = view === "home"; $("#pageLogo").hidden = view !== "home";
   $("#pageSub").textContent = "";
   $$("[data-view]").forEach(b => b.setAttribute("aria-current", b.dataset.view === view ? "page" : "false"));
-  $("#tabMore").setAttribute("aria-current", ["region", "schedule"].includes(view) ? "page" : "false");
+  $("#tabMore").setAttribute("aria-current", ["region", "schedule", "todo"].includes(view) ? "page" : "false");
+  $("#navTodo").textContent = tasks.filter(t => !t.done).length || "";
   $("#navCount").textContent = items.length || "";
   const due = upcoming().filter(x => x.l.next <= today()).length;
   $("#navSched").textContent = due || "";
-  ({ home: renderHome, list: renderList, map: renderMap, region: renderRegion, schedule: renderSchedule })[view]();
+  ({ home: renderHome, list: renderList, map: renderMap, region: renderRegion, schedule: renderSchedule, todo: renderTodo })[view]();
   if (detailId && $("#sheet").open) renderDetail();
   icons();
 }
@@ -1234,46 +1290,62 @@ function emptyHero(){
 }
 
 /* ---------- 대시보드 ---------- */
-function renderHome(){
-  const v = $("#view");
-  const draft = { focus: document.activeElement?.id };
-  const td = today();
-  const todayCalls = upcoming().filter(x => x.l.next === td).length;
+function taskLists(){
   const open = tasks.filter(t => !t.done).sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999") || (b.flag ? 1 : 0) - (a.flag ? 1 : 0) || (a.created || 0) - (b.created || 0));
   const done = tasks.filter(t => t.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
-  const recent = [...items].sort((a, b) => (b.updated || 0) - (a.updated || 0)).slice(0, 6);
+  return { open, done };
+}
+function renderHome(){
+  const v = $("#view");
+  const td = today();
+  const todayCalls = upcoming().filter(x => x.l.next === td).length;
+  const { open, done } = taskLists();
   const starred = items.filter(x => x.star).sort((a, b) => (b.updated || 0) - (a.updated || 0));
-  const shown = TYPES;
+  const late = open.filter(t => t.due && t.due < td).length, now = open.filter(t => t.due === td).length;
+  const doneToday = done.filter(t => t.doneAt && localDay(t.doneAt) === td).length;
+  const pct = doneToday + late + now ? Math.round(doneToday / (doneToday + late + now) * 100) : 0;
+  const nextT = open.find(t => t.flag) || open[0];
   v.innerHTML = `
     <div class="summary">
       <span class="chip">${ic("building-2")}매물 <b class="num">${items.length}</b></span>
-      <span class="chip">${ic("list-todo")}할 일 <b class="num">${open.length}</b></span>
+      <button class="chip star-chip" type="button" id="goStar">${ic("star")}중요 매물 <b class="num">${starred.length}</b></button>
+      <button class="chip" type="button" data-view="todo">${ic("list-todo")}할 일 <b class="num">${open.length}</b></button>
       <button class="chip${todayCalls ? " alert" : ""}" type="button" data-view="schedule">${ic("phone")}오늘 상담 <b class="num">${todayCalls}</b></button>
     </div>
-    <div class="types-grid">${shown.map(t => {
+    <div class="types-grid">${TYPES.map(t => {
       const arr = items.filter(x => x.type === t), live = arr.filter(x => x.state === "진행").length;
       return `<button class="card tcard" type="button" data-goto-type="${t}">
         <span class="tcard-top"><span class="tile t-${t}">${ic(TYPE_IC[t])}</span><b>${t}</b></span>
         <span class="tcard-n num">${arr.length}<small>건</small></span>
         <span class="tcard-sub">${arr.length ? `계약가능 ${live}` : "등록된 매물 없음"}${arr.length && live < arr.length ? `<span class="tag hold">보류·완료 ${arr.length - live}</span>` : ""}</span>
       </button>`; }).join("")}</div>
-    <div class="section grid-2">${todoHTML(open, done)}</div>
-    <div class="section">
-      <div class="d-tabs">
-        <div class="seg" role="tablist" aria-label="대시보드 매물 보기">
-          <button type="button" role="tab" data-dtab="recent" aria-pressed="${dashTab === "recent"}" aria-selected="${dashTab === "recent"}">${ic("clock")}최근 업데이트</button>
-          <button type="button" role="tab" data-dtab="star" aria-pressed="${dashTab === "star"}" aria-selected="${dashTab === "star"}">${ic("star")}중요 매물 ${starred.length}</button>
-        </div>
-        <button class="btn ghost sm" type="button" ${dashTab === "star" ? 'id="goStar"' : 'data-view="list"'}>${dashTab === "star" ? "중요 매물 전체" : "매물 목록"} ${ic("chevron-right")}</button>
-      </div>
-      ${!items.length ? emptyHero() : dashTab === "recent" ? tableHTML(recent)
-        : starred.length ? tableHTML(starred.slice(0, 8))
-        : `<div class="card empty"><div class="em-ic">${ic("star")}</div><h3>중요 매물이 없습니다</h3><p>매물 등록·수정 화면에서 ‘중요 매물로 표시’를 켜거나, 매물 상세의 ‘중요 표시’ 버튼을 누르세요.</p></div>`}
+
+    <div class="section badges">
+      <button class="card badge todo-badge" type="button" data-view="todo">
+        <span class="badge-top"><span class="badge-ic aqua">${ic("list-todo")}</span><span class="badge-name">할 일</span>${ic("chevron-right")}</span>
+        <span class="badge-num num">${open.length}<small>건 남음</small></span>
+        <span class="badge-tags">${late ? `<span class="tag" style="background:var(--danger-bg);color:var(--danger)">기한 지남 ${late}</span>` : ""}${now ? `<span class="tag" style="background:var(--aqua-soft);color:var(--aqua-ink)">오늘 ${now}</span>` : ""}${!late && !now ? `<span class="faint" style="font-size:12.5px">${open.length ? "오늘 마감인 일은 없습니다" : "남은 일이 없습니다"}</span>` : ""}</span>
+        ${nextT ? `<span class="badge-next">${nextT.flag ? ic("flag") : ic("circle")}<span>${esc(nextT.text)}</span></span>` : ""}
+        ${doneToday + late + now ? `<span class="badge-bar"><i style="width:${pct}%"></i></span>` : ""}
+      </button>
+      <button class="card badge done-badge" type="button" data-todo-done="1">
+        <span class="badge-top"><span class="badge-ic green">${ic("check-circle")}</span><span class="badge-name">완료한 일</span>${ic("chevron-right")}</span>
+        <span class="badge-num num">${done.length}<small>건</small></span>
+        <span class="badge-tags">${doneToday ? `<span class="tag ok">오늘 ${doneToday}건 완료</span>` : `<span class="faint" style="font-size:12.5px">오늘 완료한 일은 아직 없습니다</span>`}</span>
+        ${done[0] ? `<span class="badge-next done">${ic("check")}<span>${esc(done[0].text)}</span></span>` : ""}
+      </button>
     </div>`;
-  bindTodo(draft);
   v.querySelectorAll("[data-goto-type]").forEach(b => b.onclick = () => { resetFilters(); F.type = b.dataset.gotoType; go("list"); });
-  v.querySelectorAll("[data-dtab]").forEach(b => b.onclick = () => { dashTab = b.dataset.dtab; render(); });
-  if ($("#goStar")) $("#goStar").onclick = () => { resetFilters(); F.star = "1"; go("list"); };
+  $("#goStar").onclick = () => { if (!starred.length) { toast("매물 상세에서 ‘중요 표시’를 누르면 중요 매물로 모입니다"); return; } resetFilters(); F.star = "1"; go("list"); };
+  v.querySelector("[data-todo-done]").onclick = () => { go("todo"); setTimeout(() => $("#doneCard")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60); };
+}
+/* ---------- 할 일 화면 ---------- */
+function renderTodo(){
+  const v = $("#view");
+  const draft = { focus: document.activeElement?.id };
+  const { open, done } = taskLists();
+  v.innerHTML = `<div class="grid-2 todo-page">${todoHTML(open, done)}</div>`;
+  bindTodo(draft);
 }
 function upsertTask(t){ t.updated = Date.now(); upsert(t); afterChange(); }
 /* =========================================================
@@ -1332,7 +1404,7 @@ function todoHTML(open, done){
       ? grp("flagged", "중요", open.filter(t => t.flag && !(t.due && t.due <= td))) + grp("late", "기한 지남", late) + grp("today", "오늘", now) + grp("", "내일", tom.filter(t => !t.flag)) + grp("", "예정", later.filter(t => !t.flag)) + grp("", "날짜 없음", none.filter(t => !t.flag))
       : `<div class="task-empty">${ic("party-popper")}<b>남은 할 일이 없습니다</b>새 할 일을 적고 Enter를 누르세요</div>`}</div>
   </div>
-  <div class="card pad">
+  <div class="card pad" id="doneCard">
     <div class="todo-head"><h2>완료한 일</h2><span class="cnt">${done.length}</span>
       ${doneToday ? `<span class="tag ok" style="margin-left:auto">오늘 ${doneToday}건 완료</span>` : ""}
       ${done.length ? `<button class="btn ghost sm" type="button" id="clearDone" style="${doneToday ? "margin-left:0" : "margin-left:auto"}">${ic("eraser")}비우기</button>` : ""}</div>
