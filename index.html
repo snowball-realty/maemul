@@ -170,7 +170,7 @@ small.spread i{font-style:normal}
 .star-empty svg.lucide{color:#E6A800}
 #doneCard{scroll-margin-top:100px}
 /* 할 일 · 완료한 일 배지 */
-.badges{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.badges{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
 .badge{border:0;text-align:left;color:inherit;padding:18px;display:grid;gap:10px;align-content:start;position:relative;overflow:hidden;transition:transform .12s}
 .badge:active{transform:scale(.98)}
 .badge::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;pointer-events:none;
@@ -212,7 +212,7 @@ small.spread i{font-style:normal}
 .table.has-tenant .thead,.table.has-tenant .trow{grid-template-columns:minmax(190px,2fr) minmax(0,.8fr) minmax(0,.9fr) minmax(0,1.3fr) 92px minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) 18px}
 .bf-feats{margin-top:14px} .bf-feats span{display:inline-block;margin:0 5px 5px 0;padding:3px 9px;border-radius:6px;background:#F1F6FB;color:#15283D;font-size:11.5px;font-weight:600}
 /* 메모 · 중개 진행 */
-.work-row{grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;align-items:start}
+.section.work-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
 .badge-ic.gold{background:#FFF4D1;color:#B07C00} .badge-ic.navy{background:var(--fac-bg);color:var(--fac)}
 .todo-head .badge-ic{width:32px;height:32px;border-radius:10px} .todo-head .badge-ic svg.lucide{width:17px;height:17px}
 .memo-card{background:linear-gradient(180deg,#FFFBEA,var(--card-solid) 60%)}
@@ -220,7 +220,38 @@ small.spread i{font-style:normal}
 .memo-text{width:100%;min-height:180px;resize:none;border:0;border-radius:14px;background:transparent;padding:4px 2px;font-size:15px;line-height:1.75;color:var(--ink);
   background-image:repeating-linear-gradient(180deg,transparent 0 25.25px,color-mix(in srgb,#E6B800 18%,transparent) 25.25px 26.25px);background-position:0 3px}
 .memo-text:focus{outline:0}
-.deals{display:grid;gap:10px}
+.deals{display:grid}
+.deals-card .todo-head{margin-bottom:8px}
+.seg-legend{display:flex;gap:10px;justify-content:flex-end;font-size:11px;color:var(--ink-3);margin:-6px 2px 4px}
+.drow{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) 34px;gap:12px;align-items:center;padding:8px 2px;border-top:1px solid var(--line)}
+.drow:first-child{border-top:0}
+.drow.fin{opacity:.7}
+.drow-name{display:flex;align-items:center;gap:10px;min-width:0;border:0;background:none;padding:2px;text-align:left;color:inherit;border-radius:10px}
+.drow-name:hover{background:var(--fill)}
+.drow-name .tile{width:32px;height:32px;border-radius:10px;font-size:13.5px;flex:none}
+.drow-name .tile svg.lucide{width:16px;height:16px}
+.drow-name .tile .plus,.drow-name .tile .star-badge{display:none}
+.drow-name>span:last-child{min-width:0}
+.drow-name b{display:block;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drow-name small{display:block;font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drow-prog{display:grid;gap:5px;min-width:0}
+.segs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.seg-b{height:8px;border:0;padding:0;border-radius:3px;background:var(--fill-2);cursor:pointer;transition:transform .1s}
+.seg-b:first-child{border-radius:999px 3px 3px 999px} .seg-b:last-child{border-radius:3px 999px 999px 3px}
+.seg-b:not(:disabled):hover{transform:scaleY(1.5)}
+.seg-b.past{background:var(--aqua)}
+.seg-b.cur{background:var(--navy)}
+.seg-b.plan{background:repeating-linear-gradient(135deg,var(--fill-2) 0 4px,color-mix(in srgb,var(--aqua) 35%,transparent) 4px 7px)}
+.drow.fin .seg-b{background:#34C759}
+.drow-stage{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);white-space:nowrap;min-width:0;overflow:hidden}
+.drow-stage b{font-size:12.5px;color:var(--ink);font-weight:700}
+.drow-stage .nx{display:inline-flex;align-items:center;gap:2px;margin-left:auto;color:var(--ink-2);font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.drow-stage .nx svg.lucide{width:12px;height:12px}
+.drow-stage .nx.late{color:var(--danger)} .drow-stage .nx.today{color:var(--aqua-ink)}
+.drow-next{width:34px;height:34px;border-radius:11px;border:0;background:var(--aqua-soft);color:var(--aqua-ink);display:grid;place-items:center}
+.drow-next:hover{filter:brightness(.96)}
+.drow-next.last{background:var(--navy);color:var(--on-navy)}
+.drow-next svg.lucide{width:17px;height:17px}
 .deal{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card-solid);display:grid;gap:12px}
 .deal.fin{opacity:.75}
 .deal-top{display:flex;align-items:center;gap:10px;min-width:0}
@@ -1484,27 +1515,25 @@ function dealsHTML(){
   const row = d => {
     const it = items.find(x => x.id === d.listingId);
     const nextD = d.stage < 4 ? (d.dates?.[STAGES[d.stage + 1]] || d.nextDate || "") : "";
-    const nd = nextD ? relDue(nextD) : "";
     const ndCls = nextD && !d.done ? (nextD < today() ? "late" : nextD === today() ? "today" : "") : "";
-    return `<div class="deal${d.done ? " fin" : ""}">
-      <div class="deal-top">
-        ${it ? tile(it) : `<span class="tile t-토지" style="background:var(--fill);color:var(--ink-3)">${ic("handshake")}</span>`}
-        <div class="deal-name"><b>${esc(dealTitle(d))}</b><small>${esc([d.client ? `고객 ${d.client}` : "", d.note || ""].filter(Boolean).join("  "))}</small></div>
-        ${nd && !d.done ? `<span class="due ${ndCls}">${ic("calendar")}${esc(STAGES[d.stage + 1])} ${nd}</span>` : ""}
-        ${d.done ? `<span class="tag ok">완료</span>` : ""}
-        <button class="deal-more" type="button" data-deal-edit="${esc(d.id)}" aria-label="수정">${ic("more-horizontal")}</button>
+    const curDate = d.dates?.[STAGES[d.stage]];
+    return `<div class="drow${d.done ? " fin" : ""}">
+      <button class="drow-name" type="button" data-deal-edit="${esc(d.id)}" title="눌러서 수정">
+        ${it ? tile(it) : `<span class="tile" style="background:var(--fill);color:var(--ink-3)">${ic("handshake")}</span>`}
+        <span><b>${esc(dealTitle(d))}</b><small>${esc([d.client || "", d.note || ""].filter(Boolean).join("  ")) || "&nbsp;"}</small></span>
+      </button>
+      <div class="drow-prog">
+        <div class="segs" role="group" aria-label="진행 단계">${STAGES.map((st, i) => `<button type="button" class="seg-b${i < d.stage || d.done ? " past" : i === d.stage ? " cur" : ""}${d.dates?.[st] && i > d.stage && !d.done ? " plan" : ""}" data-deal-step="${esc(d.id)}" data-i="${i}" ${d.done ? "disabled" : ""} title="${st}${d.dates?.[st] ? " " + d.dates[st] : ""}"></button>`).join("")}</div>
+        <div class="drow-stage"><b>${d.done ? "완료" : STAGES[d.stage]}</b>${curDate ? `<span class="num">${curDate.slice(5).replace("-", "/")}</span>` : ""}
+          ${nextD && !d.done ? `<span class="nx ${ndCls}">${ic("arrow-right")}${STAGES[d.stage + 1]} ${relDue(nextD)}</span>` : ""}</div>
       </div>
-      <div class="stepper" style="--p:${d.done ? 100 : d.stage / (STAGES.length - 1) * 100}%">
-        ${STAGES.map((st, i) => `<button type="button" class="step${i < d.stage || d.done ? " past" : i === d.stage ? " cur" : ""}" data-deal-step="${esc(d.id)}" data-i="${i}" ${d.done ? "disabled" : ""}>
-          <i>${i < d.stage || d.done ? ic("check") : i + 1}</i><span>${st}</span>${d.dates?.[st] ? `<em class="${i > d.stage && !d.done ? "plan" : ""}">${i > d.stage && !d.done ? "예정 " : ""}${d.dates[st].slice(5).replace("-", "/")}</em>` : ""}</button>`).join("")}
-      </div>
-      ${d.done ? "" : `<div class="deal-acts"><button class="btn sm ${d.stage === 4 ? "primary" : "aqua"}" type="button" data-deal-next="${esc(d.id)}">${d.stage === 4 ? `${ic("check-check")}거래 완료` : `${STAGES[d.stage + 1]} 단계로 ${ic("chevron-right")}`}</button></div>`}
+      ${d.done ? `<span class="tag ok">완료</span>` : `<button class="drow-next${d.stage === 4 ? " last" : ""}" type="button" data-deal-next="${esc(d.id)}" title="${d.stage === 4 ? "거래 완료" : STAGES[d.stage + 1] + " 단계로"}" aria-label="${d.stage === 4 ? "거래 완료" : STAGES[d.stage + 1] + " 단계로"}">${ic(d.stage === 4 ? "check-check" : "chevron-right")}</button>`}
     </div>`;
   };
   return `<div class="card pad deals-card">
     <div class="todo-head"><span class="badge-ic navy">${ic("handshake")}</span><h2>중개 진행</h2><span class="cnt">${active.length}</span>
       <button class="btn sm primary" type="button" id="dealAdd" style="margin-left:auto">${ic("plus")}새 거래</button></div>
-    ${active.length ? `<div class="deals">${active.map(row).join("")}</div>`
+    ${active.length ? `<div class="deals">${STAGES.map((st, i) => `<span class="legend">${i + 1}${st}</span>`).join("")}</div>`.replace('class="deals"', 'class="seg-legend"') + `<div class="deals">${active.map(row).join("")}</div>`
       : `<div class="task-empty">${ic("handshake")}<b>진행 중인 거래가 없습니다</b>임장을 잡으면 ‘새 거래’로 추가하세요</div>`}
     ${fin.length ? `<button class="btn ghost sm more-btn" type="button" id="dealFinToggle">완료한 거래 ${fin.length}건 ${ic(showDoneDeals ? "chevron-up" : "chevron-down")}</button>
       ${showDoneDeals ? `<div class="deals">${fin.slice(0, 10).map(row).join("")}</div>` : ""}` : ""}
