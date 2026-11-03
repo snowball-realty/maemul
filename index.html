@@ -220,38 +220,55 @@ small.spread i{font-style:normal}
 .memo-text{width:100%;min-height:180px;resize:none;border:0;border-radius:14px;background:transparent;padding:4px 2px;font-size:15px;line-height:1.75;color:var(--ink);
   background-image:repeating-linear-gradient(180deg,transparent 0 25.25px,color-mix(in srgb,#E6B800 18%,transparent) 25.25px 26.25px);background-position:0 3px}
 .memo-text:focus{outline:0}
-.deals{display:grid}
-.deals-card .todo-head{margin-bottom:8px}
-.seg-legend{display:flex;gap:10px;justify-content:flex-end;font-size:11px;color:var(--ink-3);margin:-6px 2px 4px}
-.drow{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) 34px;gap:12px;align-items:center;padding:8px 2px;border-top:1px solid var(--line)}
-.drow:first-child{border-top:0}
-.drow.fin{opacity:.7}
-.drow-name{display:flex;align-items:center;gap:10px;min-width:0;border:0;background:none;padding:2px;text-align:left;color:inherit;border-radius:10px}
-.drow-name:hover{background:var(--fill)}
-.drow-name .tile{width:32px;height:32px;border-radius:10px;font-size:13.5px;flex:none}
-.drow-name .tile svg.lucide{width:16px;height:16px}
-.drow-name .tile .plus,.drow-name .tile .star-badge{display:none}
-.drow-name>span:last-child{min-width:0}
-.drow-name b{display:block;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.drow-name small{display:block;font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.drow-prog{display:grid;gap:5px;min-width:0}
-.segs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
-.seg-b{height:8px;border:0;padding:0;border-radius:3px;background:var(--fill-2);cursor:pointer;transition:transform .1s}
-.seg-b:first-child{border-radius:999px 3px 3px 999px} .seg-b:last-child{border-radius:3px 999px 999px 3px}
-.seg-b:not(:disabled):hover{transform:scaleY(1.5)}
-.seg-b.past{background:var(--aqua)}
-.seg-b.cur{background:var(--navy)}
-.seg-b.plan{background:repeating-linear-gradient(135deg,var(--fill-2) 0 4px,color-mix(in srgb,var(--aqua) 35%,transparent) 4px 7px)}
-.drow.fin .seg-b{background:#34C759}
-.drow-stage{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);white-space:nowrap;min-width:0;overflow:hidden}
-.drow-stage b{font-size:12.5px;color:var(--ink);font-weight:700}
-.drow-stage .nx{display:inline-flex;align-items:center;gap:2px;margin-left:auto;color:var(--ink-2);font-weight:600;overflow:hidden;text-overflow:ellipsis}
-.drow-stage .nx svg.lucide{width:12px;height:12px}
-.drow-stage .nx.late{color:var(--danger)} .drow-stage .nx.today{color:var(--aqua-ink)}
-.drow-next{width:34px;height:34px;border-radius:11px;border:0;background:var(--aqua-soft);color:var(--aqua-ink);display:grid;place-items:center}
-.drow-next:hover{filter:brightness(.96)}
-.drow-next.last{background:var(--navy);color:var(--on-navy)}
-.drow-next svg.lucide{width:17px;height:17px}
+.deals{display:grid;gap:8px}
+/* 거래 한 건: 왼쪽 이름 · 가운데 단계 스테퍼 · 오른쪽 다음 단계 버튼 */
+.dcard{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 244px auto;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;
+  background:var(--card-solid);border:1px solid var(--line);box-shadow:var(--shadow-1);transition:border-color .15s,box-shadow .15s}
+.dcard:hover{border-color:color-mix(in srgb,var(--aqua) 35%,transparent);box-shadow:var(--shadow-2)}
+.dcard.fin{opacity:.72}
+.dcard::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--tint)}
+.dc-type{font-style:normal;font-size:11px;font-weight:700;color:var(--tint);margin-right:5px}
+.dc-name{display:flex;align-items:center;gap:10px;min-width:0;border:0;background:none;padding:0 0 0 4px;text-align:left;color:inherit;cursor:pointer}
+.dc-name .tile{width:34px;height:34px;border-radius:11px;font-size:14px;flex:none}
+.dc-name .tile svg.lucide{width:18px;height:18px}
+.dc-name .tile .plus{display:none}
+.dc-blank{background:var(--fill);color:var(--ink-3)}
+.dc-txt{min-width:0;display:grid;gap:2px}
+.dc-txt b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dc-name:hover .dc-txt b{color:var(--aqua-ink)}
+.dc-txt small{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink-3);min-width:0;white-space:nowrap;overflow:hidden}
+.dc-txt small>span{overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;gap:3px}
+.dc-txt small svg.lucide{width:11px;height:11px;flex:none}
+.dc-next{display:inline-flex;align-items:center;gap:3px;font-weight:600;color:var(--ink-2)}
+.dc-next svg.lucide{width:11px;height:11px;flex:none}
+.dc-next.late{color:var(--danger)} .dc-next.today{color:var(--aqua-ink)}
+/* 스테퍼 */
+.dc-steps{position:relative;display:grid;grid-template-columns:repeat(5,1fr)}
+.dc-steps::before,.dc-steps::after{content:"";position:absolute;top:10px;left:10%;height:2px;border-radius:2px}
+.dc-steps::before{right:10%;background:var(--fill-2)}
+.dc-steps::after{width:calc(80% * var(--p) / 100);background:var(--aqua)}
+.dc-step{position:relative;z-index:1;border:0;background:none;padding:0;display:grid;justify-items:center;gap:1px;cursor:pointer;min-width:0}
+.dc-step i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700;
+  background:var(--card-solid);border:2px solid var(--fill-2);color:var(--ink-3);transition:transform .12s,border-color .12s;margin-bottom:3px}
+.dc-step i svg.lucide{width:12px;height:12px;stroke-width:3}
+.dc-step span{font-size:11px;font-weight:600;color:var(--ink-3);white-space:nowrap}
+.dc-step em{font-style:normal;font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dc-step:not(:disabled):hover i{transform:scale(1.12);border-color:var(--aqua)}
+.dc-step.past i{background:var(--aqua);border-color:var(--aqua);color:#fff}
+.dc-step.past span{color:var(--ink-2)}
+.dc-step.cur i{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--aqua) 22%,transparent)}
+.dc-step.cur span{color:var(--ink);font-weight:700}
+.dc-step.cur em{color:var(--ink-2)}
+.dc-step.plan i{border-style:dashed;border-color:var(--aqua);color:var(--aqua-ink)}
+.dc-step.plan em{color:var(--aqua-ink);font-weight:600}
+.dcard.fin .dc-step i{background:#34C759;border-color:#34C759;color:#fff}
+.dcard.fin .dc-steps::after{background:#34C759}
+/* 다음 단계 버튼 */
+.dc-act{justify-self:end}
+.dc-go{display:inline-flex;align-items:center;justify-content:center;gap:2px;width:34px;height:34px;padding:0;border-radius:50%;border:0;background:var(--aqua-soft);color:var(--aqua-ink);font-size:12.5px;font-weight:700;white-space:nowrap}
+.dc-go svg.lucide{width:15px;height:15px}
+.dc-go:hover{filter:brightness(.96)}
+.dc-go.last{background:var(--navy);color:var(--on-navy)}
 .deal{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--card-solid);display:grid;gap:12px}
 .deal.fin{opacity:.75}
 .deal-top{display:flex;align-items:center;gap:10px;min-width:0}
@@ -1516,24 +1533,27 @@ function dealsHTML(){
     const it = items.find(x => x.id === d.listingId);
     const nextD = d.stage < 4 ? (d.dates?.[STAGES[d.stage + 1]] || d.nextDate || "") : "";
     const ndCls = nextD && !d.done ? (nextD < today() ? "late" : nextD === today() ? "today" : "") : "";
-    const curDate = d.dates?.[STAGES[d.stage]];
-    return `<div class="drow${d.done ? " fin" : ""}">
-      <button class="drow-name" type="button" data-deal-edit="${esc(d.id)}" title="눌러서 수정">
-        ${it ? tile(it) : `<span class="tile" style="background:var(--fill);color:var(--ink-3)">${ic("handshake")}</span>`}
-        <span><b>${esc(dealTitle(d))}</b><small>${esc([d.client || "", d.note || ""].filter(Boolean).join("  ")) || "&nbsp;"}</small></span>
+    const pct = d.done ? 100 : d.stage / (STAGES.length - 1) * 100;
+    const tint = TYPE_TINT[it?.type] || ["var(--fill)", "var(--ink-3)"];
+    return `<div class="dcard${d.done ? " fin" : ""}" style="--tint:${tint[1]}">
+      <button class="dc-name" type="button" data-deal-edit="${esc(d.id)}" title="눌러서 수정 (단계별 일자)">
+        <span class="dc-txt"><b>${it ? `<i class="dc-type">${esc(it.type)}</i>` : ""}${esc(dealTitle(d))}</b>
+          <small>${d.client ? `<span>${ic("user")}${esc(d.client)}</span>` : ""}${nextD && !d.done && ndCls ? `<span class="dc-next ${ndCls}">${STAGES[d.stage + 1]} ${relDue(nextD)}</span>` : d.note ? `<span>${esc(d.note)}</span>` : ""}</small></span>
       </button>
-      <div class="drow-prog">
-        <div class="segs" role="group" aria-label="진행 단계">${STAGES.map((st, i) => `<button type="button" class="seg-b${i < d.stage || d.done ? " past" : i === d.stage ? " cur" : ""}${d.dates?.[st] && i > d.stage && !d.done ? " plan" : ""}" data-deal-step="${esc(d.id)}" data-i="${i}" ${d.done ? "disabled" : ""} title="${st}${d.dates?.[st] ? " " + d.dates[st] : ""}"></button>`).join("")}</div>
-        <div class="drow-stage"><b>${d.done ? "완료" : STAGES[d.stage]}</b>${curDate ? `<span class="num">${curDate.slice(5).replace("-", "/")}</span>` : ""}
-          ${nextD && !d.done ? `<span class="nx ${ndCls}">${ic("arrow-right")}${STAGES[d.stage + 1]} ${relDue(nextD)}</span>` : ""}</div>
+      <div class="dc-steps" style="--p:${pct}%">
+        ${STAGES.map((st, i) => {
+          const past = i < d.stage || d.done, cur = i === d.stage && !d.done, plan = !past && !cur && d.dates?.[st];
+          return `<button type="button" class="dc-step${past ? " past" : cur ? " cur" : plan ? " plan" : ""}" data-deal-step="${esc(d.id)}" data-i="${i}" ${d.done ? "disabled" : ""} title="${st} 단계로">
+            <i>${past ? ic("check") : i + 1}</i><span>${st}</span><em>${d.dates?.[st] ? d.dates[st].slice(5).replace("-", "/") : "&nbsp;"}</em></button>`; }).join("")}
       </div>
-      ${d.done ? `<span class="tag ok">완료</span>` : `<button class="drow-next${d.stage === 4 ? " last" : ""}" type="button" data-deal-next="${esc(d.id)}" title="${d.stage === 4 ? "거래 완료" : STAGES[d.stage + 1] + " 단계로"}" aria-label="${d.stage === 4 ? "거래 완료" : STAGES[d.stage + 1] + " 단계로"}">${ic(d.stage === 4 ? "check-check" : "chevron-right")}</button>`}
+      ${d.done ? `<span class="tag ok dc-act">완료</span>`
+        : `<button class="dc-act dc-go${d.stage === 4 ? " last" : ""}" type="button" data-deal-next="${esc(d.id)}" title="${d.stage === 4 ? "거래 완료" : STAGES[d.stage + 1] + " 단계로"}" aria-label="${d.stage === 4 ? "거래 완료" : STAGES[d.stage + 1] + " 단계로"}">${d.stage === 4 ? `${ic("check-check")}` : `${ic("chevron-right")}`}</button>`}
     </div>`;
   };
   return `<div class="card pad deals-card">
     <div class="todo-head"><span class="badge-ic navy">${ic("handshake")}</span><h2>중개 진행</h2><span class="cnt">${active.length}</span>
       <button class="btn sm primary" type="button" id="dealAdd" style="margin-left:auto">${ic("plus")}새 거래</button></div>
-    ${active.length ? `<div class="deals">${STAGES.map((st, i) => `<span class="legend">${i + 1}${st}</span>`).join("")}</div>`.replace('class="deals"', 'class="seg-legend"') + `<div class="deals">${active.map(row).join("")}</div>`
+    ${active.length ? `<div class="deals">${active.map(row).join("")}</div>`
       : `<div class="task-empty">${ic("handshake")}<b>진행 중인 거래가 없습니다</b>임장을 잡으면 ‘새 거래’로 추가하세요</div>`}
     ${fin.length ? `<button class="btn ghost sm more-btn" type="button" id="dealFinToggle">완료한 거래 ${fin.length}건 ${ic(showDoneDeals ? "chevron-up" : "chevron-down")}</button>
       ${showDoneDeals ? `<div class="deals">${fin.slice(0, 10).map(row).join("")}</div>` : ""}` : ""}
