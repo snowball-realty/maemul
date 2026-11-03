@@ -206,9 +206,13 @@ small.spread i{font-style:normal}
 .lbl-in{font-size:11px;color:var(--ink-3);font-weight:600;margin-right:4px}
 .table.no-move .thead,.table.no-move .trow{grid-template-columns:minmax(200px,2.2fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) 92px minmax(0,1.15fr) 18px}
 .table.no-move .c-move,.table.no-move .h-move{display:none}
+.c-tenant,.h-tenant,.c-people{display:none}
+.table.has-tenant .c-tenant,.table.has-tenant .h-tenant{display:block}
+.c-tenant{font-size:14px;min-width:0} .c-tenant div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .c-tenant .faint{font-size:12.5px}
+.table.has-tenant .thead,.table.has-tenant .trow{grid-template-columns:minmax(190px,2fr) minmax(0,.8fr) minmax(0,.9fr) minmax(0,1.3fr) 92px minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) 18px}
 .bf-feats{margin-top:14px} .bf-feats span{display:inline-block;margin:0 5px 5px 0;padding:3px 9px;border-radius:6px;background:#F1F6FB;color:#15283D;font-size:11.5px;font-weight:600}
 /* 메모 · 중개 진행 */
-.work-row{align-items:start}
+.work-row{grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;align-items:start}
 .badge-ic.gold{background:#FFF4D1;color:#B07C00} .badge-ic.navy{background:var(--fac-bg);color:var(--fac)}
 .todo-head .badge-ic{width:32px;height:32px;border-radius:10px} .todo-head .badge-ic svg.lucide{width:17px;height:17px}
 .memo-card{background:linear-gradient(180deg,#FFFBEA,var(--card-solid) 60%)}
@@ -242,6 +246,9 @@ small.spread i{font-style:normal}
 .step:not(:disabled):hover i{border-color:var(--aqua)}
 .deal.fin .step i{background:#34C759;border-color:#34C759;color:#fff}
 .deal-acts{display:flex;justify-content:flex-end}
+.step em.plan{color:var(--aqua-ink);font-weight:600}
+.stage-dates{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.stage-dates input{font-size:13.5px;padding:0 8px}
 .summary{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .summary .chip{background:var(--card);border:1px solid var(--glass-line);box-shadow:var(--hi),var(--shadow-1);color:var(--ink-2);font-weight:500;height:34px}
 .summary .chip b{color:var(--ink);font-weight:700}
@@ -585,7 +592,8 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 @media (max-width:1180px){
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .types-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .thead,.trow,.table.no-move .thead,.table.no-move .trow{grid-template-columns:minmax(200px,2fr) minmax(0,.9fr) minmax(0,1.3fr) 92px minmax(0,1fr) 18px}
+  .thead,.trow,.table.no-move .thead,.table.no-move .trow,.table.has-tenant .thead,.table.has-tenant .trow{grid-template-columns:minmax(200px,2fr) minmax(0,.9fr) minmax(0,1.3fr) 92px minmax(0,1fr) 18px}
+  .table.has-tenant .c-tenant,.table.has-tenant .h-tenant{display:none}
   .table.no-move .thead,.table.no-move .trow{grid-template-columns:minmax(200px,2fr) minmax(0,.9fr) minmax(0,1.3fr) 92px 18px}
   .c-type,.thead span:nth-child(2){display:none}
   .c-owner,.thead .h-owner{display:none}
@@ -620,13 +628,17 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .tcard-sub{font-size:11.5px}
   .tcard-sub .tag{display:none}
   .tacts{opacity:1}
+  .stage-dates{grid-template-columns:1fr 1fr}
+  .work-row{display:none!important}
   .table.no-move .trow{grid-template-columns:1fr auto}
   .c-area.is-feats{max-height:none;flex-wrap:nowrap;overflow:hidden}
   .c-area.is-feats .feat{height:20px;font-size:11px;padding:0 6px}
   /* 원룸: 셋째 줄에 세입자 이름·연락처 */
+  .table.has-tenant .trow{grid-template-columns:1fr auto}
+  .table.has-tenant .c-tenant{display:none}
   .trow.r-room{grid-template-areas:"main price" "meta state" "who who"}
-  .trow.r-room .c-owner{display:flex;grid-area:who;align-items:center;gap:8px;margin-left:46px;padding:6px 10px;border-radius:10px;background:var(--fill);font-size:12.5px}
-  .trow.r-room .c-owner div{overflow:visible}
+  .trow.r-room .c-people{display:grid;grid-area:who;gap:3px;margin-left:46px;padding:7px 10px;border-radius:10px;background:var(--fill);font-size:12.5px}
+  .trow.r-room .c-people>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .star-strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;gap:10px;margin:0 -16px;padding:2px 16px 8px;scrollbar-width:none}
   .star-strip::-webkit-scrollbar{display:none}
   .scard{flex:0 0 78%;scroll-snap-align:start;padding:12px}
@@ -1022,7 +1034,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 </dialog>
 
 <!-- ================= 중개 진행 (거래) 모달 ================= -->
-<dialog class="modal small" id="dealDlg" aria-labelledby="dealTitle">
+<dialog class="modal" id="dealDlg" aria-labelledby="dealTitle">
   <div class="modal-in">
     <div class="navbar">
       <button class="btn ghost l" type="button" data-close="dealDlg">취소</button>
@@ -1471,19 +1483,20 @@ function dealsHTML(){
   const fin = deals.filter(d => d.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
   const row = d => {
     const it = items.find(x => x.id === d.listingId);
-    const nd = d.nextDate ? relDue(d.nextDate) : "";
-    const ndCls = d.nextDate && !d.done ? (d.nextDate < today() ? "late" : d.nextDate === today() ? "today" : "") : "";
+    const nextD = d.stage < 4 ? (d.dates?.[STAGES[d.stage + 1]] || d.nextDate || "") : "";
+    const nd = nextD ? relDue(nextD) : "";
+    const ndCls = nextD && !d.done ? (nextD < today() ? "late" : nextD === today() ? "today" : "") : "";
     return `<div class="deal${d.done ? " fin" : ""}">
       <div class="deal-top">
         ${it ? tile(it) : `<span class="tile t-토지" style="background:var(--fill);color:var(--ink-3)">${ic("handshake")}</span>`}
         <div class="deal-name"><b>${esc(dealTitle(d))}</b><small>${esc([d.client ? `고객 ${d.client}` : "", d.note || ""].filter(Boolean).join("  "))}</small></div>
-        ${nd && !d.done ? `<span class="due ${ndCls}">${ic("calendar")}${esc(STAGES[Math.min(d.stage + 1, 4)] && d.stage < 4 ? STAGES[d.stage + 1] : "잔금")} ${nd}</span>` : ""}
+        ${nd && !d.done ? `<span class="due ${ndCls}">${ic("calendar")}${esc(STAGES[d.stage + 1])} ${nd}</span>` : ""}
         ${d.done ? `<span class="tag ok">완료</span>` : ""}
         <button class="deal-more" type="button" data-deal-edit="${esc(d.id)}" aria-label="수정">${ic("more-horizontal")}</button>
       </div>
       <div class="stepper" style="--p:${d.done ? 100 : d.stage / (STAGES.length - 1) * 100}%">
         ${STAGES.map((st, i) => `<button type="button" class="step${i < d.stage || d.done ? " past" : i === d.stage ? " cur" : ""}" data-deal-step="${esc(d.id)}" data-i="${i}" ${d.done ? "disabled" : ""}>
-          <i>${i < d.stage || d.done ? ic("check") : i + 1}</i><span>${st}</span>${d.dates?.[st] ? `<em>${d.dates[st].slice(5).replace("-", "/")}</em>` : ""}</button>`).join("")}
+          <i>${i < d.stage || d.done ? ic("check") : i + 1}</i><span>${st}</span>${d.dates?.[st] ? `<em class="${i > d.stage && !d.done ? "plan" : ""}">${i > d.stage && !d.done ? "예정 " : ""}${d.dates[st].slice(5).replace("-", "/")}</em>` : ""}</button>`).join("")}
       </div>
       ${d.done ? "" : `<div class="deal-acts"><button class="btn sm ${d.stage === 4 ? "primary" : "aqua"}" type="button" data-deal-next="${esc(d.id)}">${d.stage === 4 ? `${ic("check-check")}거래 완료` : `${STAGES[d.stage + 1]} 단계로 ${ic("chevron-right")}`}</button></div>`}
     </div>`;
@@ -1517,10 +1530,9 @@ function saveDeal(d){ d.updated = Date.now(); upsert(d); afterChange(); }
 function setStage(d, i){
   const prev = { ...d, dates: { ...(d.dates || {}) } };
   const dates = { ...(d.dates || {}) };
-  if (!dates[STAGES[i]]) dates[STAGES[i]] = today();
-  // 뒤로 돌린 경우 이후 단계 날짜는 지움
-  STAGES.forEach((st, k) => { if (k > i) delete dates[st]; });
-  saveDeal({ ...d, stage: i, dates, nextDate: "" });
+  // 새로 도달한 단계: 날짜가 비어 있거나 아직 오지 않은 예정일이면 오늘로 기록
+  if (i > d.stage && (!dates[STAGES[i]] || dates[STAGES[i]] > today())) dates[STAGES[i]] = today();
+  saveDeal({ ...d, stage: i, dates, nextDate: dates[STAGES[i + 1]] || "" });
   toast(`${dealTitle(d)}: ${STAGES[i]} 단계`, { label: "되돌리기", fn: () => saveDeal(prev) });
 }
 function finishDeal(d){
@@ -1550,10 +1562,15 @@ function openDeal(d){
     <div class="group-title">현재 단계</div>
     <div class="fgroup">
       <div class="seg full" role="radiogroup" aria-label="현재 단계">${STAGES.map((st, i) => `<label><input type="radio" name="dlStage" value="${i}"${(d?.stage ?? 0) === i ? " checked" : ""}><span>${st}</span></label>`).join("")}</div>
-      <div class="fgrid">
-        <label class="field"><span>다음 단계 예정일</span><input id="dlNext" type="date" value="${esc(d?.nextDate || "")}"></label>
-        <label class="field"><span>짧은 메모</span><input id="dlNote" placeholder="예: 잔금 대출 승인 대기" value="${esc(d?.note || "")}"></label>
-      </div>
+    </div>
+    <div class="group-title">단계별 일자 (지난 날짜는 실제 일자, 앞으로의 날짜는 예정일)</div>
+    <div class="fgroup">
+      <div class="stage-dates">${STAGES.map((st, i) => `<label class="field"><span>${i + 1}. ${st}</span><input type="date" data-stage-date="${st}" value="${esc(d?.dates?.[st] || (i === (d?.stage ?? 0) + 1 && d?.nextDate ? d.nextDate : ""))}"></label>`).join("")}</div>
+      <p class="faint" style="font-size:12.5px;margin:0">비워 둔 단계는 그 단계로 넘어갈 때 오늘 날짜가 자동으로 들어갑니다.</p>
+    </div>
+    <div class="group-title">메모</div>
+    <div class="fgroup">
+      <label class="field"><span>짧은 메모</span><input id="dlNote" placeholder="예: 잔금 대출 승인 대기" value="${esc(d?.note || "")}"></label>
     </div>
     ${d ? `<div style="margin-top:22px"><button class="btn danger block" type="button" id="dlDelete">${ic("trash-2")}이 거래 삭제</button></div>` : ""}`;
   $("#dealTitle").textContent = d ? "거래 수정" : "새 거래";
@@ -1570,10 +1587,11 @@ $("#dealSave").onclick = () => {
   if (!listingId && !title) { $("#dlTitle").focus(); toast("매물을 고르거나 거래 이름을 적어 주세요"); return; }
   const stage = +(document.querySelector('input[name="dlStage"]:checked')?.value || 0);
   const base = dealEditing || { id: uid(), kind: "deal", created: Date.now(), dates: {} };
-  const dates = { ...(base.dates || {}) };
-  STAGES.forEach((st, k) => { if (k <= stage && !dates[st]) dates[st] = today(); if (k > stage) delete dates[st]; });
+  const dates = {};
+  $$("[data-stage-date]").forEach(inp => { if (inp.value) dates[inp.dataset.stageDate] = inp.value; });
+  STAGES.forEach((st, k) => { if (k <= stage && !dates[st]) dates[st] = today(); });
   saveDeal({ ...base, listingId, title: listingId ? "" : title, client: $("#dlClient").value.trim(), clientPhone: $("#dlPhone").value.trim(),
-    stage, dates, nextDate: $("#dlNext").value, note: $("#dlNote").value.trim(), done: base.done || false });
+    stage, dates, nextDate: dates[STAGES[stage + 1]] || "", note: $("#dlNote").value.trim(), done: base.done || false });
   $("#dealDlg").close(); toast(dealEditing ? "거래를 고쳤습니다" : "새 거래를 추가했습니다");
 };
 
@@ -1748,8 +1766,9 @@ const manShort = m => m == null ? "–" : m >= 10000 ? `${+(m / 10000).toFixed(m
 const rentShort = it => `보 ${manShort(it.deposit)} / 월 ${manShort(it.rent)}`;
 function tableHTML(list){
   const noMove = list.length && list.every(it => it.type === "토지");
-  return `<div class="card table${noMove ? " no-move" : ""}" role="list">
-    <div class="thead"><span>매물</span><span>유형</span><span>${list.length && list.every(it => it.type === "원룸") ? "특징" : list.some(it => it.type === "원룸") ? "면적·특징" : "면적"}</span><span>가격</span><span>상태</span><span class="h-move">입주</span><span class="h-owner">${list.some(it => it.tenant) ? "소유자·세입자" : "소유자·출처"}</span><span></span></div>
+  const hasTenant = list.some(it => it.type === "원룸" || it.type === "아파트");
+  return `<div class="card table${noMove ? " no-move" : ""}${hasTenant ? " has-tenant" : ""}" role="list">
+    <div class="thead"><span>매물</span><span>유형</span><span>${list.length && list.every(it => it.type === "원룸") ? "특징" : list.some(it => it.type === "원룸") ? "면적·특징" : "면적"}</span><span>가격</span><span>상태</span><span class="h-move">입주</span><span class="h-owner">소유자</span><span class="h-tenant">세입자</span><span></span></div>
     ${list.map(it => {
       const l = totLand(it), up = unitPrice(it), oneRoom = it.type === "원룸";
       const areaMain = isRes(it) ? (it.excl != null ? fmt(it.excl / PY) + "평" : "–") : (l != null ? fmt(l / PY) + "평" : "–");
@@ -1759,12 +1778,14 @@ function tableHTML(list){
       const priceSub = oneRoom ? (it.price != null && hasRent(it) ? `매매 ${won(it.price)}` : it.fee != null ? `관리비 ${fmt(it.fee)}만` : "")
         : it.price != null && hasRent(it) ? rentShort(it) : up != null ? `평당 ${fmt(up)}만` : "";
       const move = it.type !== "토지" && it.moveIn ? esc(it.moveIn) : "";
-      const who = it.tenant ? `<div><span class="lbl-in">세입자</span>${esc(it.tenant)}</div><div class="faint num">${esc(it.tenantPhone || "")}</div>`
-        : `<div>${it.src === "co" ? `<span class="tag co" style="height:20px;font-size:11.5px">공동</span> ${esc(it.agName || "")}` : esc(it.owner || "–")}</div><div class="faint num">${esc(it.src === "co" ? it.agPhone || "" : it.phone || "")}</div>`;
+      const who = `<div>${it.src === "co" ? `<span class="tag co" style="height:20px;font-size:11.5px">공동</span> ${esc(it.agName || "")}` : esc(it.owner || "–")}</div><div class="faint num">${esc(it.src === "co" ? it.agPhone || "" : it.phone || "")}</div>`;
       const areaCell = oneRoom
         ? `<span class="c-area is-feats">${(it.feats || []).length ? featTags(it, 2) : `<span class="faint">–</span>`}${move ? `<span class="m-move faint">입주 ${move}</span>` : ""}</span>`
         : `<span class="c-area"><div class="c-k num"><span class="lbl-m">${isRes(it) ? "전용" : "토지"}</span>${areaMain}</div><div class="num">${areaSub}</div>${move ? `<span class="m-move faint">입주 ${move}</span>` : ""}</span>`;
-      return `<button class="trow${oneRoom && it.tenant ? " r-room" : ""}" role="listitem" data-open="${esc(it.id)}" type="button">
+      const resi = it.type === "원룸" || it.type === "아파트";
+      const people = resi && (it.owner || it.tenant) ? [it.owner ? `<span><span class="lbl-in">소유자</span>${esc(it.owner)} <span class="faint num">${esc(it.phone || "")}</span></span>` : "",
+        it.tenant ? `<span><span class="lbl-in">세입자</span>${esc(it.tenant)} <span class="faint num">${esc(it.tenantPhone || "")}</span></span>` : ""].filter(Boolean).join("") : "";
+      return `<button class="trow${people ? " r-room" : ""}" role="listitem" data-open="${esc(it.id)}" type="button">
         <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() + (isMulti(it) ? ` 외 ${it.extra.length}필지` : "") : areaPrefix(it.area) || it.zone || "")}</div></span></span>
         <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}<span>${esc(it.type)}${it.jimok && !isRes(it) && TYPES.includes(it.type) ? ` <span class="faint">${esc(it.jimok)}</span>` : ""}</span></span>
         ${areaCell}
@@ -1772,6 +1793,8 @@ function tableHTML(list){
         <span class="c-state">${stateTag(it)}</span>
         <span class="c-move">${move ? `<span class="tag plain">${ic("calendar-check")}${move}</span>` : `<span class="faint">–</span>`}</span>
         <span class="c-owner">${who}</span>
+        <span class="c-tenant">${it.tenant ? `<div>${esc(it.tenant)}</div><div class="faint num">${esc(it.tenantPhone || "")}</div>` : `<span class="faint">–</span>`}</span>
+        ${people ? `<span class="c-people">${people}</span>` : ""}
         <span class="chev">${ic("chevron-right")}</span>
       </button>`;
     }).join("")}
