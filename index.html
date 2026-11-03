@@ -297,6 +297,11 @@ small.spread i{font-style:normal}
 .step em.plan{color:var(--aqua-ink);font-weight:600}
 .stage-dates{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
 .stage-dates input{font-size:13.5px;padding:0 8px}
+.field>.date-clear{display:grid;grid-template-columns:minmax(0,1fr) 28px;gap:4px;align-items:center;padding:0;font-size:inherit;color:inherit;font-weight:400}
+.date-clear input{width:100%}
+.dc-x{width:28px;height:28px;border:0;border-radius:50%;background:var(--fill-2);color:var(--ink-2);display:grid;place-items:center;padding:0}
+.dc-x svg.lucide{width:13px;height:13px}
+.dc-x:hover{background:var(--danger-bg);color:var(--danger)}
 .summary{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .summary .chip{background:var(--card);border:1px solid var(--glass-line);box-shadow:var(--hi),var(--shadow-1);color:var(--ink-2);font-weight:500;height:34px}
 .summary .chip b{color:var(--ink);font-weight:700}
@@ -1614,8 +1619,8 @@ function openDeal(d){
     </div>
     <div class="group-title">단계별 일자 (지난 날짜는 실제 일자, 앞으로의 날짜는 예정일)</div>
     <div class="fgroup">
-      <div class="stage-dates">${STAGES.map((st, i) => `<label class="field"><span>${i + 1}. ${st}</span><input type="date" data-stage-date="${st}" value="${esc(d?.dates?.[st] || (i === (d?.stage ?? 0) + 1 && d?.nextDate ? d.nextDate : ""))}"></label>`).join("")}</div>
-      <p class="faint" style="font-size:12.5px;margin:0">비워 둔 단계는 그 단계로 넘어갈 때 오늘 날짜가 자동으로 들어갑니다.</p>
+      <div class="stage-dates">${STAGES.map((st, i) => `<label class="field"><span>${i + 1}. ${st}</span><span class="date-clear"><input type="date" data-stage-date="${st}" value="${esc(d?.dates?.[st] || (i === (d?.stage ?? 0) + 1 && d?.nextDate ? d.nextDate : ""))}"><button type="button" class="dc-x" data-clear-date="${st}" aria-label="${st} 일자 지우기" title="일자 지우기">${ic("x")}</button></span></label>`).join("")}</div>
+      <p class="faint" style="font-size:12.5px;margin:0">일자는 비워 둘 수 있습니다. 비운 칸은 저장해도 빈칸 그대로 남습니다. (진행 카드의 버튼으로 단계를 넘길 때만 그날 날짜가 기록되며, 여기서 × 로 지울 수 있습니다)</p>
     </div>
     <div class="group-title">메모</div>
     <div class="fgroup">
@@ -1623,6 +1628,9 @@ function openDeal(d){
     </div>
     ${d ? `<div style="margin-top:22px"><button class="btn danger block" type="button" id="dlDelete">${ic("trash-2")}이 거래 삭제</button></div>` : ""}`;
   $("#dealTitle").textContent = d ? "거래 수정" : "새 거래";
+  $("#dealBody").querySelectorAll("[data-clear-date]").forEach(b => b.onclick = e => {
+    e.preventDefault(); const inp = $(`[data-stage-date="${b.dataset.clearDate}"]`); inp.value = ""; inp.focus();
+  });
   const syncTitle = () => { $("#dlTitleWrap").hidden = !!$("#dlListing").value; };
   $("#dlListing").onchange = syncTitle; syncTitle();
   if ($("#dlDelete")) $("#dlDelete").onclick = () => {
@@ -1637,8 +1645,8 @@ $("#dealSave").onclick = () => {
   const stage = +(document.querySelector('input[name="dlStage"]:checked')?.value || 0);
   const base = dealEditing || { id: uid(), kind: "deal", created: Date.now(), dates: {} };
   const dates = {};
+  // 입력한 날짜만 저장하고, 비워 둔 칸은 빈칸 그대로 둠
   $$("[data-stage-date]").forEach(inp => { if (inp.value) dates[inp.dataset.stageDate] = inp.value; });
-  STAGES.forEach((st, k) => { if (k <= stage && !dates[st]) dates[st] = today(); });
   saveDeal({ ...base, listingId, title: listingId ? "" : title, client: $("#dlClient").value.trim(), clientPhone: $("#dlPhone").value.trim(),
     stage, dates, nextDate: dates[STAGES[stage + 1]] || "", note: $("#dlNote").value.trim(), done: base.done || false });
   $("#dealDlg").close(); toast(dealEditing ? "거래를 고쳤습니다" : "새 거래를 추가했습니다");
