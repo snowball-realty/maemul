@@ -194,6 +194,15 @@ small.spread i{font-style:normal}
 .badge-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--aqua),#34C759)}
 /* 매물 특징 */
 .feat-chips{display:flex;gap:6px;flex-wrap:wrap}
+/* 아파트 거래 구분 배지 (파스텔) */
+.dk{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;font-size:11.5px;font-weight:700;margin-right:6px;vertical-align:.1em;letter-spacing:0}
+.dk-sale{background:var(--apt-bg);color:var(--apt)} .dk-jeonse{background:var(--aqua-soft);color:var(--aqua-ink)} .dk-month{background:var(--shop-bg);color:var(--shop)}
+/* PC 표에서는 ‘유형’ 열에, 유형 열이 숨는 좁은 화면·휴대폰에서는 가격 앞에 표시 */
+.c-price .dk{display:none}
+.dk-line{display:block;margin-top:3px;line-height:1} .c-type .dk{margin:0}
+.c-type{align-items:flex-start} .c-type>svg.lucide{margin-top:2px}
+@media (max-width:1180px){ .c-price .dk{display:inline-flex} }
+.d-head .tags .dk{height:24px;font-size:12.5px;padding:0 9px;border-radius:999px;margin-right:0}
 .rep-mark{font-size:10.5px;font-weight:700;background:var(--aqua);color:#fff;border-radius:999px;padding:1px 6px;margin-left:3px}
 .feat-add{display:grid;grid-template-columns:1fr auto;gap:8px}
 .feat-add input{height:40px;border:1px solid transparent;border-radius:12px;background:var(--fill);padding:0 12px;font-size:14.5px;min-width:0}
@@ -224,6 +233,28 @@ small.spread i{font-style:normal}
   background-image:repeating-linear-gradient(180deg,transparent 0 25.25px,color-mix(in srgb,#E6B800 18%,transparent) 25.25px 26.25px);background-position:0 3px}
 .memo-text:focus{outline:0}
 .deals{display:grid;gap:8px}
+/* 메모 아래 고객 카드 */
+.work-col{display:grid;gap:14px;min-width:0;align-content:start}
+.crows{display:grid}
+.crow{display:grid;grid-template-columns:minmax(0,1fr) auto 34px;gap:8px;align-items:center;padding:8px 2px;border-top:1px solid var(--line)}
+.crow:first-child{border-top:0}
+.crow.fin{opacity:.6}
+.crow-main{display:flex;align-items:center;gap:10px;min-width:0;border:0;background:none;padding:2px;text-align:left;color:inherit;border-radius:10px}
+.crow-main:hover{background:var(--fill)}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;flex:none;background:var(--fill);color:var(--ink-2)}
+.crow-txt{min-width:0;display:grid;gap:1px}
+.crow-txt b{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden}
+.crow-txt small{font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.role{font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px;background:var(--fill);color:var(--ink-2)}
+.r-buy{background:var(--apt-bg);color:var(--apt)} .r-rent{background:var(--aqua-soft);color:var(--aqua-ink)}
+.r-sell{background:var(--land-bg);color:var(--land)} .r-lease{background:var(--shop-bg);color:var(--shop)}
+.match{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:999px;border:0;background:var(--aqua-soft);color:var(--aqua-ink);font-size:12px;font-weight:700;white-space:nowrap}
+.match svg.lucide{width:13px;height:13px}
+.match:hover{filter:brightness(.96)}
+.match.none{background:none;color:var(--ink-3);font-weight:500}
+.call{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--ink-3);text-decoration:none}
+.call:hover{background:var(--fill);color:var(--aqua-ink)}
+.call svg.lucide{width:16px;height:16px}
 .deals-page{max-width:980px}
 .deals-page .dcard{grid-template-columns:minmax(0,1fr) 320px auto}
 /* 거래 한 건: 왼쪽 이름 · 가운데 단계 스테퍼 · 오른쪽 다음 단계 버튼 */
@@ -874,6 +905,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <button class="nav-item" data-view="region" type="button"><i data-lucide="bar-chart-3"></i>지역별 요약</button>
       <button class="nav-item" data-view="todo" type="button"><i data-lucide="list-todo"></i>할 일<span class="count" id="navTodo"></span></button>
       <button class="nav-item" data-view="deals" type="button"><i data-lucide="handshake"></i>중개 진행<span class="count" id="navDeals"></span></button>
+      <button class="nav-item" data-view="clients" type="button"><i data-lucide="users-round"></i>중개의뢰 고객<span class="count" id="navClients"></span></button>
       <button class="nav-item" data-view="schedule" type="button"><i data-lucide="calendar-days"></i>상담 일정<span class="count" id="navSched"></span></button>
     </nav>
     <div class="nav-label">데이터</div>
@@ -1002,9 +1034,14 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 
       <div class="group-title">가격 (만원)</div>
       <div class="fgroup fgrid">
-        <label class="field wide"><span><i data-lucide="banknote"></i><b id="priceLbl" style="font-weight:500">매매가</b></span><input name="price" type="number" inputmode="numeric" placeholder="예: 150000"><em class="conv" data-conv="price"></em></label>
-        <label class="field"><span><i data-lucide="wallet"></i>임대 보증금</span><input name="deposit" type="number" inputmode="numeric"><em class="conv" data-conv="deposit"></em></label>
-        <label class="field"><span><i data-lucide="calendar-range"></i>월 임대료</span><input name="rent" type="number" inputmode="numeric"><em class="conv" data-conv="rent"></em></label>
+        <div class="seg full wide apt-only" role="radiogroup" aria-label="거래 구분">
+          <label><input type="radio" name="dealKind" value="매매" checked><span>매매</span></label>
+          <label><input type="radio" name="dealKind" value="전세"><span>전세</span></label>
+          <label><input type="radio" name="dealKind" value="월세"><span>월세</span></label>
+        </div>
+        <label class="field wide" id="priceField"><span><i data-lucide="banknote"></i><b id="priceLbl" style="font-weight:500">매매가</b></span><input name="price" type="number" inputmode="numeric" placeholder="예: 150000"><em class="conv" data-conv="price"></em></label>
+        <label class="field" id="depField"><span><i data-lucide="wallet"></i><b id="depLbl" style="font-weight:500">임대 보증금</b></span><input name="deposit" type="number" inputmode="numeric"><em class="conv" data-conv="deposit"></em></label>
+        <label class="field" id="rentField"><span><i data-lucide="calendar-range"></i>월 임대료</span><input name="rent" type="number" inputmode="numeric"><em class="conv" data-conv="rent"></em></label>
       </div>
 
       <div id="factoryBox">
@@ -1054,7 +1091,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <div class="fgroup fgrid">
         <label class="field"><span>거래 상태</span><select data-f="state"><option value="">전체</option><option value="진행">계약가능</option><option value="보류">보류</option><option value="완료">계약완료</option></select></label>
         <label class="field"><span>지목</span><select data-f="jimok" id="fJimok"><option value="">전체</option></select></label>
-        <label class="field"><span>거래 구분</span><select data-f="deal"><option value="">매매·임대 전체</option><option value="sale">매매가 있음</option><option value="rent">임대가 있음</option></select></label>
+        <label class="field"><span>거래 구분</span><select data-f="deal"><option value="">매매·임대 전체</option><option value="sale">매매가 있음</option><option value="rent">임대가 있음</option><option value="k-매매">아파트 매매</option><option value="k-전세">아파트 전세</option><option value="k-월세">아파트 월세</option></select></label>
         <label class="field"><span>중요 매물</span><select data-f="star"><option value="">전체</option><option value="1">중요 매물만</option></select></label>
         <label class="field"><span>매물 출처</span><select data-f="src"><option value="">전체</option><option value="own">직접 매물</option><option value="co">공동중개</option></select></label>
       </div>
@@ -1089,6 +1126,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
         <button class="grow btnrow" type="button" data-view="region"><span class="ico"><i data-lucide="bar-chart-3"></i></span>지역별 요약<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
         <button class="grow btnrow" type="button" data-view="todo"><span class="ico"><i data-lucide="list-todo"></i></span>할 일<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
         <button class="grow btnrow" type="button" data-view="deals"><span class="ico"><i data-lucide="handshake"></i></span>중개 진행<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
+        <button class="grow btnrow" type="button" data-view="clients"><span class="ico"><i data-lucide="users-round"></i></span>중개의뢰 고객<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
         <button class="grow btnrow" type="button" data-view="schedule"><span class="ico"><i data-lucide="calendar-days"></i></span>상담 일정<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
       </div>
       <div class="group-title">데이터</div>
@@ -1114,6 +1152,27 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <button class="btn ghost r" type="button" id="dealSave" style="font-weight:700">저장</button>
     </div>
     <div class="sheet-body" id="dealBody"></div>
+  </div>
+</dialog>
+
+<!-- ================= 중개의뢰 고객 모달 ================= -->
+<dialog class="modal" id="clientDlg" aria-labelledby="clientTitle">
+  <div class="modal-in">
+    <div class="navbar">
+      <button class="btn ghost l" type="button" data-close="clientDlg">취소</button>
+      <div class="title" id="clientTitle">새 의뢰 고객</div>
+      <button class="btn ghost r" type="button" id="clientSave" style="font-weight:700">저장</button>
+    </div>
+    <div class="sheet-body" id="clientBody"></div>
+  </div>
+</dialog>
+<dialog class="modal wide" id="matchDlg" aria-labelledby="matchTitle">
+  <div class="modal-in">
+    <div class="navbar">
+      <span class="l"></span><div class="title" id="matchTitle">맞는 매물</div>
+      <button class="btn ghost r" type="button" data-close="matchDlg" style="font-weight:700">닫기</button>
+    </div>
+    <div class="sheet-body" id="matchBody"></div>
   </div>
 </dialog>
 
@@ -1225,6 +1284,10 @@ const areaPrefix = a => String(a || "").trim().split(/\s+/).slice(0, -1).join(" 
 const baseArea = it => isRes(it) ? (it.excl ?? null) : totLand(it);
 const unitPrice = it => { const l = baseArea(it); return it.price && l ? Math.round(it.price / (l / PY)) : null; };
 const hasRent = it => it.deposit != null || it.rent != null;
+const DEAL_KINDS = ["매매", "전세", "월세"];
+const dealKindOf = it => it.dealKind || (it.price != null ? "매매" : it.rent != null ? "월세" : it.deposit != null ? "전세" : "");
+const DK_CLS = { 매매: "dk-sale", 전세: "dk-jeonse", 월세: "dk-month" };
+const dkTag = it => { const k = it.type === "아파트" ? dealKindOf(it) : ""; return k ? `<span class="dk ${DK_CLS[k]}">${k}</span>` : ""; };
 const tile = (it, lg = false) => `<span class="tile t-${esc(it.type)}${lg ? " lg" : ""}" title="${esc(isRes(it) ? it.type : it.jimok || it.type)}">${isRes(it) ? ic(TYPE_IC[it.type]) : esc(markOf(it))}${it.star ? `<span class="star-badge" aria-label="중요 매물">${ic("star")}</span>` : ""}${isMulti(it) ? `<span class="plus">+${it.extra.length}</span>` : ""}</span>`;
 const stateTag = it => { const s = STATE[it.state] || STATE.진행; return `<span class="tag ${s.cls}">${s.label}</span>`; };
 const coTag = it => it.src === "co" ? `<span class="tag co">${ic("handshake")}공동중개</span>` : "";
@@ -1249,13 +1312,14 @@ const LKEY = "maemul-app-v2", FILE = "매물대장_데이터.json";
 const DRIVE = "https://www.googleapis.com/drive/v3", UPLOAD = "https://www.googleapis.com/upload/drive/v3";
 let all = [], fileId = null, rev = 0, syncedRev = 0, token = null, tokenExp = 0, tokenClient = null, syncing = false, syncTimer = null, lastSync = null;
 let tasks = [];
-let deals = [], memoRec = null;
+let deals = [], memoRec = null, clients = [];
 // 매물(kind 없음)·할 일(task)·중개 진행(deal)·메모(memo)를 같은 저장소에 함께 보관 — 기존 매물 데이터 형식은 바꾸지 않음
 const live = () => {
   items = all.filter(x => !x.deleted && !x.kind);
   tasks = all.filter(x => !x.deleted && x.kind === "task");
   deals = all.filter(x => !x.deleted && x.kind === "deal");
   memoRec = all.find(x => !x.deleted && x.kind === "memo") || null;
+  clients = all.filter(x => !x.deleted && x.kind === "client");
 };
 function loadLocal(){
   try { const d = JSON.parse(localStorage.getItem(LKEY) || "{}"); all = d.all || []; fileId = d.fileId || null; rev = d.rev || 0; syncedRev = d.syncedRev || 0; lastSync = d.lastSync || null; } catch { all = []; }
@@ -1406,6 +1470,7 @@ function filtered(opt = {}){
     if (F.src && (it.src || "own") !== F.src) return false;
     if (F.deal === "sale" && it.price == null) return false;
     if (F.deal === "rent" && !hasRent(it)) return false;
+    if (F.deal.startsWith("k-") && (it.type !== "아파트" || dealKindOf(it) !== F.deal.slice(2))) return false;
     if (!opt.ignoreRegion && F.region && regionKey(it.area, F.regionLevel) !== F.region) return false;
     const a = baseArea(it);
     if (aMin != null && (a == null || a < aMin * k)) return false;
@@ -1413,7 +1478,7 @@ function filtered(opt = {}){
     if (pMin != null && (it.price == null || it.price < pMin)) return false;
     if (pMax != null && (it.price == null || it.price > pMax)) return false;
     if (q) {
-      const hay = [...(it.feats || []), it.tenant, it.tenantPhone, it.bName, it.unitNo, it.area, it.owner, it.phone, it.memo, it.zone, it.agName, it.agPhone, it.type, STATE[it.state]?.label,
+      const hay = [it.type === "아파트" ? dealKindOf(it) : "", ...(it.feats || []), it.tenant, it.tenantPhone, it.bName, it.unitNo, it.area, it.owner, it.phone, it.memo, it.zone, it.agName, it.agPhone, it.type, STATE[it.state]?.label,
         ...parcels(it).map(p => `${p.area || ""} ${p.jibun || ""} ${p.jimok || ""}`),
         ...(it.logs || []).map(l => l.who + " " + l.text)].join(" ").toLowerCase();
       if (!(hay.includes(q) || (qd.length >= 3 && (digits(it.phone).includes(qd) || digits(it.agPhone).includes(qd) || digits(it.tenantPhone).includes(qd))))) return false;
@@ -1430,7 +1495,7 @@ const activeFilterCount = () => ["star", "jimok", "state", "deal", "src", "aMin"
 /* =========================================================
    화면 그리기
    ========================================================= */
-const TITLES = { home: "대시보드", list: "매물 목록", map: "지도", region: "지역별 요약", schedule: "상담 일정", todo: "할 일", deals: "중개 진행" };
+const TITLES = { home: "대시보드", list: "매물 목록", map: "지도", region: "지역별 요약", schedule: "상담 일정", todo: "할 일", deals: "중개 진행", clients: "중개의뢰 고객" };
 function upcoming(){
   const out = [];
   for (const it of items) for (const l of it.logs || []) if (l.next) out.push({ it, l });
@@ -1441,13 +1506,14 @@ function render(){
   $("#pageTitle").hidden = view === "home"; $("#pageLogo").hidden = view !== "home";
   $("#pageSub").textContent = "";
   $$("[data-view]").forEach(b => b.setAttribute("aria-current", b.dataset.view === view ? "page" : "false"));
-  $("#tabMore").setAttribute("aria-current", ["region", "schedule", "todo", "deals"].includes(view) ? "page" : "false");
+  $("#tabMore").setAttribute("aria-current", ["region", "schedule", "todo", "deals", "clients"].includes(view) ? "page" : "false");
   $("#navDeals").textContent = deals.filter(d => !d.done).length || "";
+  $("#navClients").textContent = clients.filter(c => c.status !== "완료").length || "";
   $("#navTodo").textContent = tasks.filter(t => !t.done).length || "";
   $("#navCount").textContent = items.length || "";
   const due = upcoming().filter(x => x.l.next <= today()).length;
   $("#navSched").textContent = due || "";
-  ({ home: renderHome, list: renderList, map: renderMap, region: renderRegion, schedule: renderSchedule, todo: renderTodo, deals: renderDeals })[view]();
+  ({ home: renderHome, list: renderList, map: renderMap, region: renderRegion, schedule: renderSchedule, todo: renderTodo, deals: renderDeals, clients: renderClients })[view]();
   if (detailId && $("#sheet").open) renderDetail();
   icons();
 }
@@ -1509,12 +1575,12 @@ function renderHome(){
       </button>
     </div>
     <div class="section grid-2 work-row">
-      ${memoHTML()}
+      <div class="work-col">${memoHTML()}${clientsHTML(6)}</div>
       ${dealsHTML()}
     </div>`;
   v.querySelectorAll("[data-goto-type]").forEach(b => b.onclick = () => { resetFilters(); F.type = b.dataset.gotoType; go("list"); });
   $("#goStar").onclick = () => { if (!starred.length) { toast("매물 상세에서 ‘중요 표시’를 누르면 중요 매물로 모입니다"); return; } resetFilters(); F.star = "1"; go("list"); };
-  bindMemo(); bindDeals();
+  bindMemo(); bindDeals(); bindClients();
   if (memoSel) { const m = $("#memoText"); m.focus(); m.setSelectionRange(memoSel[0], memoSel[1]); }
   v.querySelector("[data-todo-done]").onclick = () => { go("todo"); setTimeout(() => $("#doneCard")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60); };
 }
@@ -1671,6 +1737,146 @@ $("#dealSave").onclick = () => {
     stage, dates, nextDate: dates[STAGES[stage + 1]] || "", note: $("#dlNote").value.trim(), done: base.done || false });
   $("#dealDlg").close(); toast(dealEditing ? "거래를 고쳤습니다" : "새 거래를 추가했습니다");
 };
+
+/* =========================================================
+   중개의뢰 고객: 찾는 조건을 적어 두면 ‘맞는 매물’을 자동으로 세어 줌
+   ========================================================= */
+const ROLES = ["매수", "임차", "매도", "임대"];
+const ROLE_CLS = { 매수: "r-buy", 임차: "r-rent", 매도: "r-sell", 임대: "r-lease" };
+let showDoneClients = false;
+function matchItems(c){
+  if (c.role !== "매수" && c.role !== "임차") return [];
+  const regions = String(c.region || "").split(/[,\s]+/).map(x => x.trim()).filter(Boolean);
+  return items.filter(it => {
+    if (it.state !== "진행") return false;
+    if ((c.types || []).length && !c.types.includes(it.type)) return false;
+    if (regions.length && !regions.some(r => `${it.area || ""} ${it.bName || ""}`.includes(r))) return false;
+    const a = baseArea(it), py = a != null ? a / PY : null;
+    if (c.areaMin != null && (py == null || py < c.areaMin)) return false;
+    if (c.areaMax != null && (py == null || py > c.areaMax)) return false;
+    if (c.role === "매수") {
+      if (it.price == null) return false;
+      if (c.budgetMin != null && it.price < c.budgetMin) return false;
+      if (c.budgetMax != null && it.price > c.budgetMax) return false;
+    } else {
+      if (!hasRent(it) && !(it.type === "아파트" && dealKindOf(it) === "전세")) return false;
+      if (c.budgetMax != null && (it.deposit ?? 0) > c.budgetMax) return false;
+      if (c.rentMax != null && (it.rent ?? 0) > c.rentMax) return false;
+    }
+    return true;
+  });
+}
+const budgetTxt = c => c.budgetMin == null && c.budgetMax == null ? "" :
+  `${c.role === "임차" ? "보 " : ""}${c.budgetMin != null ? manShort(c.budgetMin) : ""}~${c.budgetMax != null ? manShort(c.budgetMax) : ""}${c.role === "임차" && c.rentMax != null ? ` / 월 ${manShort(c.rentMax)}` : ""}`;
+function clientRow(c){
+  const m = matchItems(c);
+  const want = [(c.types || []).join("·"), c.region || "", budgetTxt(c)].filter(Boolean).join("  ");
+  return `<div class="crow${c.status === "완료" ? " fin" : ""}">
+    <button class="crow-main" type="button" data-client-edit="${esc(c.id)}" title="눌러서 수정">
+      <span class="avatar ${ROLE_CLS[c.role] || ""}">${esc((c.name || "?").slice(0, 1))}</span>
+      <span class="crow-txt"><b>${esc(c.name || "이름 없음")}<span class="role ${ROLE_CLS[c.role] || ""}">${esc(c.role || "")}</span>${c.status === "보류" ? `<span class="tag hold" style="height:18px;font-size:11px">보류</span>` : ""}</b>
+        <small>${esc(want || c.memo || "조건 미입력")}</small></span>
+    </button>
+    ${m.length ? `<button class="match" type="button" data-client-match="${esc(c.id)}" title="조건에 맞는 매물 보기">${ic("target")}맞는 매물 ${m.length}</button>` : (c.role === "매수" || c.role === "임차") ? `<span class="match none">맞는 매물 없음</span>` : `<span></span>`}
+    ${c.phone ? `<a class="call" href="tel:${esc(digits(c.phone))}" title="${esc(c.phone)}" aria-label="전화 걸기">${ic("phone")}</a>` : `<span></span>`}
+  </div>`;
+}
+function clientsHTML(limit){
+  const act = clients.filter(c => c.status !== "완료").sort((a, b) => (a.status === "보류") - (b.status === "보류") || (b.updated || 0) - (a.updated || 0));
+  const fin = clients.filter(c => c.status === "완료").sort((a, b) => (b.updated || 0) - (a.updated || 0));
+  const shown = limit ? act.slice(0, limit) : act;
+  return `<div class="card pad clients-card">
+    <div class="todo-head"><span class="badge-ic aqua">${ic("users-round")}</span><h2>중개의뢰 고객</h2><span class="cnt">${act.length}</span>
+      <button class="btn sm primary" type="button" id="clientAdd" style="margin-left:auto">${ic("user-plus")}새 고객</button></div>
+    ${shown.length ? `<div class="crows">${shown.map(clientRow).join("")}</div>`
+      : `<div class="task-empty">${ic("users-round")}<b>등록된 의뢰 고객이 없습니다</b>매수·임차 조건을 적어 두면 맞는 매물을 자동으로 찾아 줍니다</div>`}
+    ${limit && act.length > limit ? `<button class="btn ghost sm more-btn" type="button" data-view="clients">전체 ${act.length}명 보기 ${ic("chevron-right")}</button>` : ""}
+    ${!limit && fin.length ? `<button class="btn ghost sm more-btn" type="button" id="clientFinToggle">완료한 고객 ${fin.length}명 ${ic(showDoneClients ? "chevron-up" : "chevron-down")}</button>
+      ${showDoneClients ? `<div class="crows">${fin.map(clientRow).join("")}</div>` : ""}` : ""}
+  </div>`;
+}
+function bindClients(){
+  const v = $("#view");
+  if ($("#clientAdd")) $("#clientAdd").onclick = () => openClient();
+  if ($("#clientFinToggle")) $("#clientFinToggle").onclick = () => { showDoneClients = !showDoneClients; render(); };
+  v.querySelectorAll("[data-client-edit]").forEach(b => b.onclick = () => openClient(clients.find(c => c.id === b.dataset.clientEdit)));
+  v.querySelectorAll("[data-client-match]").forEach(b => b.onclick = () => openMatch(clients.find(c => c.id === b.dataset.clientMatch)));
+}
+function renderClients(){
+  $("#view").innerHTML = `<div class="deals-page">${clientsHTML(0)}</div>`;
+  bindClients();
+}
+/* 고객 추가·수정 창 */
+let clientEditing = null, clientTypes = [];
+function openClient(c){
+  clientEditing = c || null; clientTypes = [...(c?.types || [])];
+  const role = c?.role || "매수";
+  $("#clientTitle").textContent = c ? "고객 수정" : "새 의뢰 고객";
+  $("#clientBody").innerHTML = `
+    <div class="group-title" style="margin-top:8px">고객</div>
+    <div class="fgroup fgrid">
+      <label class="field"><span>이름</span><input id="clName" value="${esc(c?.name || "")}" autocomplete="off"></label>
+      <label class="field"><span>연락처</span><input id="clPhone" type="tel" value="${esc(c?.phone || "")}" placeholder="010-0000-0000"></label>
+      <div class="seg full wide" role="radiogroup" aria-label="의뢰 구분">${ROLES.map(r => `<label><input type="radio" name="clRole" value="${r}"${r === role ? " checked" : ""}><span>${r}</span></label>`).join("")}</div>
+    </div>
+    <div class="group-title">찾는 조건 <span class="faint" style="font-weight:400">(매수·임차는 조건에 맞는 매물을 자동으로 찾아 줍니다)</span></div>
+    <div class="fgroup">
+      <div class="feat-chips" id="clTypes"></div>
+      <div class="fgrid">
+        <label class="field wide"><span>희망 지역 (여러 곳은 쉼표로)</span><input id="clRegion" value="${esc(c?.region || "")}" placeholder="예: 원시동, 성곡동, 고잔"></label>
+        <label class="field"><span id="clBudLbl">예산 최소 (만원)</span><input id="clBMin" type="number" inputmode="numeric" value="${c?.budgetMin ?? ""}"></label>
+        <label class="field"><span id="clBudLbl2">예산 최대 (만원)</span><input id="clBMax" type="number" inputmode="numeric" value="${c?.budgetMax ?? ""}"></label>
+        <label class="field" id="clRentWrap"><span>월세 상한 (만원)</span><input id="clRent" type="number" inputmode="numeric" value="${c?.rentMax ?? ""}"></label>
+        <label class="field"><span>면적 (평) 최소 ~ 최대</span><span class="pair"><input id="clAMin" type="number" inputmode="decimal" value="${c?.areaMin ?? ""}" aria-label="최소 평"><input id="clAMax" type="number" inputmode="decimal" value="${c?.areaMax ?? ""}" aria-label="최대 평"></span></label>
+      </div>
+    </div>
+    <div class="group-title">상담 내용</div>
+    <div class="fgroup fgrid">
+      <label class="field wide"><span>요청 사항</span><textarea id="clMemo" rows="3" placeholder="예: 대형차 진입 필수, 12월 입주 희망">${esc(c?.memo || "")}</textarea></label>
+      <label class="field"><span>의뢰일</span><input id="clDate" type="date" value="${esc(c?.date || today())}"></label>
+      <label class="field"><span>상태</span><select id="clStatus">${["상담중", "보류", "완료"].map(st => `<option${(c?.status || "상담중") === st ? " selected" : ""}>${st}</option>`).join("")}</select></label>
+    </div>
+    ${c ? `<div style="margin-top:22px"><button class="btn danger block" type="button" id="clDelete">${ic("trash-2")}이 고객 삭제</button></div>` : ""}`;
+  const syncRole = () => {
+    const r = document.querySelector('input[name="clRole"]:checked').value;
+    $("#clRentWrap").hidden = r !== "임차";
+    $("#clBudLbl").textContent = r === "임차" ? "보증금 최소 (만원)" : r === "매수" ? "매수 예산 최소 (만원)" : "희망가 최소 (만원)";
+    $("#clBudLbl2").textContent = r === "임차" ? "보증금 최대 (만원)" : r === "매수" ? "매수 예산 최대 (만원)" : "희망가 최대 (만원)";
+  };
+  const drawTypes = () => {
+    $("#clTypes").innerHTML = TYPES.map(t => `<button type="button" class="qchip" data-ct="${t}" aria-pressed="${clientTypes.includes(t)}">${ic(TYPE_IC[t])}${t}</button>`).join("");
+    $("#clTypes").querySelectorAll("[data-ct]").forEach(b => b.onclick = () => { const t = b.dataset.ct; clientTypes = clientTypes.includes(t) ? clientTypes.filter(x => x !== t) : [...clientTypes, t]; drawTypes(); });
+    icons();
+  };
+  $("#clientBody").querySelectorAll('input[name="clRole"]').forEach(r => r.onchange = syncRole);
+  syncRole(); drawTypes();
+  if ($("#clDelete")) $("#clDelete").onclick = () => {
+    const snap = { ...c }; upsert({ id: c.id, kind: "client", deleted: true, updated: Date.now() }); afterChange(); $("#clientDlg").close();
+    toast("고객을 삭제했습니다", { label: "되돌리기", fn: () => { snap.updated = Date.now(); upsert(snap); afterChange(); } });
+  };
+  $("#clientDlg").showModal(); icons();
+}
+$("#clientSave").onclick = () => {
+  const name = $("#clName").value.trim();
+  if (!name) { $("#clName").focus(); toast("고객 이름을 적어 주세요"); return; }
+  const base = clientEditing || { id: uid(), kind: "client", created: Date.now() };
+  const it = { ...base, name, phone: $("#clPhone").value.trim(), role: document.querySelector('input[name="clRole"]:checked').value,
+    types: [...clientTypes], region: $("#clRegion").value.trim(), budgetMin: num($("#clBMin").value), budgetMax: num($("#clBMax").value),
+    rentMax: num($("#clRent").value), areaMin: num($("#clAMin").value), areaMax: num($("#clAMax").value),
+    memo: $("#clMemo").value.trim(), date: $("#clDate").value, status: $("#clStatus").value, updated: Date.now() };
+  if (it.role !== "임차") it.rentMax = null;
+  upsert(it); afterChange(); $("#clientDlg").close();
+  const m = matchItems(it).length;
+  toast(clientEditing ? "고객 정보를 고쳤습니다" : `새 고객을 등록했습니다${m ? `, 맞는 매물 ${m}건` : ""}`);
+};
+/* 맞는 매물 보기 */
+function openMatch(c){
+  const list = matchItems(c);
+  $("#matchTitle").textContent = `${c.name}님께 맞는 매물 ${list.length}건`;
+  $("#matchBody").innerHTML = `<p class="faint" style="font-size:13px;margin:6px 4px 12px">${esc([c.role, (c.types || []).join("·"), c.region, budgetTxt(c)].filter(Boolean).join("  "))} 조건, 계약가능 매물 기준</p>${list.length ? tableHTML(list) : ""}`;
+  $("#matchDlg").showModal(); icons();
+}
+$("#matchBody").addEventListener("click", e => { const o = e.target.closest("[data-open]"); if (o) { e.stopPropagation(); $("#matchDlg").close(); openDetail(o.dataset.open); } });
 
 /* ---------- 중개 진행 화면 (사이드 메뉴) ---------- */
 function renderDeals(){
@@ -1856,8 +2062,10 @@ function tableHTML(list){
       const areaMain = isRes(it) ? (it.excl != null ? fmt(it.excl / PY) + "평" : "–") : (l != null ? fmt(l / PY) + "평" : "–");
       const areaSub = isRes(it) ? `${it.excl != null ? fmt(it.excl) + "㎡" : ""}${it.floor != null ? ` ${it.floor}층` : ""}` : (l != null ? fmt(l) + "㎡" : "");
       // 원룸: 가격 첫 줄에 보증금/월세
-      const priceMain = oneRoom && hasRent(it) ? rentShort(it) : it.price != null ? won(it.price) : hasRent(it) ? rentShort(it) : "가격 미정";
-      const priceSub = oneRoom ? (it.price != null && hasRent(it) ? `매매 ${won(it.price)}` : it.fee != null ? `관리비 ${fmt(it.fee)}만` : "")
+      const aptK = it.type === "아파트" ? dealKindOf(it) : "";
+      const priceMain = aptK === "전세" ? `${won(it.deposit)}` : aptK === "월세" ? rentShort(it)
+        : oneRoom && hasRent(it) ? rentShort(it) : it.price != null ? won(it.price) : hasRent(it) ? rentShort(it) : "가격 미정";
+      const priceSub = aptK && aptK !== "매매" ? (it.fee != null ? `관리비 ${fmt(it.fee)}만` : "") : oneRoom ? (it.price != null && hasRent(it) ? `매매 ${won(it.price)}` : it.fee != null ? `관리비 ${fmt(it.fee)}만` : "")
         : it.price != null && hasRent(it) ? rentShort(it) : up != null ? `평당 ${fmt(up)}만` : "";
       const move = it.type !== "토지" && it.moveIn ? esc(it.moveIn) : "";
       const who = `<div>${it.src === "co" ? `<span class="tag co" style="height:20px;font-size:11.5px">공동</span> ${esc(it.agName || "")}` : esc(it.owner || "–")}</div><div class="faint num">${esc(it.src === "co" ? it.agPhone || "" : it.phone || "")}</div>`;
@@ -1870,9 +2078,9 @@ function tableHTML(list){
         it.tenant ? `<span><span class="lbl-in">세입자</span>${esc(it.tenant)} <span class="faint num">${esc(it.tenantPhone || "")}</span></span>` : ""].filter(Boolean).join("") : "";
       return `<button class="trow${people ? " r-room" : ""}" role="listitem" data-open="${esc(it.id)}" type="button">
         <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() + (isMulti(it) ? ` 외 ${it.extra.length}필지` : "") : areaPrefix(it.area) || it.zone || "")}</div></span></span>
-        <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}<span>${esc(it.type)}${it.jimok && !isRes(it) && TYPES.includes(it.type) ? ` <span class="faint">${esc(it.jimok)}</span>` : ""}</span></span>
+        <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}<span>${esc(it.type)}${dkTag(it) ? `<span class="dk-line">${dkTag(it)}</span>` : ""}${it.jimok && !isRes(it) && TYPES.includes(it.type) ? ` <span class="faint">${esc(it.jimok)}</span>` : ""}</span></span>
         ${areaCell}
-        <span class="c-price"><div class="c-k num">${priceMain}</div><div class="num">${priceSub}</div></span>
+        <span class="c-price"><div class="c-k num">${dkTag(it)}${priceMain}</div><div class="num">${priceSub}</div></span>
         <span class="c-state">${stateTag(it)}</span>
         <span class="c-move">${move ? `<span class="tag plain">${ic("calendar-check")}${move}</span>` : `<span class="faint">–</span>`}</span>
         <span class="c-owner">${who}</span>
@@ -2063,15 +2271,17 @@ function renderDetail(){
     row("map-pin", "주소", esc(addr))].join("") : "";
   $("#sheetTitle").textContent = it.type + " 매물";
   $("#sheetBody").innerHTML = `
-    <div class="d-head">${tile(it, true)}<div style="min-width:0"><h2>${esc(titleOf(it))}</h2><div class="tags">${stateTag(it)}${coTag(it)}<span class="tag plain">${ic(TYPE_IC[it.type])}${esc(it.type)}${it.jimok && !isRes(it) ? " " + esc(it.jimok) : ""}</span></div></div></div>
+    <div class="d-head">${tile(it, true)}<div style="min-width:0"><h2>${esc(titleOf(it))}</h2><div class="tags">${dkTag(it)}${stateTag(it)}${coTag(it)}<span class="tag plain">${ic(TYPE_IC[it.type])}${esc(it.type)}${it.jimok && !isRes(it) ? " " + esc(it.jimok) : ""}</span></div></div></div>
     <div class="figs">
       ${isRes(it) ? `
       <div class="fig"><small>${ic("maximize")}전용면적</small><b class="num">${it.excl != null ? fmt(it.excl / PY) + "평" : "–"}</b><span class="u num">${it.excl != null ? fmt(it.excl) + "㎡" : ""}</span></div>
       <div class="fig"><small>${ic("layers-3")}층</small><b class="num">${it.floor != null ? it.floor + "층" : "–"}</b><span class="u num">${it.floors != null ? "총 " + it.floors + "층" : ""}</span></div>` : `
       <div class="fig"><small>${ic("ruler")}토지${isMulti(it) ? " 합계" : ""}</small><b class="num">${py != null ? fmt(py) + "평" : "–"}</b><span class="u num">${land != null ? fmt(land) + "㎡" : ""}</span></div>
       <div class="fig"><small>${ic("home")}건물${isMulti(it) ? " 합계" : ""}</small><b class="num">${bldg != null ? fmt(bldg / PY) + "평" : "–"}</b><span class="u num">${bldg != null ? fmt(bldg) + "㎡" : ""}</span></div>`}
-      <div class="fig"><small>${ic("banknote")}${isMulti(it) ? "일괄 매매가" : "매매가"}</small><b class="num">${won(it.price)}</b><span class="u num">${up != null ? "평당 " + fmt(up) + "만원" : ""}</span></div>
-      <div class="fig"><small>${ic("wallet")}임대 보증금</small><b class="num">${it.deposit != null ? won(it.deposit) : "–"}</b><span class="u num">${it.rent != null ? "월 " + won(it.rent) : ""}</span></div>
+      ${it.type === "아파트" && dealKindOf(it) === "전세" ? `<div class="fig"><small>${ic("wallet")}전세금</small><b class="num">${won(it.deposit)}</b><span class="u num">${it.fee != null ? "관리비 " + fmt(it.fee) + "만원" : ""}</span></div>`
+        : it.type === "아파트" && dealKindOf(it) === "월세" ? `<div class="fig"><small>${ic("wallet")}보증금 / 월세</small><b class="num">${won(it.deposit)}</b><span class="u num">${it.rent != null ? "월 " + won(it.rent) : ""}</span></div>`
+        : `<div class="fig"><small>${ic("banknote")}${isMulti(it) ? "일괄 매매가" : "매매가"}</small><b class="num">${won(it.price)}</b><span class="u num">${up != null ? "평당 " + fmt(up) + "만원" : ""}</span></div>
+      <div class="fig"><small>${ic("wallet")}임대 보증금</small><b class="num">${it.deposit != null ? won(it.deposit) : "–"}</b><span class="u num">${it.rent != null ? "월 " + won(it.rent) : ""}</span></div>`}
     </div>
     <div class="actions">
       <a class="btn sm aqua" href="https://map.kakao.com/?q=${encodeURIComponent(addr)}" target="_blank" rel="noopener">${ic("map")}카카오맵</a>
@@ -2138,7 +2348,7 @@ function renderDetail(){
    ========================================================= */
 const form = $("#form"), formDlg = $("#formDlg");
 const fv = n => form.elements[n].value;
-const FIELDS = ["doorCode", "tenant", "tenantPhone", "bizType", "premium", "bName", "unitNo", "excl", "floor", "floors", "rooms", "baths", "fee", "moveIn", "type", "state", "zone", "area", "price", "deposit", "rent", "height", "hoist", "power", "road", "truck", "reg", "src", "agName", "agPhone", "owner", "phone", "memo"];
+const FIELDS = ["dealKind", "doorCode", "tenant", "tenantPhone", "bizType", "premium", "bName", "unitNo", "excl", "floor", "floors", "rooms", "baths", "fee", "moveIn", "type", "state", "zone", "area", "price", "deposit", "rent", "height", "hoist", "power", "road", "truck", "reg", "src", "agName", "agPhone", "owner", "phone", "memo"];
 let editing = null;
 const jimokOpts = sel => `<option value="">해당없음</option>` + JIMOK.map(([n]) => `<option${n === sel ? " selected" : ""}>${n}</option>`).join("");
 function prow(p = {}, first = false){
@@ -2165,6 +2375,7 @@ function openForm(it, copy = false){
   $("#formTitle").textContent = copy ? "매물 복사" : it ? "매물 수정" : "새 매물";
   form.elements.star.checked = !!it?.star;
   formFeats = [...(it?.feats || [])];
+  form.elements.dealKind.value = (it && dealKindOf(it)) || "매매";
   if (it) {
     for (const k of FIELDS) if (it[k] != null && form.elements[k]) form.elements[k].value = it[k];
     // 예전에 등록된 이축권 등 없어진 유형은 토지로 바꿔 수정하도록 안내
@@ -2218,6 +2429,13 @@ function syncForm(){
   form.querySelectorAll(".res-only").forEach(el => el.hidden = t === "상가");
   form.querySelectorAll(".shop-only").forEach(el => el.hidden = t !== "상가");
   form.querySelectorAll(".room-only").forEach(el => el.hidden = t !== "원룸");
+  // 아파트: 거래 구분에 맞는 가격 칸만 보이기
+  const apt = t === "아파트", dk = form.querySelector('input[name="dealKind"]:checked')?.value || "매매";
+  form.querySelectorAll(".apt-only").forEach(el => el.hidden = !apt);
+  $("#priceField").hidden = apt && dk !== "매매";
+  $("#depField").hidden = apt && dk === "매매";
+  $("#rentField").hidden = apt && dk !== "월세";
+  $("#depLbl").textContent = apt && dk === "전세" ? "전세금" : apt && dk === "월세" ? "보증금" : "임대 보증금";
   $("#coBox").hidden = fv("src") !== "co";
   const ps = readParcels(), multi = ps.length > 1;
   $("#priceLbl").textContent = multi ? "일괄 매매가 합계" : "매매가";
@@ -2250,6 +2468,11 @@ form.addEventListener("submit", async e => {
   f.feats = [...formFeats];
   if (!BLDG_TYPES.includes(f.type)) { f.tenant = ""; f.tenantPhone = ""; }
   if (f.type !== "원룸") f.doorCode = "";
+  if (f.type === "아파트") {
+    if (f.dealKind === "매매") { f.deposit = null; f.rent = null; }
+    if (f.dealKind === "전세") { f.price = null; f.rent = null; }
+    if (f.dealKind === "월세") { f.price = null; }
+  } else f.dealKind = "";
   if (f.type !== "상가") { f.bizType = ""; f.premium = null; } else { f.rooms = null; f.baths = null; }
   if (f.src !== "co") { f.agName = ""; f.agPhone = ""; }
   const extra = ps.slice(1).filter(p => p.jibun || p.landM2 != null || p.bldgM2 != null).map(p => ({ ...p, id: uid() }));
@@ -2285,7 +2508,7 @@ function briefHTML(it){
   const fig = (label, val, sub = "", hl = false) => val ? `<div class="bf-fig${hl ? " hl" : ""}"><small>${label}</small><b>${val}</b>${sub ? `<span>${sub}</span>` : ""}</div>` : "";
   const figs = [
     showPrice && it.price != null ? fig(isMulti(it) ? "일괄 매매가" : "매매가", won(it.price), up != null ? `${isRes(it) ? "전용 " : ""}평당 ${fmt(up)}만원` : "", true) : "",
-    showPrice && hasRent(it) ? fig("임대", `${it.deposit != null ? won(it.deposit) : "–"}`, it.rent != null ? `월 ${won(it.rent)}` : "", true) : "",
+    showPrice && hasRent(it) ? fig(it.type === "아파트" && dealKindOf(it) === "전세" ? "전세금" : it.type === "아파트" && dealKindOf(it) === "월세" ? "보증금 / 월세" : "임대", `${it.deposit != null ? won(it.deposit) : "–"}`, it.rent != null ? `월 ${won(it.rent)}` : "", true) : "",
     isRes(it) ? fig("전용면적", it.excl != null ? fmt(it.excl / PY) + "평" : "", it.excl != null ? fmt(it.excl) + "㎡" : "")
               : fig(isMulti(it) ? "토지 합계" : "토지면적", land != null ? fmt(land / PY) + "평" : "", land != null ? fmt(land) + "㎡" : ""),
     isRes(it) ? fig("층", it.floor != null ? it.floor + "층" : "", it.floors != null ? `총 ${it.floors}층` : "")
@@ -2318,7 +2541,7 @@ function briefHTML(it){
     <header class="bf-head"><svg class="bf-logo" aria-hidden="true"><use href="#snowball"/></svg>
       <div class="bf-brand lockup-txt"><b>눈덩이공인중개사사무소</b><small class="spread" aria-label="SNOWBALL REAL ESTATE AGENCY"><i>S</i><i>N</i><i>O</i><i>W</i><i>B</i><i>A</i><i>L</i><i>L</i><i>&nbsp;</i><i>R</i><i>E</i><i>A</i><i>L</i><i>&nbsp;</i><i>E</i><i>S</i><i>T</i><i>A</i><i>T</i><i>E</i><i>&nbsp;</i><i>A</i><i>G</i><i>E</i><i>N</i><i>C</i><i>Y</i></small></div>
       <div class="bf-doc"><b>매물 브리핑</b><small>${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일</small></div></header>
-    <section class="bf-title"><span class="bf-type">${esc(it.type)}${it.state === "진행" ? " · 계약가능" : ""}</span><h1>${esc(title)}</h1><p>${esc(address)}</p></section>
+    <section class="bf-title"><span class="bf-type">${esc(it.type)}${it.type === "아파트" && dealKindOf(it) ? " " + dealKindOf(it) : ""}${it.state === "진행" ? " · 계약가능" : ""}</span><h1>${esc(title)}</h1><p>${esc(address)}</p></section>
     ${figs.length ? `<section class="bf-figs">${figs.join("")}</section>` : ""}
     <section class="bf-cols${withMap && rows ? "" : " one"}">
       ${withMap ? `<div class="bf-map" id="bfMapBox"></div>` : ""}
@@ -2372,7 +2595,7 @@ $("#filterDlg").addEventListener("close", () => { if (view !== "list") render();
 /* =========================================================
    엑셀
    ========================================================= */
-const COLS = [["유형","type"],["소재지","area"],["지번","jibun"],["지목","jimok"],["토지면적(㎡)","landM2"],["건물면적(㎡)","bldgM2"],["용도지역","zone"],["매매가(만원)","price"],["보증금(만원)","deposit"],["월임대료(만원)","rent"],["소유자","owner"],["전화번호","phone"],["상태","state"],["출처","src"],["부동산명","agName"],["부동산전화","agPhone"],["층고(m)","height"],["호이스트","hoist"],["수전용량(kW)","power"],["진입로폭(m)","road"],["대형차진입","truck"],["공장등록","reg"],["단지명","bName"],["동호수","unitNo"],["전용면적(㎡)","excl"],["해당층","floor"],["총층","floors"],["방수","rooms"],["욕실수","baths"],["관리비(만원)","fee"],["입주가능일","moveIn"],["업종","bizType"],["권리금(만원)","premium"],["현관비번","doorCode"],["세입자","tenant"],["세입자연락처","tenantPhone"],["특징","feats"],["중요","star"],["메모","memo"]];
+const COLS = [["유형","type"],["소재지","area"],["지번","jibun"],["지목","jimok"],["토지면적(㎡)","landM2"],["건물면적(㎡)","bldgM2"],["용도지역","zone"],["매매가(만원)","price"],["보증금(만원)","deposit"],["월임대료(만원)","rent"],["소유자","owner"],["전화번호","phone"],["상태","state"],["출처","src"],["부동산명","agName"],["부동산전화","agPhone"],["층고(m)","height"],["호이스트","hoist"],["수전용량(kW)","power"],["진입로폭(m)","road"],["대형차진입","truck"],["공장등록","reg"],["단지명","bName"],["동호수","unitNo"],["전용면적(㎡)","excl"],["해당층","floor"],["총층","floors"],["방수","rooms"],["욕실수","baths"],["관리비(만원)","fee"],["입주가능일","moveIn"],["업종","bizType"],["권리금(만원)","premium"],["거래구분","dealKind"],["현관비번","doorCode"],["세입자","tenant"],["세입자연락처","tenantPhone"],["특징","feats"],["중요","star"],["메모","memo"]];
 const NUMS = new Set(["landM2", "bldgM2", "price", "deposit", "rent", "height", "power", "road", "excl", "floor", "floors", "rooms", "baths", "fee", "premium"]);
 const norm = s => String(s).replace(/\s|\(.*?\)/g, "");
 const pick = (row, h) => { const key = Object.keys(row).find(c => norm(c) === norm(h)); return key == null ? "" : row[key]; };
@@ -2417,7 +2640,7 @@ function exportExcel(){
   if (!window.XLSX) { toast("엑셀 모듈을 불러오지 못했습니다"); return; }
   if (!items.length) { toast("저장할 매물이 없습니다"); return; }
   const wb = XLSX.utils.book_new();
-  const main = items.map(it => ({ ...Object.fromEntries(COLS.map(([h, k]) => [h, k === "src" ? (it.src === "co" ? "공동중개" : "직접") : k === "state" ? (STATE[it.state]?.label || "계약가능") : k === "star" ? (it.star ? "O" : "") : k === "feats" ? (it.feats || []).join(", ") : (it[k] ?? "")])),
+  const main = items.map(it => ({ ...Object.fromEntries(COLS.map(([h, k]) => [h, k === "src" ? (it.src === "co" ? "공동중개" : "직접") : k === "state" ? (STATE[it.state]?.label || "계약가능") : k === "dealKind" ? (it.type === "아파트" ? dealKindOf(it) : "") : k === "star" ? (it.star ? "O" : "") : k === "feats" ? (it.feats || []).join(", ") : (it[k] ?? "")])),
     "필지수": parcels(it).length, "토지합계(㎡)": totLand(it) ?? "", "건물합계(㎡)": totBldg(it) ?? "" }));
   const extra = items.flatMap(it => (it.extra || []).map(p => ({ 대표소재지: it.area, 대표지번: it.jibun, 소재지: p.area || "", 지번: p.jibun, 지목: p.jimok, "토지면적(㎡)": p.landM2 ?? "", "건물면적(㎡)": p.bldgM2 ?? "" })));
   const logs = items.flatMap(it => (it.logs || []).map(l => ({ 소재지: it.area, 지번: it.jibun, 상담일: l.date, 상대: l.who, "제시가(만원)": l.offer ?? "", 다음연락: l.next, 내용: l.text })));
