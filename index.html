@@ -1575,7 +1575,7 @@ function renderHome(){
       </button>
     </div>
     <div class="section grid-2 work-row">
-      <div class="work-col">${memoHTML()}${clientsHTML(6)}</div>
+      <div class="work-col">${clientsHTML(6)}${memoHTML()}</div>
       ${dealsHTML()}
     </div>`;
   v.querySelectorAll("[data-goto-type]").forEach(b => b.onclick = () => { resetFilters(); F.type = b.dataset.gotoType; go("list"); });
