@@ -194,6 +194,7 @@ small.spread i{font-style:normal}
 .badge-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--aqua),#34C759)}
 /* 매물 특징 */
 .feat-chips{display:flex;gap:6px;flex-wrap:wrap}
+.rep-mark{font-size:10.5px;font-weight:700;background:var(--aqua);color:#fff;border-radius:999px;padding:1px 6px;margin-left:3px}
 .feat-add{display:grid;grid-template-columns:1fr auto;gap:8px}
 .feat-add input{height:40px;border:1px solid transparent;border-radius:12px;background:var(--fill);padding:0 12px;font-size:14.5px;min-width:0}
 .feat-add input:focus{outline:0;border-color:var(--aqua);background:var(--card-solid)}
@@ -203,6 +204,8 @@ small.spread i{font-style:normal}
 .feat-wrap .feat{height:28px;font-size:13px;padding:0 11px;border-radius:9px}
 .c-area.is-feats{display:flex;gap:4px;flex-wrap:wrap;align-items:center;min-width:0;overflow:hidden;max-height:50px}
 .m-tenant{display:none}
+.feat-line{display:contents}
+.m-door{display:none}
 .lbl-in{font-size:11px;color:var(--ink-3);font-weight:600;margin-right:4px}
 .table.no-move .thead,.table.no-move .trow{grid-template-columns:minmax(200px,2.2fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) 92px minmax(0,1.15fr) 18px}
 .table.no-move .c-move,.table.no-move .h-move{display:none}
@@ -221,6 +224,8 @@ small.spread i{font-style:normal}
   background-image:repeating-linear-gradient(180deg,transparent 0 25.25px,color-mix(in srgb,#E6B800 18%,transparent) 25.25px 26.25px);background-position:0 3px}
 .memo-text:focus{outline:0}
 .deals{display:grid;gap:8px}
+.deals-page{max-width:980px}
+.deals-page .dcard{grid-template-columns:minmax(0,1fr) 320px auto}
 /* 거래 한 건: 왼쪽 이름 · 가운데 단계 스테퍼 · 오른쪽 다음 단계 버튼 */
 .dcard{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 244px auto;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;
   background:var(--card-solid);border:1px solid var(--line);box-shadow:var(--shadow-1);transition:border-color .15s,box-shadow .15s}
@@ -682,9 +687,19 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .tcard-sub .tag{display:none}
   .tacts{opacity:1}
   .stage-dates{grid-template-columns:1fr 1fr}
+  /* 휴대폰 중개 진행 화면: 이름 줄 아래에 단계 표시 */
+  .deals-page .dcard{grid-template-columns:minmax(0,1fr) auto;gap:10px}
+  .deals-page .dc-steps{grid-column:1/-1;grid-row:2}
+  .deals-page .dc-act{grid-column:2;grid-row:1}
   .work-row{display:none!important}
   .table.no-move .trow{grid-template-columns:1fr auto}
   .c-area.is-feats{max-height:none;flex-wrap:nowrap;overflow:hidden}
+  .c-area.is-feats .feat-line{display:flex;gap:4px;min-width:0;overflow:hidden;flex:0 1 auto}
+  .c-area.is-feats .m-move{display:none}
+  /* 원룸 현관 비밀번호: 특징 다음, 상태 태그 바로 앞 */
+  .trow .m-door{display:inline-flex;align-items:center;gap:3px;flex:none;margin-left:auto;height:22px;padding:0 8px;border-radius:7px;
+    background:var(--aqua-soft);color:var(--aqua-ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--aqua) 22%,transparent);font-size:12px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+  .trow .m-door svg.lucide{width:12px;height:12px}
   .c-area.is-feats .feat{height:20px;font-size:11px;padding:0 6px}
   /* 원룸: 셋째 줄에 세입자 이름·연락처 */
   .table.has-tenant .trow{grid-template-columns:1fr auto}
@@ -858,6 +873,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <button class="nav-item" data-view="map" type="button"><i data-lucide="map"></i>지도</button>
       <button class="nav-item" data-view="region" type="button"><i data-lucide="bar-chart-3"></i>지역별 요약</button>
       <button class="nav-item" data-view="todo" type="button"><i data-lucide="list-todo"></i>할 일<span class="count" id="navTodo"></span></button>
+      <button class="nav-item" data-view="deals" type="button"><i data-lucide="handshake"></i>중개 진행<span class="count" id="navDeals"></span></button>
       <button class="nav-item" data-view="schedule" type="button"><i data-lucide="calendar-days"></i>상담 일정<span class="count" id="navSched"></span></button>
     </nav>
     <div class="nav-label">데이터</div>
@@ -955,6 +971,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
           <label class="field"><span><i data-lucide="receipt"></i>관리비 (만원)</span><input name="fee" type="number" step="any" inputmode="decimal"></label>
           <label class="field shop-only"><span><i data-lucide="briefcase"></i>현재 업종</span><input name="bizType" placeholder="음식점, 공실"></label>
           <label class="field shop-only"><span><i data-lucide="coins"></i>권리금 (만원)</span><input name="premium" type="number" inputmode="numeric"><em class="conv" data-conv="premium"></em></label>
+          <label class="field room-only"><span><i data-lucide="key-round"></i>현관 비밀번호</span><input name="doorCode" placeholder="예: 1234*  또는  #5678" autocomplete="off"></label>
           <label class="field"><span><i data-lucide="user-round"></i>세입자</span><input name="tenant" placeholder="현재 거주·영업 중인 임차인" autocomplete="off"></label>
           <label class="field"><span><i data-lucide="phone"></i>세입자 연락처</span><input name="tenantPhone" type="tel" placeholder="010-0000-0000"></label>
         </div>
@@ -963,6 +980,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <div class="group-title">매물 특징</div>
       <div class="fgroup">
         <div class="feat-chips" id="featChips"></div>
+        <label class="field" id="featRepWrap" hidden><span><i data-lucide="award"></i>대표 특징 (목록에 이것 하나만 표시)</span><select id="featRep"></select></label>
         <div class="feat-add"><input id="featInput" placeholder="직접 입력 후 Enter (예: 화장실 리모델링)" autocomplete="off" enterkeyhint="done"><button class="btn sm" type="button" id="featAddBtn"><i data-lucide="plus"></i>추가</button></div>
       </div>
 
@@ -1070,6 +1088,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <div class="group">
         <button class="grow btnrow" type="button" data-view="region"><span class="ico"><i data-lucide="bar-chart-3"></i></span>지역별 요약<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
         <button class="grow btnrow" type="button" data-view="todo"><span class="ico"><i data-lucide="list-todo"></i></span>할 일<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
+        <button class="grow btnrow" type="button" data-view="deals"><span class="ico"><i data-lucide="handshake"></i></span>중개 진행<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
         <button class="grow btnrow" type="button" data-view="schedule"><span class="ico"><i data-lucide="calendar-days"></i></span>상담 일정<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
       </div>
       <div class="group-title">데이터</div>
@@ -1411,7 +1430,7 @@ const activeFilterCount = () => ["star", "jimok", "state", "deal", "src", "aMin"
 /* =========================================================
    화면 그리기
    ========================================================= */
-const TITLES = { home: "대시보드", list: "매물 목록", map: "지도", region: "지역별 요약", schedule: "상담 일정", todo: "할 일" };
+const TITLES = { home: "대시보드", list: "매물 목록", map: "지도", region: "지역별 요약", schedule: "상담 일정", todo: "할 일", deals: "중개 진행" };
 function upcoming(){
   const out = [];
   for (const it of items) for (const l of it.logs || []) if (l.next) out.push({ it, l });
@@ -1422,12 +1441,13 @@ function render(){
   $("#pageTitle").hidden = view === "home"; $("#pageLogo").hidden = view !== "home";
   $("#pageSub").textContent = "";
   $$("[data-view]").forEach(b => b.setAttribute("aria-current", b.dataset.view === view ? "page" : "false"));
-  $("#tabMore").setAttribute("aria-current", ["region", "schedule", "todo"].includes(view) ? "page" : "false");
+  $("#tabMore").setAttribute("aria-current", ["region", "schedule", "todo", "deals"].includes(view) ? "page" : "false");
+  $("#navDeals").textContent = deals.filter(d => !d.done).length || "";
   $("#navTodo").textContent = tasks.filter(t => !t.done).length || "";
   $("#navCount").textContent = items.length || "";
   const due = upcoming().filter(x => x.l.next <= today()).length;
   $("#navSched").textContent = due || "";
-  ({ home: renderHome, list: renderList, map: renderMap, region: renderRegion, schedule: renderSchedule, todo: renderTodo })[view]();
+  ({ home: renderHome, list: renderList, map: renderMap, region: renderRegion, schedule: renderSchedule, todo: renderTodo, deals: renderDeals })[view]();
   if (detailId && $("#sheet").open) renderDetail();
   icons();
 }
@@ -1652,6 +1672,11 @@ $("#dealSave").onclick = () => {
   $("#dealDlg").close(); toast(dealEditing ? "거래를 고쳤습니다" : "새 거래를 추가했습니다");
 };
 
+/* ---------- 중개 진행 화면 (사이드 메뉴) ---------- */
+function renderDeals(){
+  $("#view").innerHTML = `<div class="deals-page">${dealsHTML()}</div>`;
+  bindDeals();
+}
 /* ---------- 할 일 화면 ---------- */
 function renderTodo(){
   const v = $("#view");
@@ -1837,9 +1862,10 @@ function tableHTML(list){
       const move = it.type !== "토지" && it.moveIn ? esc(it.moveIn) : "";
       const who = `<div>${it.src === "co" ? `<span class="tag co" style="height:20px;font-size:11.5px">공동</span> ${esc(it.agName || "")}` : esc(it.owner || "–")}</div><div class="faint num">${esc(it.src === "co" ? it.agPhone || "" : it.phone || "")}</div>`;
       const areaCell = oneRoom
-        ? `<span class="c-area is-feats">${(it.feats || []).length ? featTags(it, 2) : `<span class="faint">–</span>`}${move ? `<span class="m-move faint">입주 ${move}</span>` : ""}</span>`
+        ? `<span class="c-area is-feats"><span class="feat-line">${(it.feats || []).length ? `<span class="feat">${esc(it.feats[0])}</span>` : `<span class="faint">–</span>`}</span>${it.doorCode ? `<span class="m-door" title="현관 비밀번호">${ic("key-round")}${esc(it.doorCode)}</span>` : ""}${move ? `<span class="m-move faint">입주 ${move}</span>` : ""}</span>`
         : `<span class="c-area"><div class="c-k num"><span class="lbl-m">${isRes(it) ? "전용" : "토지"}</span>${areaMain}</div><div class="num">${areaSub}</div>${move ? `<span class="m-move faint">입주 ${move}</span>` : ""}</span>`;
-      const resi = it.type === "원룸" || it.type === "아파트";
+      // 휴대폰 카드 셋째 줄(소유자·세입자)은 아파트만. 원룸은 카드 높이를 낮추려고 표시하지 않음
+      const resi = it.type === "아파트";
       const people = resi && (it.owner || it.tenant) ? [it.owner ? `<span><span class="lbl-in">소유자</span>${esc(it.owner)} <span class="faint num">${esc(it.phone || "")}</span></span>` : "",
         it.tenant ? `<span><span class="lbl-in">세입자</span>${esc(it.tenant)} <span class="faint num">${esc(it.tenantPhone || "")}</span></span>` : ""].filter(Boolean).join("") : "";
       return `<button class="trow${people ? " r-room" : ""}" role="listitem" data-open="${esc(it.id)}" type="button">
@@ -2032,6 +2058,7 @@ function renderDetail(){
     it.type === "상가" ? row("briefcase", "현재 업종", esc(it.bizType)) : "",
     it.type === "상가" ? row("coins", "권리금", it.premium != null ? won(it.premium) : "") : "",
     row("receipt", "관리비", it.fee != null ? fmt(it.fee) + "만원" : ""),
+    it.type === "원룸" ? row("key-round", "현관 비밀번호", it.doorCode ? `<b class="num" style="letter-spacing:.06em">${esc(it.doorCode)}</b>` : "") : "",
     row("user-round", "세입자", esc(it.tenant)), row("phone", "세입자 연락처", it.tenantPhone ? `<a href="tel:${esc(digits(it.tenantPhone))}">${esc(it.tenantPhone)}</a>` : ""),
     row("map-pin", "주소", esc(addr))].join("") : "";
   $("#sheetTitle").textContent = it.type + " 매물";
@@ -2111,7 +2138,7 @@ function renderDetail(){
    ========================================================= */
 const form = $("#form"), formDlg = $("#formDlg");
 const fv = n => form.elements[n].value;
-const FIELDS = ["tenant", "tenantPhone", "bizType", "premium", "bName", "unitNo", "excl", "floor", "floors", "rooms", "baths", "fee", "moveIn", "type", "state", "zone", "area", "price", "deposit", "rent", "height", "hoist", "power", "road", "truck", "reg", "src", "agName", "agPhone", "owner", "phone", "memo"];
+const FIELDS = ["doorCode", "tenant", "tenantPhone", "bizType", "premium", "bName", "unitNo", "excl", "floor", "floors", "rooms", "baths", "fee", "moveIn", "type", "state", "zone", "area", "price", "deposit", "rent", "height", "hoist", "power", "road", "truck", "reg", "src", "agName", "agPhone", "owner", "phone", "memo"];
 let editing = null;
 const jimokOpts = sel => `<option value="">해당없음</option>` + JIMOK.map(([n]) => `<option${n === sel ? " selected" : ""}>${n}</option>`).join("");
 function prow(p = {}, first = false){
@@ -2162,7 +2189,11 @@ let formFeats = [];
 function renderFeats(){
   const t = fv("type"), preset = FEAT_PRESET[t] || [];
   const list = [...preset, ...formFeats.filter(f => !preset.includes(f))];
-  $("#featChips").innerHTML = list.map(f => `<button type="button" class="qchip" data-feat="${esc(f)}" aria-pressed="${formFeats.includes(f)}">${formFeats.includes(f) ? ic("check") : ""}${esc(f)}</button>`).join("");
+  $("#featChips").innerHTML = list.map(f => `<button type="button" class="qchip" data-feat="${esc(f)}" aria-pressed="${formFeats.includes(f)}">${formFeats.includes(f) ? ic(formFeats[0] === f ? "award" : "check") : ""}${esc(f)}${formFeats[0] === f && formFeats.length > 1 ? `<small class="rep-mark">대표</small>` : ""}</button>`).join("");
+  // 대표 특징: 고른 특징 중 맨 앞의 것. 바꾸면 맨 앞으로 옮김
+  $("#featRepWrap").hidden = formFeats.length < 2;
+  $("#featRep").innerHTML = formFeats.map((f, i) => `<option value="${esc(f)}"${i === 0 ? " selected" : ""}>${esc(f)}</option>`).join("");
+  $("#featRep").onchange = e => { const v = e.target.value; formFeats = [v, ...formFeats.filter(x => x !== v)]; renderFeats(); };
   $("#featChips").querySelectorAll("[data-feat]").forEach(b => b.onclick = () => {
     const f = b.dataset.feat; formFeats = formFeats.includes(f) ? formFeats.filter(x => x !== f) : [...formFeats, f]; renderFeats();
   });
@@ -2186,6 +2217,7 @@ function syncForm(){
   $("#resTitle").textContent = t === "상가" ? "상가 정보" : "주거 정보";
   form.querySelectorAll(".res-only").forEach(el => el.hidden = t === "상가");
   form.querySelectorAll(".shop-only").forEach(el => el.hidden = t !== "상가");
+  form.querySelectorAll(".room-only").forEach(el => el.hidden = t !== "원룸");
   $("#coBox").hidden = fv("src") !== "co";
   const ps = readParcels(), multi = ps.length > 1;
   $("#priceLbl").textContent = multi ? "일괄 매매가 합계" : "매매가";
@@ -2217,6 +2249,7 @@ form.addEventListener("submit", async e => {
   f.star = form.elements.star.checked;
   f.feats = [...formFeats];
   if (!BLDG_TYPES.includes(f.type)) { f.tenant = ""; f.tenantPhone = ""; }
+  if (f.type !== "원룸") f.doorCode = "";
   if (f.type !== "상가") { f.bizType = ""; f.premium = null; } else { f.rooms = null; f.baths = null; }
   if (f.src !== "co") { f.agName = ""; f.agPhone = ""; }
   const extra = ps.slice(1).filter(p => p.jibun || p.landM2 != null || p.bldgM2 != null).map(p => ({ ...p, id: uid() }));
@@ -2339,7 +2372,7 @@ $("#filterDlg").addEventListener("close", () => { if (view !== "list") render();
 /* =========================================================
    엑셀
    ========================================================= */
-const COLS = [["유형","type"],["소재지","area"],["지번","jibun"],["지목","jimok"],["토지면적(㎡)","landM2"],["건물면적(㎡)","bldgM2"],["용도지역","zone"],["매매가(만원)","price"],["보증금(만원)","deposit"],["월임대료(만원)","rent"],["소유자","owner"],["전화번호","phone"],["상태","state"],["출처","src"],["부동산명","agName"],["부동산전화","agPhone"],["층고(m)","height"],["호이스트","hoist"],["수전용량(kW)","power"],["진입로폭(m)","road"],["대형차진입","truck"],["공장등록","reg"],["단지명","bName"],["동호수","unitNo"],["전용면적(㎡)","excl"],["해당층","floor"],["총층","floors"],["방수","rooms"],["욕실수","baths"],["관리비(만원)","fee"],["입주가능일","moveIn"],["업종","bizType"],["권리금(만원)","premium"],["세입자","tenant"],["세입자연락처","tenantPhone"],["특징","feats"],["중요","star"],["메모","memo"]];
+const COLS = [["유형","type"],["소재지","area"],["지번","jibun"],["지목","jimok"],["토지면적(㎡)","landM2"],["건물면적(㎡)","bldgM2"],["용도지역","zone"],["매매가(만원)","price"],["보증금(만원)","deposit"],["월임대료(만원)","rent"],["소유자","owner"],["전화번호","phone"],["상태","state"],["출처","src"],["부동산명","agName"],["부동산전화","agPhone"],["층고(m)","height"],["호이스트","hoist"],["수전용량(kW)","power"],["진입로폭(m)","road"],["대형차진입","truck"],["공장등록","reg"],["단지명","bName"],["동호수","unitNo"],["전용면적(㎡)","excl"],["해당층","floor"],["총층","floors"],["방수","rooms"],["욕실수","baths"],["관리비(만원)","fee"],["입주가능일","moveIn"],["업종","bizType"],["권리금(만원)","premium"],["현관비번","doorCode"],["세입자","tenant"],["세입자연락처","tenantPhone"],["특징","feats"],["중요","star"],["메모","memo"]];
 const NUMS = new Set(["landM2", "bldgM2", "price", "deposit", "rent", "height", "power", "road", "excl", "floor", "floors", "rooms", "baths", "fee", "premium"]);
 const norm = s => String(s).replace(/\s|\(.*?\)/g, "");
 const pick = (row, h) => { const key = Object.keys(row).find(c => norm(c) === norm(h)); return key == null ? "" : row[key]; };
