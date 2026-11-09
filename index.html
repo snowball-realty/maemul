@@ -194,6 +194,11 @@ small.spread i{font-style:normal}
 .badge-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--aqua),#34C759)}
 /* 매물 특징 */
 .feat-chips{display:flex;gap:6px;flex-wrap:wrap}
+.house-box{background:linear-gradient(180deg,var(--aqua-soft),var(--card-solid) 70%)}
+.house-pick{display:flex;gap:10px;align-items:center}
+.house-ic{width:36px;height:36px;border-radius:11px;background:var(--card-solid);color:var(--aqua-ink);display:grid;place-items:center;flex:none;box-shadow:var(--shadow-1)}
+.house-pick select{flex:1;min-width:0;height:44px;border:1.5px solid color-mix(in srgb,var(--aqua) 35%,transparent);border-radius:12px;background:var(--card-solid);padding:0 12px;font-size:15px;font-weight:600;color:var(--ink)}
+.house-pick select:disabled{font-weight:400;color:var(--ink-3)}
 /* 아파트 거래 구분 배지 (파스텔) */
 .dk{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;font-size:11.5px;font-weight:700;margin-right:6px;vertical-align:.1em;letter-spacing:0}
 .dk-sale{background:var(--apt-bg);color:var(--apt)} .dk-jeonse{background:var(--aqua-soft);color:var(--aqua-ink)} .dk-month{background:var(--shop-bg);color:var(--shop)}
@@ -983,6 +988,18 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
           <label><input type="radio" name="state" value="진행" checked><span>계약가능</span></label>
           <label><input type="radio" name="state" value="보류"><span>보류</span></label>
           <label><input type="radio" name="state" value="완료"><span>계약완료</span></label>
+        </div>
+      </div>
+
+      <div id="houseBox" hidden>
+        <div class="group-title">같은 주택 불러오기</div>
+        <div class="fgroup house-box">
+          <div class="house-pick">
+            <span class="house-ic"><i data-lucide="building-2"></i></span>
+            <select id="houseSel" aria-label="등록했던 주택 고르기"></select>
+            <button class="btn sm ghost" type="button" id="houseDel" title="고른 주택을 불러오기 목록에서 지우기" hidden><i data-lucide="x"></i></button>
+          </div>
+          <p class="faint" style="font-size:12.5px;margin:0" id="houseHint">전에 등록한 원룸 건물을 고르면 주소·건물명·층수·소유자·관리비·특징·현관 비밀번호가 채워집니다. 호수와 가격만 입력하세요.</p>
         </div>
       </div>
 
@@ -2292,6 +2309,7 @@ function renderDetail(){
     <div class="actions" style="margin-top:8px">
       <button class="btn sm aqua" type="button" id="briefBtn">${ic("printer")}브리핑 인쇄</button>
       <button class="btn sm" type="button" id="dupBtn">${ic("copy-plus")}매물 복사</button>
+      ${it.type === "원룸" ? `<button class="btn sm aqua" type="button" id="unitBtn">${ic("door-open")}같은 주택 다른 호실</button>` : ""}
       <button class="btn sm" type="button" id="dealFromBtn">${ic("handshake")}거래 시작</button>
       <button class="btn sm" type="button" id="starBtn" style="${it.star ? "background:#FFF4D1;color:#9A6B00" : ""}">${ic("star")}${it.star ? "중요 해제" : "중요 표시"}</button>
     </div>
@@ -2325,6 +2343,10 @@ function renderDetail(){
   $("#copyBtn").onclick = async () => { try { await navigator.clipboard.writeText(ps.map(p => `${p.area || it.area || ""} ${p.jibun || ""}`.trim()).join("\n")); toast("주소를 복사했습니다"); } catch { toast("복사하지 못했습니다. 주소를 길게 눌러 선택하세요"); } };
   $("#sheetEdit").onclick = () => openForm(it);
   $("#dupBtn").onclick = () => openForm(it, true);
+  if ($("#unitBtn")) $("#unitBtn").onclick = () => {
+    openForm(); form.elements.type.value = "원룸"; form.elements.state.value = "진행"; syncForm(); renderFeats();
+    $("#formTitle").textContent = "같은 주택 다른 호실"; loadHouse(houseFrom(it));
+  };
   $("#dealFromBtn").onclick = () => { openDeal(); $("#dlListing").value = it.id; $("#dlTitleWrap").hidden = true; };
   $("#starBtn").onclick = async () => { await save({ ...it, star: !it.star }); toast(it.star ? "중요 매물에서 뺐습니다" : "중요 매물로 표시했습니다"); };
   $("#briefBtn").onclick = () => openBrief(it);
@@ -2383,10 +2405,69 @@ function openForm(it, copy = false){
     if (!it.src) form.elements.src.value = "own";
     parcels(it).forEach((p, i) => prow(p, i === 0));
   } else prow({ jimok: "대" }, true);
+  fillHouseSel();
   syncForm(); renderFeats(); formDlg.showModal(); icons();
   form.querySelector(".sheet-body").scrollTop = 0;
   if (copy) toast("복사본입니다. 호수·지번 등 바뀐 부분만 고쳐 저장하세요 (상담 기록은 복사되지 않습니다)");
 }
+/* =========================================================
+   같은 주택(건물) 정보 불러오기 — 원룸
+   원룸을 저장할 때마다 건물 공통 정보를 ‘주택’ 기록(kind: house)으로 남겨,
+   그 호실 매물을 지운 뒤에도 다음 호실 등록에 다시 쓸 수 있게 함
+   ========================================================= */
+const HOUSE_FIELDS = ["area", "zone", "jibun", "jimok", "landM2", "bldgM2", "extra", "bName", "floors", "owner", "phone", "src", "agName", "agPhone", "fee", "feats", "doorCode"];
+const houseKey = h => [h.area, h.jibun, h.bName].map(x => String(x || "").replace(/\s+/g, "")).join("|");
+function houseFrom(it){ const h = { kind: "house" }; HOUSE_FIELDS.forEach(k => { if (it[k] != null) h[k] = Array.isArray(it[k]) ? JSON.parse(JSON.stringify(it[k])) : it[k]; }); return h; }
+function houseList(){
+  // 저장된 주택 기록 + 지금 등록된 원룸에서 뽑은 건물 (같은 건물은 하나로)
+  const map = new Map();
+  for (const h of all.filter(x => !x.deleted && x.kind === "house")) map.set(houseKey(h), { ...h });
+  for (const it of items.filter(x => x.type === "원룸" && (x.bName || x.jibun))) {
+    const k = houseKey(it), cur = map.get(k);
+    if (!cur || (it.updated || 0) > (cur.updated || 0)) map.set(k, { ...(cur || {}), ...houseFrom(it), id: cur?.id, updated: it.updated });
+  }
+  const list = [...map.values()].filter(h => !h.hidden);
+  list.forEach(h => h.units = items.filter(it => it.type === "원룸" && houseKey(it) === houseKey(h)).length);
+  return list.sort((a, b) => (b.updated || 0) - (a.updated || 0));
+}
+function rememberHouse(it){
+  if (it.type !== "원룸" || !(it.bName || it.jibun)) return;
+  const k = houseKey(it), old = all.find(x => x.kind === "house" && !x.deleted && houseKey(x) === k);
+  upsert({ ...(old || {}), ...houseFrom(it), id: old?.id || "house-" + uid(), hidden: false, updated: Date.now() });
+}
+let houseCache = [];
+function fillHouseSel(){
+  houseCache = houseList();
+  $("#houseSel").innerHTML = `<option value="">${houseCache.length ? `등록했던 주택 ${houseCache.length}곳 중 고르기` : "아직 등록한 원룸 주택이 없습니다"}</option>` +
+    houseCache.map((h, i) => `<option value="${i}">${esc(h.bName || "건물명 없음")}  ${esc(`${String(h.area || "").split(/\s+/).slice(-1)[0] || ""} ${h.jibun || ""}`.trim())}${h.units ? `  (등록 ${h.units}실)` : ""}</option>`).join("");
+  $("#houseSel").disabled = !houseCache.length;
+  $("#houseDel").hidden = true;
+}
+function loadHouse(h){
+  const set = (k, v) => { if (form.elements[k] && v != null) form.elements[k].value = v; };
+  ["area", "zone", "bName", "floors", "owner", "phone", "agName", "agPhone", "fee", "doorCode"].forEach(k => set(k, h[k]));
+  form.elements.src.value = h.src || "own";
+  // 호실마다 다른 값은 비움
+  ["unitNo", "excl", "floor", "price", "deposit", "rent", "tenant", "tenantPhone", "moveIn", "rooms", "baths"].forEach(k => { if (form.elements[k]) form.elements[k].value = ""; });
+  $("#prows").innerHTML = "";
+  [{ jibun: h.jibun, jimok: h.jimok || "대", landM2: h.landM2, bldgM2: h.bldgM2 }, ...(h.extra || [])].forEach((p, i) => prow(p, i === 0));
+  formFeats = [...(h.feats || [])];
+  renderFeats(); syncForm(); icons();
+  toast(`${h.bName || "주택"} 정보를 불러왔습니다. 호수와 가격만 입력하세요`);
+  setTimeout(() => form.elements.unitNo?.focus(), 50);
+}
+$("#houseSel").onchange = e => {
+  const h = houseCache[+e.target.value]; $("#houseDel").hidden = !h;
+  if (h) loadHouse(h);
+};
+$("#houseDel").onclick = () => {
+  const h = houseCache[+$("#houseSel").value]; if (!h) return;
+  if (!confirm(`‘${h.bName || "주택"}’을(를) 불러오기 목록에서 지울까요?\n등록된 매물은 지워지지 않습니다.`)) return;
+  const old = all.find(x => x.kind === "house" && !x.deleted && houseKey(x) === houseKey(h));
+  upsert({ ...(old || houseFrom(h)), id: old?.id || "house-" + uid(), kind: "house", hidden: true, updated: Date.now() });
+  rev++; live(); saveLocal(); scheduleSync(); fillHouseSel(); toast("불러오기 목록에서 지웠습니다");
+};
+
 /* ---------- 매물 특징 (유형별 자주 쓰는 항목 + 직접 입력) ---------- */
 const FEAT_PRESET = {
   원룸: ["창 2개", "분리형 주방", "복층", "풀옵션", "베란다", "엘리베이터", "주차 가능", "반려동물 가능", "남향", "신축"],
@@ -2429,6 +2510,7 @@ function syncForm(){
   form.querySelectorAll(".res-only").forEach(el => el.hidden = t === "상가");
   form.querySelectorAll(".shop-only").forEach(el => el.hidden = t !== "상가");
   form.querySelectorAll(".room-only").forEach(el => el.hidden = t !== "원룸");
+  $("#houseBox").hidden = t !== "원룸" || !!editing;
   // 아파트: 거래 구분에 맞는 가격 칸만 보이기
   const apt = t === "아파트", dk = form.querySelector('input[name="dealKind"]:checked')?.value || "매매";
   form.querySelectorAll(".apt-only").forEach(el => el.hidden = !apt);
@@ -2447,7 +2529,7 @@ function syncForm(){
 }
 form.addEventListener("input", syncForm);
 form.addEventListener("change", e => {
-  if (e.target.name === "type") renderFeats();
+  if (e.target.name === "type") { renderFeats(); if (e.target.value === "원룸") fillHouseSel(); }
   if (e.target.name === "type" && !editing) {
     const first = $("#prows .p-jimok");
     if (first) first.value = { 아파트: "대", 토지: "대", 상가: "대", 공장: "공장용지", 창고: "창고용지", 원룸: "대" }[fv("type")];
@@ -2479,6 +2561,7 @@ form.addEventListener("submit", async e => {
   const it = { ...(editing || { id: uid(), logs: [], created: Date.now() }), ...f, jibun: main.jibun, jimok: main.jimok, landM2: main.landM2, bldgM2: main.bldgM2, extra };
   const wasEdit = !!editing;
   formDlg.close();
+  rememberHouse(it);
   await save(it);
   toast(wasEdit ? "변경 내용을 저장했습니다" : $("#formTitle").textContent === "매물 복사" ? "복사한 매물을 새로 등록했습니다" : "매물을 등록했습니다");
   openDetail(it.id);
