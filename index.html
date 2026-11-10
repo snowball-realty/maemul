@@ -669,6 +669,18 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 
 /* 더보기 메뉴 */
 .menu .grow{min-height:52px}
+.more-grid .group-title{margin:14px 6px 8px}
+.more-grid .group-title:first-child{margin-top:4px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile-btn{border:0;background:var(--card-solid);border-radius:16px;padding:10px 4px 9px;display:grid;justify-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2);box-shadow:var(--shadow-1);line-height:1.2;text-align:center}
+.tile-btn:active{transform:scale(.96)}
+.tile-btn[aria-current="page"]{box-shadow:0 0 0 2px var(--aqua)}
+.t-ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center}
+.t-ic svg.lucide{width:19px;height:19px}
+.t-ic.c1{background:var(--aqua-soft);color:var(--aqua-ink)} .t-ic.c2{background:var(--fac-bg);color:var(--fac)} .t-ic.c3{background:var(--apt-bg);color:var(--apt)}
+.t-ic.c4{background:var(--room-bg);color:var(--room)} .t-ic.c5{background:var(--shop-bg);color:var(--shop)} .t-ic.c6{background:var(--fill);color:var(--ink-2)}
+.drive-row .grow{min-height:0;padding:10px 14px;gap:10px}
+.drive-row .authBtn{flex:none}
 .menu .ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--fill);color:var(--ink-2);flex:none}
 
 /* =========================================================
@@ -697,7 +709,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .sidebar{display:none}
   .mobile-only{display:grid!important}
   .desk-only{display:none!important}
-  .main{padding:0 16px calc(100px + var(--safe-b))}
+  .main{padding:0 16px calc(96px + var(--safe-b))}
   .topbar{margin:0 -16px;padding:calc(12px + var(--safe-t)) 16px 14px}
   .topbar h1{font-size:30px}
   .logo-lockup .sb{width:36px;height:36px}
@@ -791,16 +803,20 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .lbl-m{display:inline;font-size:11.5px;color:var(--ink-3);font-weight:500;margin-right:4px}
   .trow .m-move{display:inline-flex}
   .map-card{height:calc(100vh - 200px - var(--safe-b))}
-  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);align-items:center;position:fixed;left:0;right:0;bottom:0;z-index:20;
-    padding:6px 8px calc(6px + var(--safe-b));background:var(--glass);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-top:1px solid var(--line)}
-  .tab{border:0;background:transparent;display:grid;justify-items:center;gap:3px;padding:6px 0;font-size:11px;font-weight:500;color:var(--ink-3)}
-  .tab svg.lucide{width:24px;height:24px}
+  /* 하단 탭 바: 화면에서 떠 있는 둥근 유리 막대 */
+  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);align-items:center;position:fixed;left:14px;right:14px;bottom:calc(10px + var(--safe-b));z-index:20;
+    height:64px;padding:0 6px;border-radius:32px;background:color-mix(in srgb,var(--card-solid) 78%,transparent);
+    backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);
+    border:1px solid var(--glass-line);box-shadow:0 10px 30px rgba(15,42,74,.18),0 2px 6px rgba(15,42,74,.08),var(--hi)}
+  .tab{position:relative;isolation:isolate;border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:6px 0;font-size:10.5px;font-weight:600;color:var(--ink-3);border-radius:22px}
+  .tab[aria-current="page"]::before{content:"";position:absolute;inset:4px 10%;border-radius:18px;background:color-mix(in srgb,var(--aqua) 13%,transparent);z-index:-1}
+  .tab svg.lucide{width:23px;height:23px}
   .tab .tab-logo{width:25px;height:25px;color:currentColor}
   .tab[aria-current="page"]{color:var(--navy)}
   :root[data-theme="dark"] .tab[aria-current="page"]{color:var(--aqua)}
-  .tab-add{justify-self:center;width:52px;height:52px;border-radius:17px;border:0;background:var(--navy);color:var(--on-navy);display:grid;place-items:center;box-shadow:0 6px 18px rgba(15,42,74,.28)}
+  .tab-add{justify-self:center;width:48px;height:48px;border-radius:50%;border:0;background:linear-gradient(160deg,var(--navy-2),var(--navy));color:var(--on-navy);display:grid;place-items:center;box-shadow:0 6px 16px rgba(15,42,74,.32),inset 0 1px 0 rgba(255,255,255,.2)}
   .tab-add svg.lucide{width:26px;height:26px}
-  .toast{bottom:calc(92px + var(--safe-b))}
+  .toast{bottom:calc(88px + var(--safe-b))}
   /* 시트·모달 → 아래에서 올라오는 시트 */
   .sheet,.modal{margin:auto 0 0;width:100vw;height:calc(100% - 10px - var(--safe-t))}
   .modal.small{width:100vw;height:auto}
@@ -1137,24 +1153,21 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <span class="l"></span><div class="title" id="moreTitle">더보기</div>
       <button class="btn ghost r" type="button" data-close="moreDlg" style="font-weight:700">완료</button>
     </div>
-    <div class="sheet-body menu">
+    <div class="sheet-body menu more-grid">
       <div class="group-title">보기</div>
-      <div class="group">
-        <button class="grow btnrow" type="button" data-view="region"><span class="ico"><i data-lucide="bar-chart-3"></i></span>지역별 요약<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
-        <button class="grow btnrow" type="button" data-view="todo"><span class="ico"><i data-lucide="list-todo"></i></span>할 일<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
-        <button class="grow btnrow" type="button" data-view="deals"><span class="ico"><i data-lucide="handshake"></i></span>중개 진행<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
-        <button class="grow btnrow" type="button" data-view="clients"><span class="ico"><i data-lucide="users-round"></i></span>중개의뢰 고객<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
-        <button class="grow btnrow" type="button" data-view="schedule"><span class="ico"><i data-lucide="calendar-days"></i></span>상담 일정<i data-lucide="chevron-right" class="faint" style="margin-left:auto"></i></button>
-      </div>
-      <div class="group-title">데이터</div>
-      <div class="group">
-        <button class="grow btnrow" type="button" data-act="import"><span class="ico"><i data-lucide="upload"></i></span>엑셀 불러오기</button>
-        <button class="grow btnrow" type="button" data-act="export"><span class="ico"><i data-lucide="download"></i></span>엑셀로 저장</button>
+      <div class="tiles">
+        <button class="tile-btn" type="button" data-view="todo"><span class="t-ic c1"><i data-lucide="list-todo"></i></span>할 일</button>
+        <button class="tile-btn" type="button" data-view="deals"><span class="t-ic c2"><i data-lucide="handshake"></i></span>중개 진행</button>
+        <button class="tile-btn" type="button" data-view="clients"><span class="t-ic c3"><i data-lucide="users-round"></i></span>의뢰 고객</button>
+        <button class="tile-btn" type="button" data-view="schedule"><span class="t-ic c4"><i data-lucide="calendar-days"></i></span>상담 일정</button>
+        <button class="tile-btn" type="button" data-view="region"><span class="t-ic c5"><i data-lucide="bar-chart-3"></i></span>지역별 요약</button>
+        <button class="tile-btn" type="button" data-act="import"><span class="t-ic c6"><i data-lucide="upload"></i></span>엑셀 열기</button>
+        <button class="tile-btn" type="button" data-act="export"><span class="t-ic c6"><i data-lucide="download"></i></span>엑셀 저장</button>
       </div>
       <div class="group-title">구글 드라이브</div>
-      <div class="group">
-        <div class="grow"><span class="dot" data-sync-dot></span><div><b data-sync-txt style="font-weight:600"></b><div class="faint" style="font-size:12.5px" data-sync-sub></div></div></div>
-        <div class="grow"><button class="btn aqua block authBtn" type="button" hidden><i data-lucide="cloud"></i><span>구글 로그인</span></button></div>
+      <div class="group drive-row">
+        <div class="grow"><span class="dot" data-sync-dot></span><div style="min-width:0;flex:1"><b data-sync-txt style="font-weight:600;font-size:14px"></b><div class="faint" style="font-size:12px" data-sync-sub></div></div>
+          <button class="btn sm aqua authBtn" type="button" hidden><i data-lucide="cloud"></i><span>구글 로그인</span></button></div>
       </div>
     </div>
   </div>
