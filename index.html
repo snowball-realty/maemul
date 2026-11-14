@@ -609,7 +609,23 @@ small.spread i{font-style:normal}
    ========================================================= */
 dialog{border:0;padding:0;background:transparent;color:var(--ink);max-width:none;max-height:none}
 dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.sheet{margin:0 0 0 auto;height:100%;width:min(620px,100vw)}
+.sheet{margin:0 0 0 auto;height:100%;width:min(620px,100vw);overflow:visible}
+.sheet[open]{display:flex}
+.sheet .sheet-in{flex:0 0 min(620px,100vw);width:min(620px,100vw)}
+/* 서류 보기: 상세 시트 왼쪽으로 펼쳐지는 패널 */
+.sheet.viewing{width:100vw;max-width:100vw}
+.viewer{flex:1;min-width:0;display:flex;flex-direction:column;margin:14px 0 14px 14px;border-radius:var(--r-xl) 0 0 var(--r-xl);overflow:hidden;
+  background:#525659;box-shadow:var(--shadow-3);animation:vwIn .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes vwIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.viewer-bar{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 16px;background:var(--card-solid);border-bottom:1px solid var(--line)}
+.vw-title{min-width:0;flex:1;display:grid}
+.vw-title b{font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vw-title small{font-size:12px;color:var(--ink-3)}
+.viewer-body{flex:1;min-height:0;display:grid;place-items:center}
+.viewer-body iframe{width:100%;height:100%;border:0;background:#525659}
+.viewer-body img{max-width:100%;max-height:100%;object-fit:contain}
+.viewer-body .vw-msg{color:#fff;font-size:14px;opacity:.85}
+.doc-file.on{box-shadow:0 0 0 2px var(--aqua);background:var(--aqua-soft)}
 .sheet-in{height:100%;background:linear-gradient(180deg,color-mix(in srgb,var(--aqua) 6%,var(--bg)),var(--bg) 240px);border-radius:var(--r-xl) 0 0 var(--r-xl);box-shadow:var(--shadow-3);display:flex;flex-direction:column;overflow:hidden}
 .sheet[open] .sheet-in{animation:slideL .28s cubic-bezier(.2,.8,.2,1)}
 @keyframes slideL{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
@@ -838,6 +854,9 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .toast{bottom:calc(88px + var(--safe-b))}
   /* 시트·모달 → 아래에서 올라오는 시트 */
   .sheet,.modal{margin:auto 0 0;width:100vw;height:calc(100% - 10px - var(--safe-t))}
+  .sheet .sheet-in{flex:1 1 auto;width:100%}
+  /* 휴대폰: 서류 칸과 보기 패널은 표시하지 않음 */
+  .docs-wrap,.viewer{display:none!important}
   .modal.small{width:100vw;height:auto}
   .sheet-in,.modal-in{border-radius:var(--r-xl) var(--r-xl) 0 0;height:100%;max-height:none}
   .modal.small .modal-in{height:auto;max-height:85vh}
@@ -989,6 +1008,15 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 
 <!-- ================= 상세 시트 ================= -->
 <dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
+  <section class="viewer" id="viewer" aria-label="서류 보기" hidden>
+    <div class="viewer-bar">
+      <span class="doc-ic" id="vwIc"></span>
+      <div class="vw-title"><b id="vwName"></b><small id="vwMeta"></small></div>
+      <a class="btn sm" id="vwDown" download><i data-lucide="download"></i>내려받기</a>
+      <button class="btn sm" type="button" id="vwClose" aria-label="서류 보기 닫기"><i data-lucide="x"></i>닫기</button>
+    </div>
+    <div class="viewer-body" id="vwBody"></div>
+  </section>
   <div class="sheet-in">
     <div class="navbar">
       <button class="btn ghost l" type="button" data-close="sheet"><i data-lucide="chevron-left"></i>닫기</button>
@@ -2286,7 +2314,7 @@ function renderSchedule(){
 /* =========================================================
    상세 시트
    ========================================================= */
-function openDetail(id){ detailId = id; renderDetail(); const s = $("#sheet"); if (!s.open) s.showModal(); $("#sheetBody").scrollTop = 0; }
+function openDetail(id){ if (detailId !== id) closeViewer(); detailId = id; renderDetail(); const s = $("#sheet"); if (!s.open) s.showModal(); $("#sheetBody").scrollTop = 0; }
 function renderDetail(){
   const it = items.find(x => x.id === detailId);
   if (!it) { if ($("#sheet").open) $("#sheet").close(); return; }
@@ -2405,8 +2433,8 @@ function renderDetail(){
    - 파일 자체는 이 기기(IndexedDB)와 구글 드라이브 ‘매물대장_첨부서류’ 폴더에 저장
    - 매물 기록에는 파일 정보(docs: 종류, 이름, 크기, 등록일, 드라이브 ID)만 남김
    ========================================================= */
-const DOC_CATS = ["토지대장", "등기사항전부증명서", "기타 서류"];
-const DOC_IC = { 토지대장: "map", 등기사항전부증명서: "file-text", "기타 서류": "paperclip" };
+const DOC_CATS = ["토지대장", "등기사항전부증명서", "건축물대장", "기타 서류"];
+const DOC_IC = { 토지대장: "map", 등기사항전부증명서: "file-text", 건축물대장: "building-2", "기타 서류": "paperclip" };
 const MAX_DRIVE = 5 * 1024 * 1024;
 const fileDB = (() => {
   let p = null;
@@ -2428,7 +2456,7 @@ function docsHTML(it){
       </div>`).join("") : `<p class="doc-empty">등록된 파일이 없습니다</p>`}
     </div>`;
   };
-  return `<div class="group-title">서류</div><div class="group docs-box">${DOC_CATS.map(slot).join("")}</div>`;
+  return `<div class="docs-wrap"><div class="group-title">서류</div><div class="group docs-box">${DOC_CATS.map(slot).join("")}</div></div>`;
 }
 function bindDocs(it){
   const body = $("#sheetBody");
@@ -2466,24 +2494,38 @@ async function getDocBlob(d){
   }
   return null;
 }
+let vwUrl = null, vwDocId = null;
+function closeViewer(){
+  $("#viewer").hidden = true; $("#sheet").classList.remove("viewing"); $("#vwBody").innerHTML = "";
+  if (vwUrl) { URL.revokeObjectURL(vwUrl); vwUrl = null; }
+  vwDocId = null; $$(".doc-file.on").forEach(x => x.classList.remove("on"));
+}
 async function openDoc(it, d){
   if (!d) return;
-  const mobile = matchMedia("(max-width:900px)").matches;
-  // 휴대폰은 PDF를 브라우저 안에서 바로 못 여는 경우가 많아, 드라이브에 있으면 드라이브 보기로 엶
-  if (mobile && d.driveId) { window.open(`https://drive.google.com/file/d/${d.driveId}/view`, "_blank", "noopener"); return; }
-  const win = mobile ? null : window.open("", "_blank");
+  if (vwDocId === d.id) { closeViewer(); return; }   // 같은 파일을 다시 누르면 닫기
+  $("#viewer").hidden = false; $("#sheet").classList.add("viewing");
+  $("#vwIc").innerHTML = ic(DOC_IC[d.cat] || "file-text");
+  $("#vwName").textContent = d.name;
+  $("#vwMeta").textContent = `${d.cat}  ${new Date(d.added).toLocaleDateString("ko-KR")} 등록  ${sizeTxt(d.size || 0)}`;
+  $("#vwBody").innerHTML = `<p class="vw-msg">불러오는 중…</p>`;
+  $$(".doc-file").forEach(x => x.classList.toggle("on", x.querySelector("[data-doc-open]")?.dataset.docOpen === d.id));
+  vwDocId = d.id; icons();
   try {
     const blob = await getDocBlob(d);
-    if (!blob) { win?.close(); toast(d.driveId ? "드라이브에서 받으려면 구글 로그인이 필요합니다" : "이 기기에 파일이 없습니다. 파일을 등록한 기기에서 드라이브에 올라간 뒤 열 수 있습니다"); return; }
-    const url = URL.createObjectURL(blob.type ? blob : new Blob([blob], { type: d.type || "application/pdf" }));
-    if (win) win.location.href = url;
-    else { const a = document.createElement("a"); a.href = url; a.download = d.name; a.target = "_blank"; document.body.append(a); a.click(); a.remove(); }
-    setTimeout(() => URL.revokeObjectURL(url), 60000);
-  } catch (e) { win?.close(); toast("파일을 열지 못했습니다" + (e.auth ? ". 드라이브 연결을 확인하세요" : "")); }
+    if (vwDocId !== d.id) return;
+    if (!blob) { $("#vwBody").innerHTML = `<p class="vw-msg">${d.driveId ? "드라이브에서 받으려면 구글 로그인이 필요합니다" : "이 기기에 파일이 없습니다"}</p>`; return; }
+    if (vwUrl) URL.revokeObjectURL(vwUrl);
+    const typed = blob.type ? blob : new Blob([blob], { type: d.type || "application/pdf" });
+    vwUrl = URL.createObjectURL(typed);
+    $("#vwDown").href = vwUrl; $("#vwDown").download = d.name;
+    $("#vwBody").innerHTML = /^image\//.test(typed.type) ? `<img src="${vwUrl}" alt="${esc(d.name)}">` : `<iframe src="${vwUrl}#view=FitH" title="${esc(d.name)}"></iframe>`;
+  } catch (e) { $("#vwBody").innerHTML = `<p class="vw-msg">파일을 열지 못했습니다${e?.auth ? ". 드라이브 연결을 확인하세요" : ""}</p>`; }
 }
+$("#vwClose").onclick = closeViewer;
 async function delDoc(it, d){
   if (!d || !confirm(`‘${d.name}’ 파일을 삭제할까요?`)) return;
   const cur = items.find(x => x.id === it.id) || it;
+  if (vwDocId === d.id) closeViewer();
   await save({ ...cur, docs: (cur.docs || []).filter(x => x.id !== d.id) });
   try { await fileDB.del(d.id); } catch {}
   if (d.driveId && token) { try { await gfetch(`${DRIVE}/files/${d.driveId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ trashed: true }) }); } catch {} }
@@ -2919,7 +2961,7 @@ document.addEventListener("click", e => {
 });
 // 시트·모달 바깥(어두운 배경)을 누르면 닫기
 $$("dialog").forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
-$("#sheet").addEventListener("close", () => { detailId = null; });
+$("#sheet").addEventListener("close", () => { detailId = null; closeViewer(); });
 $("#syncMini").onclick = () => { setSync(); $("#moreDlg").showModal(); };
 $("#impFile").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) importExcel(f); };
 let tt; function toast(m, act){
