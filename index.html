@@ -638,8 +638,10 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
 .zoom-val{min-width:54px;height:32px;border:0;background:none;font-size:13px;font-weight:700;color:var(--ink-2);border-radius:999px}
 .zoom-val:hover{background:var(--fill)}
 /* 문서 영역: 매물 상세와 같은 밝은 바탕 위에 흰 종이를 크게 */
-.viewer-body{flex:1;min-height:0;overflow:auto;padding:4px 18px 24px;overscroll-behavior:contain}
-.doc-pages{display:grid;justify-items:center;gap:14px;min-width:min-content}
+.viewer-body{flex:1;min-height:0;overflow:auto;padding:4px 18px 24px;overscroll-behavior:contain;cursor:grab;scrollbar-width:none;-ms-overflow-style:none}
+.viewer-body::-webkit-scrollbar{display:none}
+.viewer-body.grabbing{cursor:grabbing;user-select:none}
+.doc-pages{display:grid;justify-items:center;gap:14px;min-width:min-content;width:max-content;margin:0 auto}
 .doc-page{background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(15,42,74,.08),0 6px 20px rgba(15,42,74,.10);overflow:hidden;line-height:0}
 .doc-page canvas{display:block}
 .doc-pages img.doc-img{display:block;background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(15,42,74,.08),0 6px 20px rgba(15,42,74,.10)}
@@ -1040,7 +1042,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
         <div class="vw-tabs" id="vwTabs" role="tablist" aria-label="이 매물의 공적장부"></div>
         <div class="vw-zoom" role="group" aria-label="확대·축소">
           <button class="icon-btn sm" type="button" id="vwOut" title="축소" aria-label="축소"><i data-lucide="minus"></i></button>
-          <button class="zoom-val num" type="button" id="vwFit" title="폭에 맞추기">100%</button>
+          <button class="zoom-val num" type="button" id="vwFit" title="기본 크기(150%)로">150%</button>
           <button class="icon-btn sm" type="button" id="vwIn" title="확대" aria-label="확대"><i data-lucide="plus"></i></button>
         </div>
         <div class="vw-acts">
@@ -2536,7 +2538,10 @@ async function getDocBlob(d){
   }
   return null;
 }
-let vwUrl = null, vwDocId = null, vwPdf = null, vwImg = null, vwZoom = null, vwBaseW = 0, vwRenderTok = 0;
+let vwUrl = null, vwDocId = null, vwPdf = null, vwImg = null, vwBaseW = 0, vwRenderTok = 0;
+// 확대 비율: 보기 폭에 딱 맞는 크기를 100%로 보고, 처음에는 150%로 열림. 바꾼 비율은 기억해 다음에도 그대로
+const VW_DEFAULT = 1.5, VWKEY = "maemul-vw-zoom";
+let vwRatio = (() => { const v = +localStorage.getItem(VWKEY); return v >= .3 && v <= 5 ? v : VW_DEFAULT; })();
 /* PDF.js (화면에 그려서 보여주므로 바탕색·크기·확대를 앱에서 직접 다룸) */
 let pdfLib = null;
 function loadPdfJs(){
@@ -2553,14 +2558,14 @@ function loadPdfJs(){
 function closeViewer(){
   $("#viewer").hidden = true; $("#sheet").classList.remove("viewing"); $("#vwBody").innerHTML = "";
   if (vwUrl) { URL.revokeObjectURL(vwUrl); vwUrl = null; }
-  vwPdf?.destroy?.(); vwPdf = null; vwImg = null; vwZoom = null;
+  vwPdf?.destroy?.(); vwPdf = null; vwImg = null;
   vwDocId = null; $$(".doc-file.on").forEach(x => x.classList.remove("on"));
 }
 const fitScale = () => { const w = $("#vwScroll").clientWidth - 36; return vwBaseW ? Math.max(.25, w / vwBaseW) : 1; };
-function zoomLabel(){ $("#vwFit").textContent = Math.round((vwZoom ?? fitScale()) / fitScale() * 100) + "%"; }
+function zoomLabel(){ $("#vwFit").textContent = Math.round(vwRatio * 100) + "%"; }
 async function renderPages(){
   const tok = ++vwRenderTok, box = $("#vwBody");
-  const scale = vwZoom ?? fitScale();
+  const scale = fitScale() * vwRatio;
   zoomLabel();
   if (vwImg) { box.innerHTML = `<img class="doc-img" src="${vwUrl}" style="width:${Math.round(vwBaseW * scale)}px" alt="">`; return; }
   if (!vwPdf) return;
@@ -2579,24 +2584,39 @@ async function renderPages(){
   }
   if (tok !== vwRenderTok) return;
   box.replaceChildren(frag);
-  $("#vwScroll").scrollTop = keepTop * $("#vwScroll").scrollHeight;
+  const sc = $("#vwScroll");
+  sc.scrollTop = keepTop * sc.scrollHeight;
+  if (vwCenterNext) { sc.scrollLeft = 0; vwCenterNext = false; }   // 처음엔 문서 왼쪽 위(글이 시작하는 곳)부터
   for (const j of jobs) { if (tok !== vwRenderTok) return; await j(); }
 }
-function setZoom(z){ vwZoom = Math.min(5, Math.max(.3, z)); renderPages(); }
-$("#vwIn").onclick = () => setZoom((vwZoom ?? fitScale()) * 1.2);
-$("#vwOut").onclick = () => setZoom((vwZoom ?? fitScale()) / 1.2);
-$("#vwFit").onclick = () => { vwZoom = null; renderPages(); };
+function setRatio(r){ vwRatio = Math.min(5, Math.max(.3, r)); try { localStorage.setItem(VWKEY, vwRatio); } catch {} renderPages(); }
+let vwCenterNext = false;
+(function dragPan(){
+  const sc = $("#vwScroll"); let down = false, sx = 0, sy = 0, sl = 0, st = 0;
+  sc.addEventListener("mousedown", e => {
+    if (e.button !== 0) return;
+    down = true; sx = e.clientX; sy = e.clientY; sl = sc.scrollLeft; st = sc.scrollTop;
+    sc.classList.add("grabbing"); e.preventDefault();
+  });
+  window.addEventListener("mousemove", e => { if (!down) return; sc.scrollLeft = sl - (e.clientX - sx); sc.scrollTop = st - (e.clientY - sy); });
+  window.addEventListener("mouseup", () => { if (down) { down = false; sc.classList.remove("grabbing"); } });
+  // 더블클릭: 기본 크기 ↔ 2배
+  sc.addEventListener("dblclick", () => setRatio(vwRatio < VW_DEFAULT * 1.4 ? VW_DEFAULT * 2 : VW_DEFAULT));
+})();
+$("#vwIn").onclick = () => setRatio(vwRatio * 1.2);
+$("#vwOut").onclick = () => setRatio(vwRatio / 1.2);
+$("#vwFit").onclick = () => setRatio(VW_DEFAULT);   // 가운데 숫자: 기본 크기(150%)로
 // Ctrl(또는 ⌘) + 마우스 휠로 확대·축소
 let wheelT = null;
 $("#vwScroll").addEventListener("wheel", e => {
   if (!(e.ctrlKey || e.metaKey)) return;
   e.preventDefault();
-  const base = vwZoom ?? fitScale();
-  vwZoom = Math.min(5, Math.max(.3, base * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+  vwRatio = Math.min(5, Math.max(.3, vwRatio * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+  try { localStorage.setItem(VWKEY, vwRatio); } catch {}
   zoomLabel(); clearTimeout(wheelT); wheelT = setTimeout(renderPages, 120);
 }, { passive: false });
 // 창 크기가 바뀌면 ‘폭 맞춤’ 상태일 때 다시 맞춤
-new ResizeObserver(() => { if (!$("#viewer").hidden && vwZoom == null) { clearTimeout(wheelT); wheelT = setTimeout(renderPages, 150); } }).observe($("#vwScroll"));
+new ResizeObserver(() => { if (!$("#viewer").hidden) { clearTimeout(wheelT); wheelT = setTimeout(renderPages, 150); } }).observe($("#vwScroll"));
 
 async function openDoc(it, d){
   if (!d) return;
@@ -2612,7 +2632,7 @@ async function openDoc(it, d){
   $("#vwTabs").querySelectorAll("[data-vw]").forEach(b => b.onclick = () => { if (b.dataset.vw !== vwDocId) { vwDocId = null; openDoc(cur, docs.find(x => x.id === b.dataset.vw)); } });
   $("#vwBody").innerHTML = `<p class="vw-msg">불러오는 중…</p>`;
   $$(".doc-file").forEach(x => x.classList.toggle("on", x.querySelector("[data-doc-open]")?.dataset.docOpen === d.id));
-  vwDocId = d.id; vwZoom = null; vwPdf?.destroy?.(); vwPdf = null; vwImg = null; icons();
+  vwDocId = d.id; vwPdf?.destroy?.(); vwPdf = null; vwImg = null; icons();
   try {
     const blob = await getDocBlob(d);
     if (vwDocId !== d.id) return;
@@ -2632,6 +2652,7 @@ async function openDoc(it, d){
       vwPdf = pdf; vwBaseW = (await pdf.getPage(1)).getViewport({ scale: 1 }).width;
       $("#vwPages").textContent = `${pdf.numPages}쪽`;
     }
+    vwCenterNext = true; $("#vwScroll").scrollTop = 0;
     await renderPages();
   } catch (e) { $("#vwBody").innerHTML = `<p class="vw-msg">파일을 열지 못했습니다${e?.auth ? ". 드라이브 연결을 확인하세요" : e?.message === "pdf.js" ? ". 인터넷 연결을 확인하세요" : ""}</p>`; }
 }
