@@ -194,6 +194,25 @@ small.spread i{font-style:normal}
 .badge-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--aqua),#34C759)}
 /* 매물 특징 */
 .feat-chips{display:flex;gap:6px;flex-wrap:wrap}
+/* 서류 */
+.docs-box{display:grid}
+.doc-slot{padding:12px 14px;border-top:1px solid var(--line);display:grid;gap:8px}
+.doc-slot:first-child{border-top:0}
+.doc-head{display:flex;align-items:center;gap:10px}
+.doc-head b{font-size:14.5px;font-weight:600}
+.doc-head .btn{margin-left:auto}
+.doc-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--fac-bg);color:var(--fac);flex:none}
+.doc-ic svg.lucide{width:16px;height:16px}
+.doc-file{display:flex;align-items:center;gap:6px;background:var(--fill);border-radius:12px;padding:4px 4px 4px 0}
+.doc-open{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:0;background:none;padding:6px 10px;text-align:left;color:inherit;border-radius:10px}
+.doc-open:hover{background:var(--card-solid)}
+.doc-open>svg.lucide{color:var(--danger);flex:none}
+.doc-open span{min-width:0;display:grid}
+.doc-open b{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-open small{font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-del{width:32px;height:32px;border:0;border-radius:9px;background:none;color:var(--ink-3);display:grid;place-items:center;flex:none}
+.doc-del:hover{background:var(--danger-bg);color:var(--danger)}
+.doc-empty{margin:0;font-size:12.5px;color:var(--ink-3);padding-left:40px}
 .house-box{background:linear-gradient(180deg,var(--aqua-soft),var(--card-solid) 70%)}
 .house-pick{display:flex;gap:10px;align-items:center}
 .house-ic{width:36px;height:36px;border-radius:11px;background:var(--card-solid);color:var(--aqua-ink);display:grid;place-items:center;flex:none;box-shadow:var(--shadow-1)}
@@ -1441,6 +1460,7 @@ async function sync(){
       catch (e) { if (e.notFound) fileId = await findFile(); else throw e; }
     }
     await uploadAll();
+    uploadPendingDocs();
     if (rev === startRev) syncedRev = rev; else scheduleSync();
     lastSync = Date.now(); saveLocal(); render(); setSync();
   } catch (e) {
@@ -2334,6 +2354,7 @@ function renderDetail(){
     ${resInfo ? `<div class="group-title">${it.type === "상가" ? "상가 정보" : "주거 정보"}</div><div class="group">${resInfo}</div>` : ""}
     ${facInfo ? `<div class="group-title">시설</div><div class="group">${facInfo}</div>` : ""}
     ${info ? `<div class="group-title">정보</div><div class="group">${info}</div>` : ""}
+    ${docsHTML(it)}
     ${sibs.length ? `<div class="group-title">같은 소유자의 다른 매물</div><div class="group">${sibs.map(s => `<button class="grow btnrow" type="button" data-sib="${esc(s.id)}">${tile(s)}<span style="min-width:0"><div style="font-weight:600">${esc(titleOf(s))}</div><div class="faint" style="font-size:13px">${esc(s.type)} ${s.price != null ? won(s.price) : ""}</div></span><span class="faint" style="margin-left:auto">${ic("chevron-right")}</span></button>`).join("")}</div>` : ""}
     <div class="group-title">상담 기록 ${logs.length ? logs.length + "건" : ""}</div>
     <div class="group">
@@ -2374,8 +2395,131 @@ function renderDetail(){
     if (!confirm("이 상담 기록을 삭제할까요?")) return;
     await save({ ...it, logs: it.logs.filter(l => l.id !== b.dataset.log) });
   });
+  bindDocs(it);
   showMiniMap(it);
   icons();
+}
+
+/* =========================================================
+   서류 PDF (토지대장 · 등기사항전부증명서 · 기타)
+   - 파일 자체는 이 기기(IndexedDB)와 구글 드라이브 ‘매물대장_첨부서류’ 폴더에 저장
+   - 매물 기록에는 파일 정보(docs: 종류, 이름, 크기, 등록일, 드라이브 ID)만 남김
+   ========================================================= */
+const DOC_CATS = ["토지대장", "등기사항전부증명서", "기타 서류"];
+const DOC_IC = { 토지대장: "map", 등기사항전부증명서: "file-text", "기타 서류": "paperclip" };
+const MAX_DRIVE = 5 * 1024 * 1024;
+const fileDB = (() => {
+  let p = null;
+  const open = () => p || (p = new Promise((res, rej) => { const r = indexedDB.open("maemul-files", 1); r.onupgradeneeded = () => r.result.createObjectStore("files"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }));
+  const tx = async (mode, fn) => { const db = await open(); return new Promise((res, rej) => { const t = db.transaction("files", mode); const st = t.objectStore("files"); const q = fn(st); t.oncomplete = () => res(q?.result); t.onerror = () => rej(t.error); }); };
+  return { get: k => tx("readonly", st => st.get(k)), put: (k, v) => tx("readwrite", st => st.put(v, k)), del: k => tx("readwrite", st => st.delete(k)) };
+})();
+const sizeTxt = n => n > 1048576 ? (n / 1048576).toFixed(1) + "MB" : Math.max(1, Math.round(n / 1024)) + "KB";
+function docsHTML(it){
+  const docs = it.docs || [];
+  const slot = cat => {
+    const list = docs.filter(d => d.cat === cat).sort((a, b) => (b.added || 0) - (a.added || 0));
+    return `<div class="doc-slot">
+      <div class="doc-head"><span class="doc-ic">${ic(DOC_IC[cat])}</span><b>${cat}</b>
+        <button class="btn sm ${list.length ? "" : "aqua"}" type="button" data-doc-add="${cat}">${ic("plus")}${list.length ? "추가" : "PDF 등록"}</button></div>
+      ${list.length ? list.map(d => `<div class="doc-file">
+        <button class="doc-open" type="button" data-doc-open="${esc(d.id)}" title="열기">${ic("file-text")}<span><b>${esc(d.name)}</b><small>${new Date(d.added).toLocaleDateString("ko-KR")} 등록  ${sizeTxt(d.size || 0)}  ${d.driveId ? "드라이브 저장됨" : CONFIG.GOOGLE_CLIENT_ID ? (d.size > MAX_DRIVE ? "5MB 초과, 이 기기에만 보관" : "드라이브 올리기 대기") : "이 기기에만 보관"}</small></span></button>
+        <button class="doc-del" type="button" data-doc-del="${esc(d.id)}" aria-label="삭제" title="삭제">${ic("trash-2")}</button>
+      </div>`).join("") : `<p class="doc-empty">등록된 파일이 없습니다</p>`}
+    </div>`;
+  };
+  return `<div class="group-title">서류</div><div class="group docs-box">${DOC_CATS.map(slot).join("")}</div>`;
+}
+function bindDocs(it){
+  const body = $("#sheetBody");
+  body.querySelectorAll("[data-doc-add]").forEach(b => b.onclick = () => pickDoc(it, b.dataset.docAdd));
+  body.querySelectorAll("[data-doc-open]").forEach(b => b.onclick = () => openDoc(it, (it.docs || []).find(d => d.id === b.dataset.docOpen)));
+  body.querySelectorAll("[data-doc-del]").forEach(b => b.onclick = () => delDoc(it, (it.docs || []).find(d => d.id === b.dataset.docDel)));
+}
+function pickDoc(it, cat){
+  const inp = document.createElement("input");
+  inp.type = "file"; inp.accept = "application/pdf,image/*"; inp.multiple = true;
+  inp.onchange = async () => {
+    const files = [...inp.files]; if (!files.length) return;
+    const cur = items.find(x => x.id === it.id) || it;
+    const added = [];
+    for (const f of files) {
+      const id = "doc-" + uid();
+      try { await fileDB.put(id, f); } catch { toast("이 기기에 파일을 저장하지 못했습니다"); return; }
+      added.push({ id, cat, name: f.name, size: f.size, type: f.type || "application/pdf", added: Date.now() });
+    }
+    await save({ ...cur, docs: [...(cur.docs || []), ...added] });
+    toast(`${cat} ${added.length}개를 등록했습니다${token ? "" : CONFIG.GOOGLE_CLIENT_ID ? ", 로그인하면 드라이브에 올라갑니다" : ""}`);
+    uploadPendingDocs();
+  };
+  inp.click();
+}
+async function getDocBlob(d){
+  let blob = null;
+  try { blob = await fileDB.get(d.id); } catch {}
+  if (blob) return blob;
+  if (d.driveId && token) {
+    const r = await gfetch(`${DRIVE}/files/${d.driveId}?alt=media`);
+    blob = await r.blob();
+    try { await fileDB.put(d.id, blob); } catch {}
+    return blob;
+  }
+  return null;
+}
+async function openDoc(it, d){
+  if (!d) return;
+  const mobile = matchMedia("(max-width:900px)").matches;
+  // 휴대폰은 PDF를 브라우저 안에서 바로 못 여는 경우가 많아, 드라이브에 있으면 드라이브 보기로 엶
+  if (mobile && d.driveId) { window.open(`https://drive.google.com/file/d/${d.driveId}/view`, "_blank", "noopener"); return; }
+  const win = mobile ? null : window.open("", "_blank");
+  try {
+    const blob = await getDocBlob(d);
+    if (!blob) { win?.close(); toast(d.driveId ? "드라이브에서 받으려면 구글 로그인이 필요합니다" : "이 기기에 파일이 없습니다. 파일을 등록한 기기에서 드라이브에 올라간 뒤 열 수 있습니다"); return; }
+    const url = URL.createObjectURL(blob.type ? blob : new Blob([blob], { type: d.type || "application/pdf" }));
+    if (win) win.location.href = url;
+    else { const a = document.createElement("a"); a.href = url; a.download = d.name; a.target = "_blank"; document.body.append(a); a.click(); a.remove(); }
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (e) { win?.close(); toast("파일을 열지 못했습니다" + (e.auth ? ". 드라이브 연결을 확인하세요" : "")); }
+}
+async function delDoc(it, d){
+  if (!d || !confirm(`‘${d.name}’ 파일을 삭제할까요?`)) return;
+  const cur = items.find(x => x.id === it.id) || it;
+  await save({ ...cur, docs: (cur.docs || []).filter(x => x.id !== d.id) });
+  try { await fileDB.del(d.id); } catch {}
+  if (d.driveId && token) { try { await gfetch(`${DRIVE}/files/${d.driveId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ trashed: true }) }); } catch {} }
+  toast("파일을 삭제했습니다");
+}
+/* 드라이브 첨부 폴더 */
+async function docFolder(){
+  let id = localStorage.getItem("maemul-doc-folder");
+  if (id) return id;
+  const q = encodeURIComponent(`name='매물대장_첨부서류' and mimeType='application/vnd.google-apps.folder' and trashed=false and 'me' in owners`);
+  const j = await (await gfetch(`${DRIVE}/files?q=${q}&spaces=drive&fields=files(id)`)).json();
+  id = j.files?.[0]?.id;
+  if (!id) id = (await (await gfetch(`${DRIVE}/files?fields=id`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "매물대장_첨부서류", mimeType: "application/vnd.google-apps.folder" }) })).json()).id;
+  localStorage.setItem("maemul-doc-folder", id);
+  return id;
+}
+let docUploading = false;
+async function uploadPendingDocs(){
+  if (!token || docUploading) return;
+  docUploading = true;
+  try {
+    for (const it of items) for (const d of (it.docs || [])) {
+      if (d.driveId || d.size > MAX_DRIVE) continue;
+      let blob; try { blob = await fileDB.get(d.id); } catch {}
+      if (!blob) continue;
+      let folder; try { folder = await docFolder(); } catch { localStorage.removeItem("maemul-doc-folder"); continue; }
+      const bd = "maemuldoc" + Date.now();
+      const meta = { name: `${shortTitle(it)}_${d.cat}_${d.name}`.replace(/[\\/]/g, "_"), parents: [folder], mimeType: d.type || "application/pdf" };
+      const body = new Blob([`--${bd}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n--${bd}\r\nContent-Type: ${meta.mimeType}\r\n\r\n`, blob, `\r\n--${bd}--`]);
+      const j = await (await gfetch(`${UPLOAD}/files?uploadType=multipart&fields=id`, { method: "POST", headers: { "Content-Type": `multipart/related; boundary=${bd}` }, body })).json();
+      const cur = items.find(x => x.id === it.id); if (!cur) continue;
+      upsert({ ...cur, docs: (cur.docs || []).map(x => x.id === d.id ? { ...x, driveId: j.id } : x), updated: Date.now() });
+      afterChange();
+    }
+  } catch (e) { if (e?.message && e.message.includes("404")) localStorage.removeItem("maemul-doc-folder"); }
+  finally { docUploading = false; }
 }
 
 /* =========================================================
@@ -2571,7 +2715,7 @@ form.addEventListener("submit", async e => {
   if (f.type !== "상가") { f.bizType = ""; f.premium = null; } else { f.rooms = null; f.baths = null; }
   if (f.src !== "co") { f.agName = ""; f.agPhone = ""; }
   const extra = ps.slice(1).filter(p => p.jibun || p.landM2 != null || p.bldgM2 != null).map(p => ({ ...p, id: uid() }));
-  const it = { ...(editing || { id: uid(), logs: [], created: Date.now() }), ...f, jibun: main.jibun, jimok: main.jimok, landM2: main.landM2, bldgM2: main.bldgM2, extra };
+  const it = { ...(editing || { id: uid(), logs: [], docs: [], created: Date.now() }), ...f, jibun: main.jibun, jimok: main.jimok, landM2: main.landM2, bldgM2: main.bldgM2, extra };
   const wasEdit = !!editing;
   formDlg.close();
   rememberHouse(it);
