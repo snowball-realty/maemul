@@ -194,7 +194,7 @@ small.spread i{font-style:normal}
 .badge-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--aqua),#34C759)}
 /* 매물 특징 */
 .feat-chips{display:flex;gap:6px;flex-wrap:wrap}
-/* 서류 */
+/* 공적장부 */
 .docs-box{display:grid}
 .doc-slot{padding:12px 14px;border-top:1px solid var(--line);display:grid;gap:8px}
 .doc-slot:first-child{border-top:0}
@@ -609,22 +609,38 @@ small.spread i{font-style:normal}
    ========================================================= */
 dialog{border:0;padding:0;background:transparent;color:var(--ink);max-width:none;max-height:none}
 dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.sheet{margin:0 0 0 auto;height:100%;width:min(620px,100vw);overflow:visible}
-.sheet[open]{display:flex}
-.sheet .sheet-in{flex:0 0 min(620px,100vw);width:min(620px,100vw)}
-/* 서류 보기: 상세 시트 왼쪽으로 펼쳐지는 패널 */
-.sheet.viewing{width:100vw;max-width:100vw}
-.viewer{flex:1;min-width:0;display:flex;flex-direction:column;margin:14px 0 14px 14px;border-radius:var(--r-xl) 0 0 var(--r-xl);overflow:hidden;
-  background:#525659;box-shadow:var(--shadow-3);animation:vwIn .3s cubic-bezier(.2,.8,.2,1)}
-@keyframes vwIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
-.viewer-bar{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 16px;background:var(--card-solid);border-bottom:1px solid var(--line)}
+.sheet{margin:0 0 0 auto;height:100%;width:min(620px,100vw);transition:width .38s cubic-bezier(.2,.8,.2,1)}
+/* 서류를 열면 오른쪽 서랍이 왼쪽으로 넓어지며, 늘어난 부분에 PDF가 펼쳐짐 */
+.sheet.viewing{width:min(1500px,calc(100vw - 24px))}
+.sheet .sheet-in{flex-direction:row}
+.detail-col{flex:0 0 min(620px,100vw);width:min(620px,100vw);height:100%;display:flex;flex-direction:column;min-width:0}
+.viewer{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--aqua) 6%,var(--bg)),var(--bg) 240px);animation:vwIn .45s ease}
+@keyframes vwIn{from{opacity:0}to{opacity:1}}
+.viewer-bar{display:flex;align-items:center;gap:10px;padding:calc(12px + var(--safe-t)) 14px 12px;min-height:57px;
+  background:var(--glass);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.vw-tabs{flex:1;min-width:0;display:flex;gap:6px;justify-content:center;overflow-x:auto;scrollbar-width:none}
+.vw-tabs::-webkit-scrollbar{display:none}
+.vw-tab{flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card-solid);color:var(--ink-2);font-size:13px;font-weight:600}
+.vw-tab svg.lucide{width:14px;height:14px}
+.vw-tab[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:var(--on-navy)}
+.vw-acts{display:flex;gap:6px}
+.icon-btn.sm{width:36px;height:36px;color:var(--ink-2);text-decoration:none}
+.icon-btn.sm svg.lucide{width:17px;height:17px}
+.vw-head{display:flex;align-items:center;gap:12px;padding:16px 22px 10px}
 .vw-title{min-width:0;flex:1;display:grid}
-.vw-title b{font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.vw-title small{font-size:12px;color:var(--ink-3)}
-.viewer-body{flex:1;min-height:0;display:grid;place-items:center}
-.viewer-body iframe{width:100%;height:100%;border:0;background:#525659}
-.viewer-body img{max-width:100%;max-height:100%;object-fit:contain}
-.viewer-body .vw-msg{color:#fff;font-size:14px;opacity:.85}
+.vw-title b{font-size:17px;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vw-title small{font-size:12.5px;color:var(--ink-3)}
+.viewer-body{flex:1;min-height:0;padding:4px 22px 22px;display:flex}
+/* 문서는 매물 정보 카드와 같은 흰 카드 안에 */
+.doc-frame{flex:1;min-width:0;border-radius:var(--r-lg);overflow:hidden;background:var(--card-solid);box-shadow:var(--hi),var(--shadow-2);border:1px solid var(--glass-line);display:grid;place-items:center}
+.doc-frame iframe{width:100%;height:100%;border:0;background:var(--card-solid)}
+.doc-frame img{max-width:100%;max-height:100%;object-fit:contain;padding:18px}
+.doc-frame .vw-msg{color:var(--ink-3);font-size:14px}
+.pb{display:flex;gap:3px;margin-top:3px;flex-wrap:nowrap;overflow:hidden}
+.pb span{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:2px;height:17px;padding:0 5px;border-radius:5px;font-size:10.5px;font-weight:700;background:var(--fill);color:var(--ink-3);letter-spacing:0}
+.pb span.on{background:var(--aqua-soft);color:var(--aqua-ink)}
+.pb span svg.lucide{width:10px;height:10px;stroke-width:3}
 .doc-file.on{box-shadow:0 0 0 2px var(--aqua);background:var(--aqua-soft)}
 .sheet-in{height:100%;background:linear-gradient(180deg,color-mix(in srgb,var(--aqua) 6%,var(--bg)),var(--bg) 240px);border-radius:var(--r-xl) 0 0 var(--r-xl);box-shadow:var(--shadow-3);display:flex;flex-direction:column;overflow:hidden}
 .sheet[open] .sheet-in{animation:slideL .28s cubic-bezier(.2,.8,.2,1)}
@@ -854,9 +870,9 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .toast{bottom:calc(88px + var(--safe-b))}
   /* 시트·모달 → 아래에서 올라오는 시트 */
   .sheet,.modal{margin:auto 0 0;width:100vw;height:calc(100% - 10px - var(--safe-t))}
-  .sheet .sheet-in{flex:1 1 auto;width:100%}
+  .detail-col{flex:1 1 auto;width:100%}
   /* 휴대폰: 서류 칸과 보기 패널은 표시하지 않음 */
-  .docs-wrap,.viewer{display:none!important}
+  .docs-wrap,.viewer,.pb{display:none!important}
   .modal.small{width:100vw;height:auto}
   .sheet-in,.modal-in{border-radius:var(--r-xl) var(--r-xl) 0 0;height:100%;max-height:none}
   .modal.small .modal-in{height:auto;max-height:85vh}
@@ -1008,22 +1024,27 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 
 <!-- ================= 상세 시트 ================= -->
 <dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
-  <section class="viewer" id="viewer" aria-label="서류 보기" hidden>
-    <div class="viewer-bar">
-      <span class="doc-ic" id="vwIc"></span>
-      <div class="vw-title"><b id="vwName"></b><small id="vwMeta"></small></div>
-      <a class="btn sm" id="vwDown" download><i data-lucide="download"></i>내려받기</a>
-      <button class="btn sm" type="button" id="vwClose" aria-label="서류 보기 닫기"><i data-lucide="x"></i>닫기</button>
-    </div>
-    <div class="viewer-body" id="vwBody"></div>
-  </section>
   <div class="sheet-in">
-    <div class="navbar">
-      <button class="btn ghost l" type="button" data-close="sheet"><i data-lucide="chevron-left"></i>닫기</button>
-      <div class="title" id="sheetTitle">매물 상세</div>
-      <button class="btn ghost r" type="button" id="sheetEdit">수정</button>
+    <section class="viewer" id="viewer" aria-label="공적장부 보기" hidden>
+      <div class="viewer-bar">
+        <button class="btn ghost" type="button" id="vwClose" aria-label="공적장부 접기"><i data-lucide="panel-left-close"></i>접기</button>
+        <div class="vw-tabs" id="vwTabs" role="tablist" aria-label="이 매물의 공적장부"></div>
+        <div class="vw-acts">
+          <button class="icon-btn sm" type="button" id="vwPrint" title="인쇄" aria-label="인쇄"><i data-lucide="printer"></i></button>
+          <a class="icon-btn sm" id="vwDown" download title="내려받기" aria-label="내려받기"><i data-lucide="download"></i></a>
+        </div>
+      </div>
+      <div class="vw-head"><span class="doc-ic" id="vwIc"></span><div class="vw-title"><b id="vwName"></b><small id="vwMeta"></small></div></div>
+      <div class="viewer-body"><div class="doc-frame" id="vwBody"></div></div>
+    </section>
+    <div class="detail-col">
+      <div class="navbar">
+        <button class="btn ghost l" type="button" data-close="sheet"><i data-lucide="chevron-left"></i>닫기</button>
+        <div class="title" id="sheetTitle">매물 상세</div>
+        <button class="btn ghost r" type="button" id="sheetEdit">수정</button>
+      </div>
+      <div class="sheet-body" id="sheetBody"></div>
     </div>
-    <div class="sheet-body" id="sheetBody"></div>
   </div>
 </dialog>
 
@@ -2155,7 +2176,7 @@ function tableHTML(list){
       const people = resi && (it.owner || it.tenant) ? [it.owner ? `<span><span class="lbl-in">소유자</span>${esc(it.owner)} <span class="faint num">${esc(it.phone || "")}</span></span>` : "",
         it.tenant ? `<span><span class="lbl-in">세입자</span>${esc(it.tenant)} <span class="faint num">${esc(it.tenantPhone || "")}</span></span>` : ""].filter(Boolean).join("") : "";
       return `<button class="trow${people ? " r-room" : ""}" role="listitem" data-open="${esc(it.id)}" type="button">
-        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() + (isMulti(it) ? ` 외 ${it.extra.length}필지` : "") : areaPrefix(it.area) || it.zone || "")}</div></span></span>
+        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() + (isMulti(it) ? ` 외 ${it.extra.length}필지` : "") : areaPrefix(it.area) || it.zone || "")}</div>${pbMarks(it)}</span></span>
         <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}<span>${esc(it.type)}${dkTag(it) ? `<span class="dk-line">${dkTag(it)}</span>` : ""}${it.jimok && !isRes(it) && TYPES.includes(it.type) ? ` <span class="faint">${esc(it.jimok)}</span>` : ""}</span></span>
         ${areaCell}
         <span class="c-price"><div class="c-k num">${dkTag(it)}${priceMain}</div><div class="num">${priceSub}</div></span>
@@ -2433,8 +2454,14 @@ function renderDetail(){
    - 파일 자체는 이 기기(IndexedDB)와 구글 드라이브 ‘매물대장_첨부서류’ 폴더에 저장
    - 매물 기록에는 파일 정보(docs: 종류, 이름, 크기, 등록일, 드라이브 ID)만 남김
    ========================================================= */
-const DOC_CATS = ["토지대장", "등기사항전부증명서", "건축물대장", "기타 서류"];
+const DOC_CATS = ["등기사항전부증명서", "토지대장", "건축물대장", "기타 서류"];
 const DOC_IC = { 토지대장: "map", 등기사항전부증명서: "file-text", 건축물대장: "building-2", "기타 서류": "paperclip" };
+// 화면 표시 이름 (저장값 "기타 서류"는 기존 데이터 호환을 위해 그대로 둠)
+// 목록용: 등기·토지·건축 등록 여부 (있으면 색, 없으면 회색)
+const pbMarks = it => { const has = c => (it.docs || []).some(d => d.cat === c); const etc = (it.docs || []).filter(d => d.cat === "기타 서류").length;
+  return `<div class="pb" title="공적장부 등록 여부">${["등기사항전부증명서", "토지대장", "건축물대장"].map(c => `<span class="${has(c) ? "on" : ""}" title="${c} ${has(c) ? "있음" : "없음"}">${has(c) ? ic("check") : ""}${DOC_SHORT[c]}</span>`).join("")}${etc ? `<span class="on etc" title="기타 공적장부 ${etc}개">기타</span>` : ""}</div>`; };
+const docLabel = cat => cat === "기타 서류" ? "기타 공적장부" : cat;
+const DOC_SHORT = { 등기사항전부증명서: "등기", 토지대장: "토지", 건축물대장: "건축" };
 const MAX_DRIVE = 5 * 1024 * 1024;
 const fileDB = (() => {
   let p = null;
@@ -2448,7 +2475,7 @@ function docsHTML(it){
   const slot = cat => {
     const list = docs.filter(d => d.cat === cat).sort((a, b) => (b.added || 0) - (a.added || 0));
     return `<div class="doc-slot">
-      <div class="doc-head"><span class="doc-ic">${ic(DOC_IC[cat])}</span><b>${cat}</b>
+      <div class="doc-head"><span class="doc-ic">${ic(DOC_IC[cat])}</span><b>${docLabel(cat)}</b>
         <button class="btn sm ${list.length ? "" : "aqua"}" type="button" data-doc-add="${cat}">${ic("plus")}${list.length ? "추가" : "PDF 등록"}</button></div>
       ${list.length ? list.map(d => `<div class="doc-file">
         <button class="doc-open" type="button" data-doc-open="${esc(d.id)}" title="열기">${ic("file-text")}<span><b>${esc(d.name)}</b><small>${new Date(d.added).toLocaleDateString("ko-KR")} 등록  ${sizeTxt(d.size || 0)}  ${d.driveId ? "드라이브 저장됨" : CONFIG.GOOGLE_CLIENT_ID ? (d.size > MAX_DRIVE ? "5MB 초과, 이 기기에만 보관" : "드라이브 올리기 대기") : "이 기기에만 보관"}</small></span></button>
@@ -2456,7 +2483,7 @@ function docsHTML(it){
       </div>`).join("") : `<p class="doc-empty">등록된 파일이 없습니다</p>`}
     </div>`;
   };
-  return `<div class="docs-wrap"><div class="group-title">서류</div><div class="group docs-box">${DOC_CATS.map(slot).join("")}</div></div>`;
+  return `<div class="docs-wrap"><div class="group-title">공적장부</div><div class="group docs-box">${DOC_CATS.map(slot).join("")}</div></div>`;
 }
 function bindDocs(it){
   const body = $("#sheetBody");
@@ -2477,7 +2504,7 @@ function pickDoc(it, cat){
       added.push({ id, cat, name: f.name, size: f.size, type: f.type || "application/pdf", added: Date.now() });
     }
     await save({ ...cur, docs: [...(cur.docs || []), ...added] });
-    toast(`${cat} ${added.length}개를 등록했습니다${token ? "" : CONFIG.GOOGLE_CLIENT_ID ? ", 로그인하면 드라이브에 올라갑니다" : ""}`);
+    toast(`${docLabel(cat)} ${added.length}개를 등록했습니다${token ? "" : CONFIG.GOOGLE_CLIENT_ID ? ", 로그인하면 드라이브에 올라갑니다" : ""}`);
     uploadPendingDocs();
   };
   inp.click();
@@ -2505,8 +2532,13 @@ async function openDoc(it, d){
   if (vwDocId === d.id) { closeViewer(); return; }   // 같은 파일을 다시 누르면 닫기
   $("#viewer").hidden = false; $("#sheet").classList.add("viewing");
   $("#vwIc").innerHTML = ic(DOC_IC[d.cat] || "file-text");
-  $("#vwName").textContent = d.name;
-  $("#vwMeta").textContent = `${d.cat}  ${new Date(d.added).toLocaleDateString("ko-KR")} 등록  ${sizeTxt(d.size || 0)}`;
+  $("#vwName").textContent = docLabel(d.cat);
+  $("#vwMeta").textContent = `${d.name}  ${new Date(d.added).toLocaleDateString("ko-KR")} 등록  ${sizeTxt(d.size || 0)}`;
+  // 이 매물의 공적장부를 탭으로 (종류 순서대로, 같은 종류는 최신 것부터)
+  const cur = items.find(x => x.id === it.id) || it;
+  const docs = [...(cur.docs || [])].sort((a, b) => DOC_CATS.indexOf(a.cat) - DOC_CATS.indexOf(b.cat) || (b.added || 0) - (a.added || 0));
+  $("#vwTabs").innerHTML = docs.map(x => `<button class="vw-tab" type="button" role="tab" aria-selected="${x.id === d.id}" data-vw="${esc(x.id)}">${ic(DOC_IC[x.cat] || "file-text")}${esc((DOC_SHORT[x.cat] || "기타") + (docs.filter(y => y.cat === x.cat).length > 1 ? " " + new Date(x.added).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" }) : ""))}</button>`).join("");
+  $("#vwTabs").querySelectorAll("[data-vw]").forEach(b => b.onclick = () => { if (b.dataset.vw !== vwDocId) { vwDocId = null; openDoc(cur, docs.find(x => x.id === b.dataset.vw)); } });
   $("#vwBody").innerHTML = `<p class="vw-msg">불러오는 중…</p>`;
   $$(".doc-file").forEach(x => x.classList.toggle("on", x.querySelector("[data-doc-open]")?.dataset.docOpen === d.id));
   vwDocId = d.id; icons();
@@ -2518,10 +2550,19 @@ async function openDoc(it, d){
     const typed = blob.type ? blob : new Blob([blob], { type: d.type || "application/pdf" });
     vwUrl = URL.createObjectURL(typed);
     $("#vwDown").href = vwUrl; $("#vwDown").download = d.name;
-    $("#vwBody").innerHTML = /^image\//.test(typed.type) ? `<img src="${vwUrl}" alt="${esc(d.name)}">` : `<iframe src="${vwUrl}#view=FitH" title="${esc(d.name)}"></iframe>`;
+    $("#vwBody").innerHTML = /^image\//.test(typed.type) ? `<img src="${vwUrl}" alt="${esc(d.name)}">` : `<iframe src="${vwUrl}#view=FitH&toolbar=0&navpanes=0" title="${esc(d.name)}"></iframe>`;
   } catch (e) { $("#vwBody").innerHTML = `<p class="vw-msg">파일을 열지 못했습니다${e?.auth ? ". 드라이브 연결을 확인하세요" : ""}</p>`; }
 }
 $("#vwClose").onclick = closeViewer;
+$("#vwPrint").onclick = () => {
+  const f = $("#vwBody iframe"), img = $("#vwBody img");
+  try { if (f) { f.contentWindow.focus(); f.contentWindow.print(); return; } } catch {}
+  if (img) { // 사진은 보이지 않는 틀에 넣어 인쇄 (새 창 없음)
+    const fr = document.createElement("iframe"); fr.style.cssText = "position:fixed;width:0;height:0;border:0;opacity:0";
+    fr.srcdoc = `<img src="${vwUrl}" style="max-width:100%">`; document.body.append(fr);
+    fr.onload = () => { fr.contentWindow.print(); setTimeout(() => fr.remove(), 1000); };
+  }
+};
 async function delDoc(it, d){
   if (!d || !confirm(`‘${d.name}’ 파일을 삭제할까요?`)) return;
   const cur = items.find(x => x.id === it.id) || it;
