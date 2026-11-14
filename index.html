@@ -240,12 +240,12 @@ small.spread i{font-style:normal}
 .feat-line{display:contents}
 .m-door{display:none}
 .lbl-in{font-size:11px;color:var(--ink-3);font-weight:600;margin-right:4px}
-.table.no-move .thead,.table.no-move .trow{grid-template-columns:minmax(200px,2.2fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) 92px minmax(0,1.15fr) 18px}
+.table.no-move .thead,.table.no-move .trow{grid-template-columns:minmax(200px,2.2fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) 140px 92px minmax(0,1.15fr) 18px}
 .table.no-move .c-move,.table.no-move .h-move{display:none}
 .c-tenant,.h-tenant,.c-people{display:none}
 .table.has-tenant .c-tenant,.table.has-tenant .h-tenant{display:block}
 .c-tenant{font-size:14px;min-width:0} .c-tenant div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .c-tenant .faint{font-size:12.5px}
-.table.has-tenant .thead,.table.has-tenant .trow{grid-template-columns:minmax(190px,2fr) minmax(0,.8fr) minmax(0,.9fr) minmax(0,1.3fr) 92px minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) 18px}
+.table.has-tenant .thead,.table.has-tenant .trow{grid-template-columns:minmax(180px,2fr) minmax(0,.8fr) minmax(0,.9fr) minmax(0,1.3fr) 140px 92px minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr) 18px}
 .bf-feats{margin-top:14px} .bf-feats span{display:inline-block;margin:0 5px 5px 0;padding:3px 9px;border-radius:6px;background:#F1F6FB;color:#15283D;font-size:11.5px;font-weight:600}
 /* 메모 · 중개 진행 */
 .section.work-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
@@ -558,7 +558,7 @@ small.spread i{font-style:normal}
 .list-meta{display:flex;align-items:center;gap:10px;margin:2px 4px 10px;font-size:13.5px;color:var(--ink-2);flex-wrap:wrap}
 .list-meta select{margin-left:auto;border:0;background:transparent;color:var(--ink-2);font-size:13.5px;font-weight:500;padding:4px 2px;cursor:pointer}
 .table{overflow:hidden}
-.thead,.trow{display:grid;grid-template-columns:minmax(200px,2.2fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) 92px minmax(0,1fr) minmax(0,1.15fr) 18px;gap:14px;align-items:center;padding:0 20px}
+.thead,.trow{display:grid;grid-template-columns:minmax(200px,2.2fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) 140px 92px minmax(0,1fr) minmax(0,1.15fr) 18px;gap:14px;align-items:center;padding:0 20px}
 .thead{height:44px;font-size:12.5px;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--line)}
 .trow{width:100%;min-height:76px;border:0;background:transparent;text-align:left;color:inherit;border-bottom:1px solid var(--line);padding-top:12px;padding-bottom:12px;transition:background .12s}
 .trow:last-child{border-bottom:0}
@@ -631,13 +631,21 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
 .vw-title{min-width:0;flex:1;display:grid}
 .vw-title b{font-size:17px;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .vw-title small{font-size:12.5px;color:var(--ink-3)}
-.viewer-body{flex:1;min-height:0;padding:4px 22px 22px;display:flex}
-/* 문서는 매물 정보 카드와 같은 흰 카드 안에 */
-.doc-frame{flex:1;min-width:0;border-radius:var(--r-lg);overflow:hidden;background:var(--card-solid);box-shadow:var(--hi),var(--shadow-2);border:1px solid var(--glass-line);display:grid;place-items:center}
-.doc-frame iframe{width:100%;height:100%;border:0;background:var(--card-solid)}
-.doc-frame img{max-width:100%;max-height:100%;object-fit:contain;padding:18px}
-.doc-frame .vw-msg{color:var(--ink-3);font-size:14px}
-.pb{display:flex;gap:3px;margin-top:3px;flex-wrap:nowrap;overflow:hidden}
+.vw-head{padding:12px 18px 8px}
+.vw-pages{font-size:12.5px;white-space:nowrap}
+.vw-zoom{display:flex;align-items:center;gap:2px;background:var(--card-solid);border-radius:999px;padding:2px;box-shadow:var(--shadow-1)}
+.vw-zoom .icon-btn.sm{width:32px;height:32px;box-shadow:none;border:0;background:none}
+.zoom-val{min-width:54px;height:32px;border:0;background:none;font-size:13px;font-weight:700;color:var(--ink-2);border-radius:999px}
+.zoom-val:hover{background:var(--fill)}
+/* 문서 영역: 매물 상세와 같은 밝은 바탕 위에 흰 종이를 크게 */
+.viewer-body{flex:1;min-height:0;overflow:auto;padding:4px 18px 24px;overscroll-behavior:contain}
+.doc-pages{display:grid;justify-items:center;gap:14px;min-width:min-content}
+.doc-page{background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(15,42,74,.08),0 6px 20px rgba(15,42,74,.10);overflow:hidden;line-height:0}
+.doc-page canvas{display:block}
+.doc-pages img.doc-img{display:block;background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(15,42,74,.08),0 6px 20px rgba(15,42,74,.10)}
+.doc-pages .vw-msg{color:var(--ink-3);font-size:14px;padding:60px 0}
+.pb{display:flex;gap:3px;flex-wrap:nowrap}
+.c-pb{min-width:0}
 .pb span{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:2px;height:17px;padding:0 5px;border-radius:5px;font-size:10.5px;font-weight:700;background:var(--fill);color:var(--ink-3);letter-spacing:0}
 .pb span.on{background:var(--aqua-soft);color:var(--aqua-ink)}
 .pb span svg.lucide{width:10px;height:10px;stroke-width:3}
@@ -751,6 +759,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
   .types-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .thead,.trow,.table.no-move .thead,.table.no-move .trow,.table.has-tenant .thead,.table.has-tenant .trow{grid-template-columns:minmax(200px,2fr) minmax(0,.9fr) minmax(0,1.3fr) 92px minmax(0,1fr) 18px}
   .table.has-tenant .c-tenant,.table.has-tenant .h-tenant{display:none}
+  .c-pb,.h-pb{display:none}
   .table.no-move .thead,.table.no-move .trow{grid-template-columns:minmax(200px,2fr) minmax(0,.9fr) minmax(0,1.3fr) 92px 18px}
   .c-type,.thead span:nth-child(2){display:none}
   .c-owner,.thead .h-owner{display:none}
@@ -1029,13 +1038,18 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <div class="viewer-bar">
         <button class="btn ghost" type="button" id="vwClose" aria-label="공적장부 접기"><i data-lucide="panel-left-close"></i>접기</button>
         <div class="vw-tabs" id="vwTabs" role="tablist" aria-label="이 매물의 공적장부"></div>
+        <div class="vw-zoom" role="group" aria-label="확대·축소">
+          <button class="icon-btn sm" type="button" id="vwOut" title="축소" aria-label="축소"><i data-lucide="minus"></i></button>
+          <button class="zoom-val num" type="button" id="vwFit" title="폭에 맞추기">100%</button>
+          <button class="icon-btn sm" type="button" id="vwIn" title="확대" aria-label="확대"><i data-lucide="plus"></i></button>
+        </div>
         <div class="vw-acts">
           <button class="icon-btn sm" type="button" id="vwPrint" title="인쇄" aria-label="인쇄"><i data-lucide="printer"></i></button>
           <a class="icon-btn sm" id="vwDown" download title="내려받기" aria-label="내려받기"><i data-lucide="download"></i></a>
         </div>
       </div>
-      <div class="vw-head"><span class="doc-ic" id="vwIc"></span><div class="vw-title"><b id="vwName"></b><small id="vwMeta"></small></div></div>
-      <div class="viewer-body"><div class="doc-frame" id="vwBody"></div></div>
+      <div class="vw-head"><span class="doc-ic" id="vwIc"></span><div class="vw-title"><b id="vwName"></b><small id="vwMeta"></small></div><span class="vw-pages faint" id="vwPages"></span></div>
+      <div class="viewer-body" id="vwScroll"><div class="doc-pages" id="vwBody"></div></div>
     </section>
     <div class="detail-col">
       <div class="navbar">
@@ -2155,7 +2169,7 @@ function tableHTML(list){
   const noMove = list.length && list.every(it => it.type === "토지");
   const hasTenant = list.some(it => it.type === "원룸" || it.type === "아파트");
   return `<div class="card table${noMove ? " no-move" : ""}${hasTenant ? " has-tenant" : ""}" role="list">
-    <div class="thead"><span>매물</span><span>유형</span><span>${list.length && list.every(it => it.type === "원룸") ? "특징" : list.some(it => it.type === "원룸") ? "면적·특징" : "면적"}</span><span>가격</span><span>상태</span><span class="h-move">입주</span><span class="h-owner">소유자</span><span class="h-tenant">세입자</span><span></span></div>
+    <div class="thead"><span>매물</span><span>유형</span><span>${list.length && list.every(it => it.type === "원룸") ? "특징" : list.some(it => it.type === "원룸") ? "면적·특징" : "면적"}</span><span>가격</span><span class="h-pb">공적장부</span><span>상태</span><span class="h-move">입주</span><span class="h-owner">소유자</span><span class="h-tenant">세입자</span><span></span></div>
     ${list.map(it => {
       const l = totLand(it), up = unitPrice(it), oneRoom = it.type === "원룸";
       const areaMain = isRes(it) ? (it.excl != null ? fmt(it.excl / PY) + "평" : "–") : (l != null ? fmt(l / PY) + "평" : "–");
@@ -2176,10 +2190,11 @@ function tableHTML(list){
       const people = resi && (it.owner || it.tenant) ? [it.owner ? `<span><span class="lbl-in">소유자</span>${esc(it.owner)} <span class="faint num">${esc(it.phone || "")}</span></span>` : "",
         it.tenant ? `<span><span class="lbl-in">세입자</span>${esc(it.tenant)} <span class="faint num">${esc(it.tenantPhone || "")}</span></span>` : ""].filter(Boolean).join("") : "";
       return `<button class="trow${people ? " r-room" : ""}" role="listitem" data-open="${esc(it.id)}" type="button">
-        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() + (isMulti(it) ? ` 외 ${it.extra.length}필지` : "") : areaPrefix(it.area) || it.zone || "")}</div>${pbMarks(it)}</span></span>
+        <span class="c-main">${tile(it)}<span style="min-width:0"><div class="t">${esc(shortTitle(it))}</div><div class="s">${esc(isRes(it) && it.bName ? `${it.area || ""} ${it.jibun || ""}`.trim() + (isMulti(it) ? ` 외 ${it.extra.length}필지` : "") : areaPrefix(it.area) || it.zone || "")}</div></span></span>
         <span class="c-type">${ic(TYPE_IC[it.type] || "map-pin")}<span>${esc(it.type)}${dkTag(it) ? `<span class="dk-line">${dkTag(it)}</span>` : ""}${it.jimok && !isRes(it) && TYPES.includes(it.type) ? ` <span class="faint">${esc(it.jimok)}</span>` : ""}</span></span>
         ${areaCell}
         <span class="c-price"><div class="c-k num">${dkTag(it)}${priceMain}</div><div class="num">${priceSub}</div></span>
+        <span class="c-pb">${pbMarks(it)}</span>
         <span class="c-state">${stateTag(it)}</span>
         <span class="c-move">${move ? `<span class="tag plain">${ic("calendar-check")}${move}</span>` : `<span class="faint">–</span>`}</span>
         <span class="c-owner">${who}</span>
@@ -2521,12 +2536,68 @@ async function getDocBlob(d){
   }
   return null;
 }
-let vwUrl = null, vwDocId = null;
+let vwUrl = null, vwDocId = null, vwPdf = null, vwImg = null, vwZoom = null, vwBaseW = 0, vwRenderTok = 0;
+/* PDF.js (화면에 그려서 보여주므로 바탕색·크기·확대를 앱에서 직접 다룸) */
+let pdfLib = null;
+function loadPdfJs(){
+  if (pdfLib) return pdfLib;
+  pdfLib = new Promise((res, rej) => {
+    const sc = document.createElement("script");
+    sc.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    sc.onload = () => { pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; res(pdfjsLib); };
+    sc.onerror = () => { pdfLib = null; rej(new Error("pdf.js")); };
+    document.head.append(sc);
+  });
+  return pdfLib;
+}
 function closeViewer(){
   $("#viewer").hidden = true; $("#sheet").classList.remove("viewing"); $("#vwBody").innerHTML = "";
   if (vwUrl) { URL.revokeObjectURL(vwUrl); vwUrl = null; }
+  vwPdf?.destroy?.(); vwPdf = null; vwImg = null; vwZoom = null;
   vwDocId = null; $$(".doc-file.on").forEach(x => x.classList.remove("on"));
 }
+const fitScale = () => { const w = $("#vwScroll").clientWidth - 36; return vwBaseW ? Math.max(.25, w / vwBaseW) : 1; };
+function zoomLabel(){ $("#vwFit").textContent = Math.round((vwZoom ?? fitScale()) / fitScale() * 100) + "%"; }
+async function renderPages(){
+  const tok = ++vwRenderTok, box = $("#vwBody");
+  const scale = vwZoom ?? fitScale();
+  zoomLabel();
+  if (vwImg) { box.innerHTML = `<img class="doc-img" src="${vwUrl}" style="width:${Math.round(vwBaseW * scale)}px" alt="">`; return; }
+  if (!vwPdf) return;
+  const keepTop = $("#vwScroll").scrollTop / Math.max(1, $("#vwScroll").scrollHeight);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  const frag = document.createDocumentFragment(), jobs = [];
+  for (let n = 1; n <= vwPdf.numPages; n++) {
+    const page = await vwPdf.getPage(n); if (tok !== vwRenderTok) return;
+    const vp = page.getViewport({ scale });
+    const wrap = document.createElement("div"); wrap.className = "doc-page";
+    const cv = document.createElement("canvas");
+    cv.width = Math.floor(vp.width * dpr); cv.height = Math.floor(vp.height * dpr);
+    cv.style.width = Math.floor(vp.width) + "px"; cv.style.height = Math.floor(vp.height) + "px";
+    wrap.append(cv); frag.append(wrap);
+    jobs.push(() => page.render({ canvasContext: cv.getContext("2d"), viewport: page.getViewport({ scale: scale * dpr }) }).promise);
+  }
+  if (tok !== vwRenderTok) return;
+  box.replaceChildren(frag);
+  $("#vwScroll").scrollTop = keepTop * $("#vwScroll").scrollHeight;
+  for (const j of jobs) { if (tok !== vwRenderTok) return; await j(); }
+}
+function setZoom(z){ vwZoom = Math.min(5, Math.max(.3, z)); renderPages(); }
+$("#vwIn").onclick = () => setZoom((vwZoom ?? fitScale()) * 1.2);
+$("#vwOut").onclick = () => setZoom((vwZoom ?? fitScale()) / 1.2);
+$("#vwFit").onclick = () => { vwZoom = null; renderPages(); };
+// Ctrl(또는 ⌘) + 마우스 휠로 확대·축소
+let wheelT = null;
+$("#vwScroll").addEventListener("wheel", e => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  e.preventDefault();
+  const base = vwZoom ?? fitScale();
+  vwZoom = Math.min(5, Math.max(.3, base * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+  zoomLabel(); clearTimeout(wheelT); wheelT = setTimeout(renderPages, 120);
+}, { passive: false });
+// 창 크기가 바뀌면 ‘폭 맞춤’ 상태일 때 다시 맞춤
+new ResizeObserver(() => { if (!$("#viewer").hidden && vwZoom == null) { clearTimeout(wheelT); wheelT = setTimeout(renderPages, 150); } }).observe($("#vwScroll"));
+
 async function openDoc(it, d){
   if (!d) return;
   if (vwDocId === d.id) { closeViewer(); return; }   // 같은 파일을 다시 누르면 닫기
@@ -2534,14 +2605,14 @@ async function openDoc(it, d){
   $("#vwIc").innerHTML = ic(DOC_IC[d.cat] || "file-text");
   $("#vwName").textContent = docLabel(d.cat);
   $("#vwMeta").textContent = `${d.name}  ${new Date(d.added).toLocaleDateString("ko-KR")} 등록  ${sizeTxt(d.size || 0)}`;
-  // 이 매물의 공적장부를 탭으로 (종류 순서대로, 같은 종류는 최신 것부터)
+  $("#vwPages").textContent = "";
   const cur = items.find(x => x.id === it.id) || it;
   const docs = [...(cur.docs || [])].sort((a, b) => DOC_CATS.indexOf(a.cat) - DOC_CATS.indexOf(b.cat) || (b.added || 0) - (a.added || 0));
   $("#vwTabs").innerHTML = docs.map(x => `<button class="vw-tab" type="button" role="tab" aria-selected="${x.id === d.id}" data-vw="${esc(x.id)}">${ic(DOC_IC[x.cat] || "file-text")}${esc((DOC_SHORT[x.cat] || "기타") + (docs.filter(y => y.cat === x.cat).length > 1 ? " " + new Date(x.added).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" }) : ""))}</button>`).join("");
   $("#vwTabs").querySelectorAll("[data-vw]").forEach(b => b.onclick = () => { if (b.dataset.vw !== vwDocId) { vwDocId = null; openDoc(cur, docs.find(x => x.id === b.dataset.vw)); } });
   $("#vwBody").innerHTML = `<p class="vw-msg">불러오는 중…</p>`;
   $$(".doc-file").forEach(x => x.classList.toggle("on", x.querySelector("[data-doc-open]")?.dataset.docOpen === d.id));
-  vwDocId = d.id; icons();
+  vwDocId = d.id; vwZoom = null; vwPdf?.destroy?.(); vwPdf = null; vwImg = null; icons();
   try {
     const blob = await getDocBlob(d);
     if (vwDocId !== d.id) return;
@@ -2550,19 +2621,30 @@ async function openDoc(it, d){
     const typed = blob.type ? blob : new Blob([blob], { type: d.type || "application/pdf" });
     vwUrl = URL.createObjectURL(typed);
     $("#vwDown").href = vwUrl; $("#vwDown").download = d.name;
-    $("#vwBody").innerHTML = /^image\//.test(typed.type) ? `<img src="${vwUrl}" alt="${esc(d.name)}">` : `<iframe src="${vwUrl}#view=FitH&toolbar=0&navpanes=0" title="${esc(d.name)}"></iframe>`;
-  } catch (e) { $("#vwBody").innerHTML = `<p class="vw-msg">파일을 열지 못했습니다${e?.auth ? ". 드라이브 연결을 확인하세요" : ""}</p>`; }
+    if (/^image\//.test(typed.type)) {
+      const im = new Image(); im.src = vwUrl; await im.decode();
+      if (vwDocId !== d.id) return;
+      vwImg = im; vwBaseW = im.naturalWidth; $("#vwPages").textContent = "";
+    } else {
+      const lib = await loadPdfJs();
+      const pdf = await lib.getDocument({ data: new Uint8Array(await typed.arrayBuffer()) }).promise;
+      if (vwDocId !== d.id) { pdf.destroy(); return; }
+      vwPdf = pdf; vwBaseW = (await pdf.getPage(1)).getViewport({ scale: 1 }).width;
+      $("#vwPages").textContent = `${pdf.numPages}쪽`;
+    }
+    await renderPages();
+  } catch (e) { $("#vwBody").innerHTML = `<p class="vw-msg">파일을 열지 못했습니다${e?.auth ? ". 드라이브 연결을 확인하세요" : e?.message === "pdf.js" ? ". 인터넷 연결을 확인하세요" : ""}</p>`; }
 }
 $("#vwClose").onclick = closeViewer;
+// 인쇄: 보이지 않는 틀에 원본을 넣어 인쇄 (새 창 없음)
 $("#vwPrint").onclick = () => {
-  const f = $("#vwBody iframe"), img = $("#vwBody img");
-  try { if (f) { f.contentWindow.focus(); f.contentWindow.print(); return; } } catch {}
-  if (img) { // 사진은 보이지 않는 틀에 넣어 인쇄 (새 창 없음)
-    const fr = document.createElement("iframe"); fr.style.cssText = "position:fixed;width:0;height:0;border:0;opacity:0";
-    fr.srcdoc = `<img src="${vwUrl}" style="max-width:100%">`; document.body.append(fr);
-    fr.onload = () => { fr.contentWindow.print(); setTimeout(() => fr.remove(), 1000); };
-  }
+  if (!vwUrl) return;
+  const fr = document.createElement("iframe"); fr.style.cssText = "position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0";
+  if (vwImg) fr.srcdoc = `<img src="${vwUrl}" style="max-width:100%">`; else fr.src = vwUrl;
+  document.body.append(fr);
+  fr.onload = () => { setTimeout(() => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch { toast("인쇄하지 못했습니다. 내려받기 후 인쇄하세요"); } setTimeout(() => fr.remove(), 60000); }, 300); };
 };
+
 async function delDoc(it, d){
   if (!d || !confirm(`‘${d.name}’ 파일을 삭제할까요?`)) return;
   const cur = items.find(x => x.id === it.id) || it;
