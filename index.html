@@ -611,13 +611,8 @@ dialog{border:0;padding:0;background:transparent;color:var(--ink);max-width:none
 dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .sheet{margin:0 0 0 auto;height:100%;width:min(620px,100vw);transition:width .38s cubic-bezier(.2,.8,.2,1)}
 /* 서류를 열면 오른쪽 서랍이 왼쪽으로 넓어지며, 늘어난 부분에 PDF가 펼쳐짐 */
+/* 공적장부를 볼 때: 매물 상세 칸(620px)은 그대로 두고, 서랍을 화면 왼쪽 끝까지 넓혀 남는 폭 전부를 문서에 */
 .sheet.viewing{width:100vw;max-width:100vw}
-.detail-col{transition:flex-basis .38s cubic-bezier(.2,.8,.2,1),width .38s cubic-bezier(.2,.8,.2,1)}
-/* 공적장부를 볼 때: 매물 상세는 좁게, 문서는 넓게 (이전보다 약 1.4~1.5배) */
-.sheet.viewing .detail-col{flex-basis:320px;width:320px}
-.sheet.viewing .detail-col .figs{grid-template-columns:1fr}
-/* ‘문서만 크게’: 매물 상세를 잠시 숨기고 화면 전체를 문서에 */
-.sheet.viewing.doc-only .detail-col{flex-basis:0;width:0;overflow:hidden}
 .sheet .sheet-in{flex-direction:row}
 .detail-col{flex:0 0 min(620px,100vw);width:min(620px,100vw);height:100%;display:flex;flex-direction:column;min-width:0}
 .viewer{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line);
@@ -625,7 +620,7 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
 @keyframes vwIn{from{opacity:0}to{opacity:1}}
 .viewer-bar{display:flex;align-items:center;gap:10px;padding:calc(12px + var(--safe-t)) 14px 12px;min-height:57px;
   background:var(--glass);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
-.vw-tabs{flex:1;min-width:0;display:flex;gap:6px;justify-content:center;overflow-x:auto;scrollbar-width:none}
+.vw-tabs{flex:1;min-width:0;display:flex;gap:6px;justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
 .vw-tabs::-webkit-scrollbar{display:none}
 .vw-tab{flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card-solid);color:var(--ink-2);font-size:13px;font-weight:600}
 .vw-tab svg.lucide{width:14px;height:14px}
@@ -644,10 +639,10 @@ dialog::backdrop{background:rgba(9,18,32,.32);backdrop-filter:blur(6px);-webkit-
 .zoom-val{min-width:54px;height:32px;border:0;background:none;font-size:13px;font-weight:700;color:var(--ink-2);border-radius:999px}
 .zoom-val:hover{background:var(--fill)}
 /* 문서 영역: 매물 상세와 같은 밝은 바탕 위에 흰 종이를 크게 */
-.viewer-body{flex:1;min-height:0;overflow:auto;padding:4px 18px 24px;overscroll-behavior:contain;cursor:grab;scrollbar-width:none;-ms-overflow-style:none}
+.viewer-body{flex:1;min-height:0;overflow:auto;padding:10px 10px 16px;overscroll-behavior:contain;cursor:grab;scrollbar-width:none;-ms-overflow-style:none}
 .viewer-body::-webkit-scrollbar{display:none}
 .viewer-body.grabbing{cursor:grabbing;user-select:none}
-.doc-pages{display:grid;justify-items:center;gap:14px;min-width:min-content;width:max-content;margin:0 auto}
+.doc-pages{display:grid;justify-items:center;gap:10px;min-width:min-content;width:max-content;margin:0 auto}
 .doc-page{background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(15,42,74,.08),0 6px 20px rgba(15,42,74,.10);overflow:hidden;line-height:0}
 .doc-page canvas{display:block}
 .doc-pages img.doc-img{display:block;background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(15,42,74,.08),0 6px 20px rgba(15,42,74,.10)}
@@ -1046,18 +1041,18 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
       <div class="viewer-bar">
         <button class="btn ghost" type="button" id="vwClose" aria-label="공적장부 접기"><i data-lucide="panel-left-close"></i>접기</button>
         <div class="vw-tabs" id="vwTabs" role="tablist" aria-label="이 매물의 공적장부"></div>
+        <span class="vw-info" hidden><span id="vwIc"></span><b id="vwName"></b><small id="vwMeta"></small></span>
+        <span class="vw-pages faint" id="vwPages"></span>
         <div class="vw-zoom" role="group" aria-label="확대·축소">
           <button class="icon-btn sm" type="button" id="vwOut" title="축소" aria-label="축소"><i data-lucide="minus"></i></button>
           <button class="zoom-val num" type="button" id="vwFit" title="창 폭에 맞추기">100%</button>
           <button class="icon-btn sm" type="button" id="vwIn" title="확대" aria-label="확대"><i data-lucide="plus"></i></button>
         </div>
         <div class="vw-acts">
-          <button class="icon-btn sm" type="button" id="vwWide" title="문서만 크게 보기" aria-label="문서만 크게 보기" aria-pressed="false"><i data-lucide="maximize-2"></i></button>
           <button class="icon-btn sm" type="button" id="vwPrint" title="인쇄" aria-label="인쇄"><i data-lucide="printer"></i></button>
           <a class="icon-btn sm" id="vwDown" download title="내려받기" aria-label="내려받기"><i data-lucide="download"></i></a>
         </div>
       </div>
-      <div class="vw-head"><span class="doc-ic" id="vwIc"></span><div class="vw-title"><b id="vwName"></b><small id="vwMeta"></small></div><span class="vw-pages faint" id="vwPages"></span></div>
       <div class="viewer-body" id="vwScroll"><div class="doc-pages" id="vwBody"></div></div>
     </section>
     <div class="detail-col">
@@ -2562,19 +2557,13 @@ function loadPdfJs(){
   });
   return pdfLib;
 }
-$("#vwWide").onclick = () => {
-  const on = !$("#sheet").classList.contains("doc-only");
-  $("#sheet").classList.toggle("doc-only", on); $("#vwWide").setAttribute("aria-pressed", on);
-  $("#vwWide").innerHTML = ic(on ? "minimize-2" : "maximize-2"); $("#vwWide").title = on ? "매물 상세 다시 보기" : "문서만 크게 보기"; icons();
-};
 function closeViewer(){
-  $("#sheet").classList.remove("doc-only"); $("#vwWide").setAttribute("aria-pressed", "false"); $("#vwWide").innerHTML = ic("maximize-2");
   $("#viewer").hidden = true; $("#sheet").classList.remove("viewing"); $("#vwBody").innerHTML = "";
   if (vwUrl) { URL.revokeObjectURL(vwUrl); vwUrl = null; }
   vwPdf?.destroy?.(); vwPdf = null; vwImg = null;
   vwDocId = null; $$(".doc-file.on").forEach(x => x.classList.remove("on"));
 }
-const fitScale = () => { const w = $("#vwScroll").clientWidth - 36; return vwBaseW ? Math.max(.25, w / vwBaseW) : 1; };
+const fitScale = () => { const w = $("#vwScroll").clientWidth - 20; return vwBaseW ? Math.max(.25, w / vwBaseW) : 1; };
 function zoomLabel(){ $("#vwFit").textContent = Math.round(vwRatio * 100) + "%"; }
 async function renderPages(){
   const tok = ++vwRenderTok, box = $("#vwBody");
