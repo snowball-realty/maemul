@@ -1101,7 +1101,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
             <select id="houseSel" aria-label="등록했던 주택 고르기"></select>
             <button class="btn sm ghost" type="button" id="houseDel" title="고른 주택을 불러오기 목록에서 지우기" hidden><i data-lucide="x"></i></button>
           </div>
-          <p class="faint" style="font-size:12.5px;margin:0" id="houseHint">전에 등록한 원룸 건물을 고르면 주소·건물명·층수·소유자·관리비·특징·현관 비밀번호가 채워집니다. 호수와 가격만 입력하세요.</p>
+          <p class="faint" style="font-size:12.5px;margin:0" id="houseHint">전에 등록한 원룸 건물을 고르면 주소·건물명·층수·소유자·관리비·특징·현관 비밀번호와 공적장부(등기·토지대장·건축물대장)가 함께 들어옵니다. 호수와 가격만 입력하세요.</p>
         </div>
       </div>
 
@@ -2477,7 +2477,7 @@ const DOC_CATS = ["등기사항전부증명서", "토지대장", "건축물대�
 const DOC_IC = { 토지대장: "map", 등기사항전부증명서: "file-text", 건축물대장: "building-2", "기타 서류": "paperclip" };
 // 화면 표시 이름 (저장값 "기타 서류"는 기존 데이터 호환을 위해 그대로 둠)
 // 목록용: 등기·토지·건축 등록 여부 (있으면 색, 없으면 회색)
-const pbMarks = it => { const has = c => (it.docs || []).some(d => d.cat === c); const etc = (it.docs || []).filter(d => d.cat === "기타 서류").length;
+const pbMarks = it => { const ds = unitDocs(it), has = c => ds.some(d => d.cat === c); const etc = ds.filter(d => d.cat === "기타 서류").length;
   return `<div class="pb" title="공적장부 등록 여부">${["등기사항전부증명서", "토지대장", "건축물대장"].map(c => `<span class="${has(c) ? "on" : ""}" title="${c} ${has(c) ? "있음" : "없음"}">${has(c) ? ic("check") : ""}${DOC_SHORT[c]}</span>`).join("")}${etc ? `<span class="on etc" title="기타 공적장부 ${etc}개">기타</span>` : ""}</div>`; };
 const docLabel = cat => cat === "기타 서류" ? "기타 공적장부" : cat;
 const DOC_SHORT = { 등기사항전부증명서: "등기", 토지대장: "토지", 건축물대장: "건축" };
@@ -2490,7 +2490,7 @@ const fileDB = (() => {
 })();
 const sizeTxt = n => n > 1048576 ? (n / 1048576).toFixed(1) + "MB" : Math.max(1, Math.round(n / 1024)) + "KB";
 function docsHTML(it){
-  const docs = it.docs || [];
+  const docs = unitDocs(it);
   const slot = cat => {
     const list = docs.filter(d => d.cat === cat).sort((a, b) => (b.added || 0) - (a.added || 0));
     return `<div class="doc-slot">
@@ -2507,8 +2507,8 @@ function docsHTML(it){
 function bindDocs(it){
   const body = $("#sheetBody");
   body.querySelectorAll("[data-doc-add]").forEach(b => b.onclick = () => pickDoc(it, b.dataset.docAdd));
-  body.querySelectorAll("[data-doc-open]").forEach(b => b.onclick = () => openDoc(it, (it.docs || []).find(d => d.id === b.dataset.docOpen)));
-  body.querySelectorAll("[data-doc-del]").forEach(b => b.onclick = () => delDoc(it, (it.docs || []).find(d => d.id === b.dataset.docDel)));
+  body.querySelectorAll("[data-doc-open]").forEach(b => b.onclick = () => openDoc(it, unitDocs(it).find(d => d.id === b.dataset.docOpen)));
+  body.querySelectorAll("[data-doc-del]").forEach(b => b.onclick = () => delDoc(it, unitDocs(it).find(d => d.id === b.dataset.docDel)));
 }
 function pickDoc(it, cat){
   const inp = document.createElement("input");
@@ -2522,8 +2522,11 @@ function pickDoc(it, cat){
       try { await fileDB.put(id, f); } catch { toast("이 기기에 파일을 저장하지 못했습니다"); return; }
       added.push({ id, cat, name: f.name, size: f.size, type: f.type || "application/pdf", added: Date.now() });
     }
+    const sibs = HOUSE_DOC_CATS.includes(cat) ? sameHouseUnits(cur) : [];
+    for (const s of sibs) upsert({ ...s, docs: [...(s.docs || []), ...added.map(docRef)], updated: Date.now() });
+    if (cur.type === "원룸" && HOUSE_DOC_CATS.includes(cat)) setHouseRecDocs(houseKey(cur), ds => [...ds, ...added.map(docRef)]);
     await save({ ...cur, docs: [...(cur.docs || []), ...added] });
-    toast(`${docLabel(cat)} ${added.length}개를 등록했습니다${token ? "" : CONFIG.GOOGLE_CLIENT_ID ? ", 로그인하면 드라이브에 올라갑니다" : ""}`);
+    toast(`${docLabel(cat)} ${added.length}개를 등록했습니다${sibs.length ? ` (같은 주택 ${sibs.length}개 호실에도 연결)` : ""}${token ? "" : CONFIG.GOOGLE_CLIENT_ID ? ", 로그인하면 드라이브에 올라갑니다" : ""}`);
     uploadPendingDocs();
   };
   inp.click();
@@ -2629,7 +2632,7 @@ async function openDoc(it, d){
   $("#vwMeta").textContent = `${d.name}  ${new Date(d.added).toLocaleDateString("ko-KR")} 등록  ${sizeTxt(d.size || 0)}`;
   $("#vwPages").textContent = "";
   const cur = items.find(x => x.id === it.id) || it;
-  const docs = [...(cur.docs || [])].sort((a, b) => DOC_CATS.indexOf(a.cat) - DOC_CATS.indexOf(b.cat) || (b.added || 0) - (a.added || 0));
+  const docs = [...unitDocs(cur)].sort((a, b) => DOC_CATS.indexOf(a.cat) - DOC_CATS.indexOf(b.cat) || (b.added || 0) - (a.added || 0));
   $("#vwTabs").innerHTML = docs.map(x => `<button class="vw-tab" type="button" role="tab" aria-selected="${x.id === d.id}" data-vw="${esc(x.id)}">${ic(DOC_IC[x.cat] || "file-text")}${esc((DOC_SHORT[x.cat] || "기타") + (docs.filter(y => y.cat === x.cat).length > 1 ? " " + new Date(x.added).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" }) : ""))}</button>`).join("");
   $("#vwTabs").querySelectorAll("[data-vw]").forEach(b => b.onclick = () => { if (b.dataset.vw !== vwDocId) { vwDocId = null; openDoc(cur, docs.find(x => x.id === b.dataset.vw)); } });
   $("#vwBody").innerHTML = `<p class="vw-msg">불러오는 중…</p>`;
@@ -2669,10 +2672,16 @@ $("#vwPrint").onclick = () => {
 };
 
 async function delDoc(it, d){
-  if (!d || !confirm(`‘${d.name}’ 파일을 삭제할까요?`)) return;
+  if (!d) return;
   const cur = items.find(x => x.id === it.id) || it;
+  const sibs = sameHouseUnits(cur).filter(s => (s.docs || []).some(x => x.id === d.id));
+  if (!confirm(sibs.length ? `‘${d.name}’ 파일을 삭제할까요?\n같은 주택의 다른 호실 ${sibs.length}곳에서도 함께 빠집니다.` : `‘${d.name}’ 파일을 삭제할까요?`)) return;
   if (vwDocId === d.id) closeViewer();
+  for (const s of sibs) upsert({ ...s, docs: (s.docs || []).filter(x => x.id !== d.id), updated: Date.now() });
+  if (cur.type === "원룸") setHouseRecDocs(houseKey(cur), ds => ds.filter(x => x.id !== d.id));
   await save({ ...cur, docs: (cur.docs || []).filter(x => x.id !== d.id) });
+  // 다른 매물(예: 주소를 고친 호실)이 아직 같은 파일을 가리키면 파일은 남겨 둠
+  if (all.some(x => !x.deleted && (x.docs || []).some(y => y.id === d.id))) { toast("이 매물에서 파일을 뺐습니다"); return; }
   try { await fileDB.del(d.id); } catch {}
   if (d.driveId && token) { try { await gfetch(`${DRIVE}/files/${d.driveId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ trashed: true }) }); } catch {} }
   toast("파일을 삭제했습니다");
@@ -2689,12 +2698,19 @@ async function docFolder(){
   return id;
 }
 let docUploading = false;
+// 같은 파일을 가리키는 모든 기록(호실·주택)에 드라이브 위치를 함께 적음
+function setDriveId(docId, driveId){
+  for (const x of all.filter(x => !x.deleted && (x.docs || []).some(y => y.id === docId && y.driveId !== driveId)))
+    upsert({ ...x, docs: x.docs.map(y => y.id === docId ? { ...y, driveId } : y), updated: Date.now() });
+}
 async function uploadPendingDocs(){
   if (!token || docUploading) return;
   docUploading = true;
   try {
     for (const it of items) for (const d of (it.docs || [])) {
       if (d.driveId || d.size > MAX_DRIVE) continue;
+      const known = all.flatMap(x => x.deleted ? [] : (x.docs || [])).find(y => y.id === d.id && y.driveId);
+      if (known) { setDriveId(d.id, known.driveId); afterChange(); continue; }
       let blob; try { blob = await fileDB.get(d.id); } catch {}
       if (!blob) continue;
       let folder; try { folder = await docFolder(); } catch { localStorage.removeItem("maemul-doc-folder"); continue; }
@@ -2702,8 +2718,8 @@ async function uploadPendingDocs(){
       const meta = { name: `${shortTitle(it)}_${d.cat}_${d.name}`.replace(/[\\/]/g, "_"), parents: [folder], mimeType: d.type || "application/pdf" };
       const body = new Blob([`--${bd}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n--${bd}\r\nContent-Type: ${meta.mimeType}\r\n\r\n`, blob, `\r\n--${bd}--`]);
       const j = await (await gfetch(`${UPLOAD}/files?uploadType=multipart&fields=id`, { method: "POST", headers: { "Content-Type": `multipart/related; boundary=${bd}` }, body })).json();
-      const cur = items.find(x => x.id === it.id); if (!cur) continue;
-      upsert({ ...cur, docs: (cur.docs || []).map(x => x.id === d.id ? { ...x, driveId: j.id } : x), updated: Date.now() });
+      if (!j.id) continue;
+      setDriveId(d.id, j.id);
       afterChange();
     }
   } catch (e) { if (e?.message && e.message.includes("404")) localStorage.removeItem("maemul-doc-folder"); }
@@ -2742,6 +2758,7 @@ function openForm(it, copy = false){
   $("#formTitle").textContent = copy ? "매물 복사" : it ? "매물 수정" : "새 매물";
   form.elements.star.checked = !!it?.star;
   formFeats = [...(it?.feats || [])];
+  formHouseDocs = [];
   form.elements.dealKind.value = (it && dealKindOf(it)) || "매매";
   if (it) {
     for (const k of FIELDS) if (it[k] != null && form.elements[k]) form.elements[k].value = it[k];
@@ -2763,6 +2780,29 @@ function openForm(it, copy = false){
 const HOUSE_FIELDS = ["area", "zone", "jibun", "jimok", "landM2", "bldgM2", "extra", "bName", "floors", "owner", "phone", "src", "agName", "agPhone", "fee", "feats", "doorCode"];
 const houseKey = h => [h.area, h.jibun, h.bName].map(x => String(x || "").replace(/\s+/g, "")).join("|");
 function houseFrom(it){ const h = { kind: "house" }; HOUSE_FIELDS.forEach(k => { if (it[k] != null) h[k] = Array.isArray(it[k]) ? JSON.parse(JSON.stringify(it[k])) : it[k]; }); return h; }
+// 건물 단위 공적장부(등기·토지대장·건축물대장)는 같은 주택의 호실들이 같은 파일을 함께 가리킴 (파일 복사 없음)
+const HOUSE_DOC_CATS = ["등기사항전부증명서", "토지대장", "건축물대장"];
+const isHouseDoc = d => d && HOUSE_DOC_CATS.includes(d.cat);
+const docRef = d => { const r = { id: d.id, cat: d.cat, name: d.name, size: d.size, type: d.type, added: d.added }; if (d.driveId) r.driveId = d.driveId; return r; };
+function houseDocs(key){
+  const map = new Map();
+  const add = d => { if (!isHouseDoc(d)) return; const cur = map.get(d.id); if (!cur || (!cur.driveId && d.driveId)) map.set(d.id, docRef(d)); };
+  for (const h of all.filter(x => !x.deleted && x.kind === "house" && houseKey(x) === key)) (h.docs || []).forEach(add);
+  for (const it of items.filter(x => x.type === "원룸" && houseKey(x) === key)) (it.docs || []).forEach(add);
+  return [...map.values()].sort((a, b) => (a.added || 0) - (b.added || 0));
+}
+const sameHouseUnits = it => (it.type === "원룸" && (it.bName || it.jibun)) ? items.filter(x => x.id !== it.id && x.type === "원룸" && houseKey(x) === houseKey(it)) : [];
+// 원룸은 자기 서류 + 같은 주택의 건물 공적장부를 함께 보여 줌
+function unitDocs(it){
+  const own = it.docs || [];
+  if (it.type !== "원룸" || !(it.bName || it.jibun)) return own;
+  const extra = houseDocs(houseKey(it)).filter(d => !own.some(x => x.id === d.id));
+  return extra.length ? [...own, ...extra] : own;
+}
+function setHouseRecDocs(key, fn){
+  const rec = all.find(x => x.kind === "house" && !x.deleted && houseKey(x) === key);
+  if (rec) upsert({ ...rec, docs: fn(rec.docs || []), updated: Date.now() });
+}
 function houseList(){
   // 저장된 주택 기록 + 지금 등록된 원룸에서 뽑은 건물 (같은 건물은 하나로)
   const map = new Map();
@@ -2772,15 +2812,17 @@ function houseList(){
     if (!cur || (it.updated || 0) > (cur.updated || 0)) map.set(k, { ...(cur || {}), ...houseFrom(it), id: cur?.id, updated: it.updated });
   }
   const list = [...map.values()].filter(h => !h.hidden);
-  list.forEach(h => h.units = items.filter(it => it.type === "원룸" && houseKey(it) === houseKey(h)).length);
+  list.forEach(h => { h.units = items.filter(it => it.type === "원룸" && houseKey(it) === houseKey(h)).length; h.docs = houseDocs(houseKey(h)); });
   return list.sort((a, b) => (b.updated || 0) - (a.updated || 0));
 }
 function rememberHouse(it){
   if (it.type !== "원룸" || !(it.bName || it.jibun)) return;
   const k = houseKey(it), old = all.find(x => x.kind === "house" && !x.deleted && houseKey(x) === k);
-  upsert({ ...(old || {}), ...houseFrom(it), id: old?.id || "house-" + uid(), hidden: false, updated: Date.now() });
+  const docs = new Map(houseDocs(k).map(d => [d.id, d]));
+  (it.docs || []).filter(isHouseDoc).forEach(d => docs.set(d.id, docRef(d)));
+  upsert({ ...(old || {}), ...houseFrom(it), docs: [...docs.values()], id: old?.id || "house-" + uid(), hidden: false, updated: Date.now() });
 }
-let houseCache = [];
+let houseCache = [], formHouseDocs = [];
 function fillHouseSel(){
   houseCache = houseList();
   $("#houseSel").innerHTML = `<option value="">${houseCache.length ? `등록했던 주택 ${houseCache.length}곳 중 고르기` : "아직 등록한 원룸 주택이 없습니다"}</option>` +
@@ -2797,8 +2839,9 @@ function loadHouse(h){
   $("#prows").innerHTML = "";
   [{ jibun: h.jibun, jimok: h.jimok || "대", landM2: h.landM2, bldgM2: h.bldgM2 }, ...(h.extra || [])].forEach((p, i) => prow(p, i === 0));
   formFeats = [...(h.feats || [])];
+  formHouseDocs = houseDocs(houseKey(h));
   renderFeats(); syncForm(); icons();
-  toast(`${h.bName || "주택"} 정보를 불러왔습니다. 호수와 가격만 입력하세요`);
+  toast(`${h.bName || "주택"} 정보를 불러왔습니다${formHouseDocs.length ? ` (공적장부 ${formHouseDocs.length}개 함께 연결)` : ""}. 호수와 가격만 입력하세요`);
   setTimeout(() => form.elements.unitNo?.focus(), 50);
 }
 $("#houseSel").onchange = e => {
@@ -2905,6 +2948,11 @@ form.addEventListener("submit", async e => {
   const extra = ps.slice(1).filter(p => p.jibun || p.landM2 != null || p.bldgM2 != null).map(p => ({ ...p, id: uid() }));
   const it = { ...(editing || { id: uid(), logs: [], docs: [], created: Date.now() }), ...f, jibun: main.jibun, jimok: main.jimok, landM2: main.landM2, bldgM2: main.bldgM2, extra };
   const wasEdit = !!editing;
+  if (!wasEdit && it.type === "원룸" && formHouseDocs.length) {
+    // 불러온 주택과 같은 건물로 저장될 때만 공적장부를 연결
+    const key = houseKey(it), docs = houseDocs(key).length ? houseDocs(key) : formHouseDocs;
+    it.docs = [...(it.docs || []), ...docs.filter(d => !(it.docs || []).some(x => x.id === d.id)).map(docRef)];
+  }
   formDlg.close();
   rememberHouse(it);
   await save(it);
