@@ -1444,7 +1444,12 @@ function loadLocal(){
 function saveLocal(){ try { localStorage.setItem(LKEY, JSON.stringify({ all, fileId, rev, syncedRev, lastSync })); } catch { toast("기기 저장 공간이 부족합니다. 엑셀로 백업하세요"); } }
 function upsert(it){ const i = all.findIndex(x => x.id === it.id); i < 0 ? all.push(it) : all[i] = it; }
 function afterChange(){ rev++; live(); saveLocal(); render(); scheduleSync(); setSync(); }
-function removeItem(id){ upsert({ id, deleted: true, updated: Date.now() }); afterChange(); }
+function removeItem(id){
+  // 원룸을 지우기 전에 건물 정보·공적장부를 ‘주택’ 기록으로 남겨 같은 주택 불러오기에 계속 나오게 함
+  const it = all.find(x => x.id === id && !x.deleted && !x.kind);
+  if (it && it.type === "원룸") { try { rememberHouse(it); } catch {} }
+  upsert({ id, deleted: true, updated: Date.now() }); afterChange();
+}
 async function save(it){ it.updated = Date.now(); upsert(it); afterChange(); }
 
 function syncState(){
@@ -1515,6 +1520,7 @@ function merge(remote){
   const cutoff = Date.now() - 90 * 864e5;
   all = [...m.values()].filter(x => !(x.deleted && x.updated < cutoff));
   live();
+  if (ensureHouses()) rev++;
 }
 async function sync(){
   if (!token || syncing) return;
@@ -2820,7 +2826,21 @@ function rememberHouse(it){
   const k = houseKey(it), old = all.find(x => x.kind === "house" && !x.deleted && houseKey(x) === k);
   const docs = new Map(houseDocs(k).map(d => [d.id, d]));
   (it.docs || []).filter(isHouseDoc).forEach(d => docs.set(d.id, docRef(d)));
-  upsert({ ...(old || {}), ...houseFrom(it), docs: [...docs.values()], id: old?.id || "house-" + uid(), hidden: false, updated: Date.now() });
+  upsert({ ...(old || {}), ...houseFrom(it), docs: [...docs.values()], id: old?.id || houseId(k), hidden: false, updated: Date.now() });
+}
+// 같은 건물은 어느 기기에서 만들어도 같은 id가 되도록 주소로 id를 만듦 (중복 기록 방지)
+function houseId(key){ let h = 5381; for (const c of key) h = ((h * 33) ^ c.charCodeAt(0)) >>> 0; return "house-" + h.toString(36); }
+// 주택 기록이 없는 원룸(이 기능 전에 등록한 호실 등)의 건물 정보를 미리 남겨 둠. 기존 매물은 건드리지 않음
+function ensureHouses(){
+  let changed = false;
+  for (const it of items.filter(x => x.type === "원룸" && (x.bName || x.jibun))) {
+    const k = houseKey(it);
+    if (all.some(x => x.kind === "house" && !x.deleted && houseKey(x) === k)) continue;
+    const id = houseId(k), docs = houseDocs(k);
+    upsert({ ...houseFrom(it), docs, id, hidden: false, updated: Date.now() });
+    changed = true;
+  }
+  return changed;
 }
 let houseCache = [], formHouseDocs = [];
 function fillHouseSel(){
@@ -3168,6 +3188,7 @@ let tt; function toast(m, act){
 
 /* ---------- 시작 ---------- */
 loadLocal();
+if (ensureHouses()) { rev++; saveLocal(); }
 setSync();
 render();
 window.addEventListener("load", () => {
