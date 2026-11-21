@@ -386,6 +386,21 @@ small.spread i{font-style:normal}
 .btn.danger{background:var(--danger-bg);color:var(--danger)}
 .btn.sm{height:36px;padding:0 13px;font-size:13.5px;border-radius:12px}
 .btn.block{width:100%}
+.room-end{margin-top:28px;display:grid;gap:10px}
+@media (min-width:901px){ .m-only{display:none!important} }
+@media (max-width:900px){ .pc-only{display:none!important} }
+.fin-sec{margin-top:26px}
+.fin-head{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;padding:4px 6px 10px;color:var(--ink-2);font-size:14.5px;font-weight:600;cursor:pointer;text-align:left}
+.fin-head b{font-weight:600;color:var(--ink-3);font-size:13px}
+.fin-head svg:first-child{width:17px;height:17px;color:var(--done)}
+.fin-head svg:last-child{width:17px;height:17px;margin-left:auto;color:var(--ink-3);transition:transform .2s;transform:rotate(-90deg)}
+.fin-sec.open .fin-head svg:last-child{transform:none}
+.fin-body{display:none}
+.fin-sec.open .fin-body{display:block}
+.fin-body .trow .c-main .t{color:var(--ink-2)}
+.fin-body .trow .tile{filter:saturate(.35);opacity:.8}
+.fin-empty{padding:22px}
+.fin-empty p{margin:0;color:var(--ink-3);text-align:center}
 .tag{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
 .tag.ok{background:var(--ok-bg);color:var(--ok)} .tag.hold{background:var(--hold-bg);color:var(--hold)} .tag.done{background:var(--done-bg);color:var(--done)}
 .tag.co{background:var(--aqua-soft);color:var(--aqua-ink)} .tag.plain{background:var(--fill);color:var(--ink-2)}
@@ -1802,7 +1817,7 @@ function finishDeal(d){
   const prev = { ...d };
   saveDeal({ ...d, done: true, doneAt: Date.now() });
   const it = items.find(x => x.id === d.listingId);
-  if (it && it.state !== "완료" && confirm(`거래를 완료했습니다.\n매물 ‘${shortTitle(it)}’의 상태도 ‘계약완료’로 바꿀까요?`)) save({ ...it, state: "완료" });
+  if (it && it.state !== "완료" && confirm(`거래를 완료했습니다.\n매물 ‘${shortTitle(it)}’의 상태도 ‘계약완료’로 바꿀까요?`)) save({ ...it, state: "완료", doneAt: Date.now() });
   toast("거래를 완료로 옮겼습니다", { label: "되돌리기", fn: () => saveDeal(prev) });
 }
 /* 거래 추가·수정 창 */
@@ -2277,6 +2292,20 @@ function updateResults(){
   if ($("#regionClr")) $("#regionClr").onclick = () => { F.region = ""; updateResults(); };
   if (!items.length) box.innerHTML = emptyHero();
   else if (!list.length) box.innerHTML = `<div class="card empty"><div class="em-ic">${ic("search-x")}</div><h3>조건에 맞는 매물이 없습니다</h3><p>검색어나 필터를 줄여 보세요. 면적은 평과 ㎡ 단위를 확인하세요.</p><div class="row"><button class="btn" type="button" id="clrAll">조건 모두 지우기</button></div></div>`;
+  else if (F.type === "원룸" && !F.state) {
+    // 원룸: 위에는 진행 중인 호실, 아래에는 중개 완료한 호실을 모아서
+    const act = list.filter(it => it.state !== "완료");
+    const fin = list.filter(it => it.state === "완료").sort((a, b) => (b.doneAt || b.updated || 0) - (a.doneAt || a.updated || 0));
+    let open = true; try { open = localStorage.getItem("maemul-fin-open") !== "0"; } catch {}
+    box.innerHTML = (act.length ? tableHTML(act) : `<div class="card empty fin-empty"><p>진행 중인 원룸이 없습니다</p></div>`) +
+      (fin.length ? `<div class="fin-sec${open ? " open" : ""}"><button class="fin-head" type="button" id="finToggle" aria-expanded="${open}">${ic("check-check")}<span>중개 완료</span><b class="num">${fin.length}건</b>${ic("chevron-down")}</button>
+        <div class="fin-body">${tableHTML(fin)}</div></div>` : "");
+    if ($("#finToggle")) $("#finToggle").onclick = e => {
+      const sec = e.currentTarget.parentElement, on = !sec.classList.contains("open");
+      sec.classList.toggle("open", on); e.currentTarget.setAttribute("aria-expanded", on);
+      try { localStorage.setItem("maemul-fin-open", on ? "1" : "0"); } catch {}
+    };
+  }
   else box.innerHTML = tableHTML(list);
   if ($("#clrAll")) $("#clrAll").onclick = () => { resetFilters(); renderList(); icons(); };
   $("#filterCount").textContent = `조건에 맞는 매물 ${list.length}건`;
@@ -2446,7 +2475,13 @@ function renderDetail(){
         </div>
       </div>
     </div>
-    <div style="margin-top:28px"><button class="btn danger block" type="button" id="delBtn">${ic("trash-2")}매물 삭제</button></div>`;
+    ${it.type === "원룸" ? `<div class="room-end">
+      ${it.state === "완료"
+        ? `<button class="btn block pc-only" type="button" id="reopenBtn">${ic("rotate-ccw")}계약가능으로 되돌리기</button>
+           <button class="btn danger block" type="button" id="delBtn">${ic("trash-2")}매물 삭제</button>`
+        : `<button class="btn primary block pc-only" type="button" id="doneBtn">${ic("check-check")}중개 완료</button>
+           <button class="btn danger block m-only" type="button" id="delBtn">${ic("trash-2")}매물 삭제</button>`}
+    </div>` : `<div style="margin-top:28px"><button class="btn danger block" type="button" id="delBtn">${ic("trash-2")}매물 삭제</button></div>`}`;
   const body = $("#sheetBody");
   $("#copyBtn").onclick = async () => { try { await navigator.clipboard.writeText(ps.map(p => `${p.area || it.area || ""} ${p.jibun || ""}`.trim()).join("\n")); toast("주소를 복사했습니다"); } catch { toast("복사하지 못했습니다. 주소를 길게 눌러 선택하세요"); } };
   $("#sheetEdit").onclick = () => openForm(it);
@@ -2458,6 +2493,13 @@ function renderDetail(){
   $("#dealFromBtn").onclick = () => { openDeal(); $("#dlListing").value = it.id; $("#dlTitleWrap").hidden = true; };
   $("#starBtn").onclick = async () => { await save({ ...it, star: !it.star }); toast(it.star ? "중요 매물에서 뺐습니다" : "중요 매물로 표시했습니다"); };
   $("#briefBtn").onclick = () => openBrief(it);
+  // 원룸(PC): 삭제 대신 중개 완료로 옮겨 목록 아래 ‘중개 완료’에 모아 둠
+  if ($("#doneBtn")) $("#doneBtn").onclick = async () => {
+    const prev = { state: it.state, doneAt: it.doneAt };
+    await save({ ...it, state: "완료", doneAt: Date.now() });
+    toast("중개 완료로 옮겼습니다. 매물 목록 › 원룸 아래에서 볼 수 있습니다", { label: "되돌리기", fn: () => { const cur = items.find(x => x.id === it.id); if (cur) save({ ...cur, ...prev }); } });
+  };
+  if ($("#reopenBtn")) $("#reopenBtn").onclick = async () => { await save({ ...it, state: "진행" }); toast("계약가능으로 되돌렸습니다"); };
   $("#delBtn").onclick = () => { if (!confirm(`${titleOf(it)} 매물을 삭제할까요?\n상담 기록도 함께 지워집니다.`)) return; detailId = null; $("#sheet").close(); removeItem(it.id); toast("매물을 삭제했습니다"); };
   body.querySelectorAll("[data-sib]").forEach(b => b.onclick = () => { detailId = b.dataset.sib; renderDetail(); body.scrollTop = 0; });
   $("#logBtn").onclick = async () => {
