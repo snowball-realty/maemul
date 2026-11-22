@@ -7,6 +7,10 @@
 <meta name="theme-color" content="#EEF4F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C0E12" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
+<script>
+/* 테마(스킨): 화면이 그려지기 전에 적용해 깜빡임을 막음. 매물 데이터와는 별도로 이 기기에만 저장 */
+(function(){ var s = "christmas"; try { s = localStorage.getItem("maemul-skin") || s; } catch (e) {} document.documentElement.setAttribute("data-skin", s); })();
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3Cmask id='m'%3E%3Crect width='100' height='100' fill='%23fff'/%3E%3Cpolygon points='-15,69.5 50,17.5 115,69.5 115,82.5 50,30.5 -15,82.5'/%3E%3C/mask%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='50' fill='%2315222A' mask='url(%23m)'/%3E%3C/svg%3E">
 <link rel="alternate icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -83,6 +87,78 @@
   --danger:#FF6B6F; --danger-bg:#3A1A1B;
   color-scheme:dark;
 }
+
+/* =========================================================
+   테마(스킨)
+   - 새 테마 추가: ① 아래처럼 :root[data-skin="이름"] 블록(밝게/어둡게)을 만들고
+                  ② 스크립트의 THEMES 목록에 한 줄 추가하면 설정 화면에 바로 나타남
+   - 테마는 색과 장식만 바꾸며, 화면 구성과 저장된 데이터는 건드리지 않음
+   ========================================================= */
+:root{ --skin-a:var(--aqua); --skin-b:var(--navy); --skin-c:#E6B84A; }
+/* 크리스마스 — 밝은 화면 */
+:root[data-skin="christmas"]{
+  --bg:#F6F1E8; --card:rgba(255,253,248,.82); --card-solid:#FFFDF8; --card-2:rgba(255,251,244,.62);
+  --fill:#F0EADF; --fill-2:#E6DED0; --ink:#1D2420; --ink-2:#59615A; --ink-3:#8C918A; --line:rgba(36,52,40,.09);
+  --brand-ink:#16402F; --navy:#17432F; --navy-2:#2A6B4B; --aqua:#C8373D; --aqua-ink:#A62A30; --aqua-soft:#FBE7E6;
+  --glass:rgba(255,251,244,.72); --glass-line:rgba(255,255,255,.8);
+  --shadow-2:0 1px 2px rgba(40,30,20,.05),0 6px 20px rgba(60,40,20,.07);
+  --skin-a:#C8373D; --skin-b:#1F6B47; --skin-c:#D9A93E;
+}
+@media (prefers-color-scheme:dark){
+  :root[data-skin="christmas"]:not([data-theme="light"]){
+    --bg:#0D1411; --card:rgba(22,31,26,.8); --card-solid:#17211C; --card-2:rgba(30,41,35,.6); --fill:#212C26; --fill-2:#2A3730;
+    --ink:#F2EEE6; --ink-2:#B2B8AD; --ink-3:#7E877C; --line:rgba(255,255,255,.08); --brand-ink:#EAF3EC;
+    --navy:#2E7A54; --navy-2:#3A9167; --aqua:#E5585D; --aqua-ink:#F28286; --aqua-soft:#3A1C1E;
+    --glass:rgba(15,23,19,.72); --glass-line:rgba(255,255,255,.07);
+    --skin-a:#E5585D; --skin-b:#3A9167; --skin-c:#E8C266;
+  }
+}
+:root[data-skin="christmas"][data-theme="dark"]{
+  --bg:#0D1411; --card:rgba(22,31,26,.8); --card-solid:#17211C; --card-2:rgba(30,41,35,.6); --fill:#212C26; --fill-2:#2A3730;
+  --ink:#F2EEE6; --ink-2:#B2B8AD; --ink-3:#7E877C; --line:rgba(255,255,255,.08); --brand-ink:#EAF3EC;
+  --navy:#2E7A54; --navy-2:#3A9167; --aqua:#E5585D; --aqua-ink:#F28286; --aqua-soft:#3A1C1E;
+  --glass:rgba(15,23,19,.72); --glass-line:rgba(255,255,255,.07);
+  --skin-a:#E5585D; --skin-b:#3A9167; --skin-c:#E8C266;
+}
+/* 크리스마스 장식: 화면 맨 위 꼬마전구 줄 */
+:root[data-skin="christmas"] body::before{content:"";position:fixed;left:0;right:0;top:var(--safe-t);height:16px;z-index:30;pointer-events:none;
+  background:
+    radial-gradient(circle at 9px 9px, var(--skin-a) 3.6px, transparent 4.4px) 0 0/54px 16px repeat-x,
+    radial-gradient(circle at 27px 11px, var(--skin-b) 3.6px, transparent 4.4px) 0 0/54px 16px repeat-x,
+    radial-gradient(circle at 45px 9px, var(--skin-c) 3.6px, transparent 4.4px) 0 0/54px 16px repeat-x,
+    linear-gradient(to bottom, transparent 3.4px, color-mix(in srgb,var(--ink) 22%,transparent) 3.4px, color-mix(in srgb,var(--ink) 22%,transparent) 4.4px, transparent 4.4px);
+  filter:drop-shadow(0 1px 3px color-mix(in srgb,var(--skin-c) 45%,transparent))}
+:root[data-skin="christmas"] body::after{content:"";position:fixed;left:0;right:0;top:var(--safe-t);height:16px;z-index:30;pointer-events:none;
+  background:radial-gradient(circle at 45px 9px, #FFF6D6 2px, transparent 5px) 0 0/54px 16px repeat-x,
+             radial-gradient(circle at 9px 9px, #FFE3E3 1.6px, transparent 4.5px) 0 0/54px 16px repeat-x;
+  animation:twinkle 2.6s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.95}}
+/* 눈 내리는 효과 (설정에서 끄기 가능) */
+.snow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.snow i{position:absolute;top:-12px;border-radius:50%;background:#fff;opacity:.85;
+  box-shadow:0 0 4px color-mix(in srgb,var(--skin-b) 55%,transparent);animation:snowfall linear infinite}
+@keyframes snowfall{from{transform:translate3d(0,-2vh,0)}50%{transform:translate3d(var(--sway,18px),50vh,0)}to{transform:translate3d(0,104vh,0)}}
+.app{position:relative;z-index:1}
+/* 테마 아이콘 (직접 그린 팔레트 아이콘, 현재 테마 색으로 칠해짐) */
+svg.ic-theme{width:1.15em;height:1.15em;flex:none;vertical-align:-.18em;color:currentColor}
+.t-ic svg.ic-theme{width:20px;height:20px}
+.t-ic.c7{background:linear-gradient(135deg,color-mix(in srgb,var(--skin-a) 16%,var(--card-solid)),color-mix(in srgb,var(--skin-b) 16%,var(--card-solid)));color:var(--ink)}
+/* 설정 화면 */
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.theme-card{display:block;width:100%;position:relative;border:0;border-radius:18px;padding:0;background:var(--card-solid);box-shadow:var(--shadow-1),inset 0 0 0 1px var(--line);text-align:left;overflow:hidden;color:var(--ink)}
+.theme-card[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--aqua),var(--shadow-2)}
+.theme-prev{height:74px;position:relative;display:flex;align-items:flex-end;gap:6px;padding:10px}
+.theme-prev .bar{position:absolute;left:10px;right:10px;top:10px;height:12px;border-radius:6px;opacity:.9}
+.theme-prev .sw{width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+.theme-meta{display:block;padding:9px 12px 11px}
+.theme-meta b{display:block;font-size:14.5px;font-weight:600}
+.theme-meta small{font-size:12px;color:var(--ink-3)}
+.theme-card .chk{position:absolute;right:9px;top:9px;width:24px;height:24px;border-radius:50%;background:var(--aqua);color:#fff;display:none;place-items:center}
+.theme-card[aria-pressed="true"] .chk{display:grid}
+.theme-card .chk svg{width:14px;height:14px}
+.set-note{font-size:12.5px;color:var(--ink-3);margin:12px 6px 0;line-height:1.55}
+@media (prefers-reduced-motion:reduce){ .snow{display:none} :root[data-skin] body::after{animation:none} }
+@media print{ .snow, body::before, body::after{display:none!important} }
 
 /* =========================================================
    기본
@@ -989,6 +1065,12 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
 <svg id="sprite" width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <mask id="sbMask" maskContentUnits="objectBoundingBox"><rect width="1" height="1" fill="#fff"/><polygon points="-.15,.695 .5,.175 1.15,.695 1.15,.825 .5,.305 -.15,.825" fill="#000"/></mask>
+    <symbol id="icTheme" viewBox="0 0 24 24">
+      <path d="M12 3.2a8.8 8.8 0 0 0 0 17.6c1.05 0 1.75-.75 1.75-1.65 0-.45-.17-.8-.46-1.13-.28-.33-.45-.68-.45-1.13 0-.93.76-1.62 1.7-1.62h2.02a4.24 4.24 0 0 0 4.24-4.24C20.8 6.6 16.86 3.2 12 3.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="7.6" cy="11.2" r="1.65" fill="var(--skin-a)"/><circle cx="10.4" cy="7.4" r="1.65" fill="var(--skin-b)"/>
+      <circle cx="15" cy="7.6" r="1.65" fill="var(--skin-c)"/><circle cx="8.3" cy="15.4" r="1.45" fill="currentColor" opacity=".35"/>
+      <path d="M19.2 15.6l.55 1.25 1.25.55-1.25.55-.55 1.25-.55-1.25-1.25-.55 1.25-.55z" fill="var(--skin-c)"/>
+    </symbol>
     <symbol id="snowball" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="currentColor" mask="url(#sbMask)"/></symbol>
   </defs>
 </svg>
@@ -1014,6 +1096,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
     <nav class="nav">
       <button class="nav-item" data-act="import" type="button"><i data-lucide="upload"></i>엑셀 불러오기</button>
       <button class="nav-item" data-act="export" type="button"><i data-lucide="download"></i>엑셀로 저장</button>
+      <button class="nav-item" data-act="settings" type="button"><svg class="ic-theme" aria-hidden="true"><use href="#icTheme"/></svg>설정<span class="count" id="navSkin"></span></button>
     </nav>
     <div class="side-foot">
       <div class="sync-card">
@@ -1264,6 +1347,7 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
         <button class="tile-btn" type="button" data-view="region"><span class="t-ic c5"><i data-lucide="bar-chart-3"></i></span>지역별 요약</button>
         <button class="tile-btn" type="button" data-act="import"><span class="t-ic c6"><i data-lucide="upload"></i></span>엑셀 열기</button>
         <button class="tile-btn" type="button" data-act="export"><span class="t-ic c6"><i data-lucide="download"></i></span>엑셀 저장</button>
+        <button class="tile-btn" type="button" data-act="settings"><span class="t-ic c7"><svg class="ic-theme" aria-hidden="true"><use href="#icTheme"/></svg></span>설정</button>
       </div>
       <div class="group-title">구글 드라이브</div>
       <div class="group drive-row">
@@ -1271,6 +1355,17 @@ svg.star-ic{width:15px;height:15px;color:#E6A800;fill:#F5B800;vertical-align:-.1
           <button class="btn sm aqua authBtn" type="button" hidden><i data-lucide="cloud"></i><span>구글 로그인</span></button></div>
       </div>
     </div>
+  </div>
+</dialog>
+
+<!-- ================= 설정 (테마) ================= -->
+<dialog class="modal small" id="setDlg" aria-labelledby="setTitle">
+  <div class="modal-in">
+    <div class="navbar">
+      <span class="l"></span><div class="title" id="setTitle">설정</div>
+      <button class="btn ghost r" type="button" data-close="setDlg" style="font-weight:700">완료</button>
+    </div>
+    <div class="sheet-body" id="setBody"></div>
   </div>
 </dialog>
 
@@ -3209,6 +3304,7 @@ document.addEventListener("click", e => {
     if (act === "import") $("#impFile").click();
     if (act === "export") exportExcel();
     if (act === "more") { setSync(); $("#moreDlg").showModal(); }
+    if (act === "settings") { $("#moreDlg").open && $("#moreDlg").close(); openSettings(); }
     return;
   }
   const c = e.target.closest("[data-close]");
@@ -3227,6 +3323,62 @@ let tt; function toast(m, act){
   t.classList.add("on"); clearTimeout(tt);
   tt = setTimeout(() => t.classList.remove("on", "has-act"), act ? 5000 : m.length > 40 ? 6000 : 2600);
 }
+
+/* =========================================================
+   테마(스킨) — 새 테마는 THEMES에 한 줄 + CSS 블록 하나만 추가
+   prev: 설정 화면 미리보기 색 [배경, 주색, 강조색, 포인트색]
+   effects: 테마가 쓰는 장식 효과 (snow = 눈 내리기)
+   ========================================================= */
+const THEMES = [
+  { id: "christmas", name: "크리스마스", desc: "레드·그린·골드와 눈", prev: ["#F6F1E8", "#17432F", "#C8373D", "#D9A93E"], effects: ["snow"] },
+  { id: "basic", name: "기본 (눈덩이 블루)", desc: "처음 디자인 그대로", prev: ["#F2F5F8", "#15283D", "#12A9BF", "#E2F5F8"], effects: [] }
+];
+const SKIN_KEY = "maemul-skin", SNOW_KEY = "maemul-snow";
+const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+const curSkin = () => { const id = document.documentElement.getAttribute("data-skin"); return THEMES.find(t => t.id === id) || THEMES[0]; };
+function applySkin(id){
+  const t = THEMES.find(x => x.id === id) || THEMES[0];
+  document.documentElement.setAttribute("data-skin", t.id);
+  lsSet(SKIN_KEY, t.id);
+  const meta = document.querySelector('meta[name="theme-color"][media*="light"]'); if (meta) meta.content = t.prev[0];
+  if ($("#navSkin")) $("#navSkin").textContent = t.name.replace(/\s*\(.*\)/, "");
+  setSnow(t.effects.includes("snow") && lsGet(SNOW_KEY, "1") === "1");
+}
+function setSnow(on){
+  let box = $(".snow");
+  if (!on) { box?.remove(); return; }
+  if (box) return;
+  box = document.createElement("div"); box.className = "snow"; box.setAttribute("aria-hidden", "true");
+  const n = innerWidth < 700 ? 22 : 40;
+  for (let i = 0; i < n; i++) {
+    const f = document.createElement("i"), sz = 3 + Math.random() * 5;
+    f.style.cssText = `left:${Math.random() * 100}%;width:${sz}px;height:${sz}px;opacity:${.45 + Math.random() * .45};animation-duration:${9 + Math.random() * 12}s;animation-delay:${-Math.random() * 20}s;--sway:${(Math.random() * 50 - 25).toFixed(0)}px`;
+    box.append(f);
+  }
+  document.body.prepend(box);
+}
+function openSettings(){
+  const t = curSkin(), snowOn = lsGet(SNOW_KEY, "1") === "1";
+  $("#setBody").innerHTML = `
+    <div class="group-title" style="margin-top:4px">화면 테마</div>
+    <div class="theme-grid">${THEMES.map(x => `
+      <button class="theme-card" type="button" data-skin="${x.id}" aria-pressed="${x.id === t.id}">
+        <span class="theme-prev" style="background:${x.prev[0]}"><span class="bar" style="background:linear-gradient(90deg,${x.prev[1]},${x.prev[2]})"></span>
+          ${x.prev.slice(1).map(c => `<span class="sw" style="background:${c}"></span>`).join("")}</span>
+        <span class="theme-meta"><b>${esc(x.name)}</b><small>${esc(x.desc)}</small></span>
+        <span class="chk">${ic("check")}</span>
+      </button>`).join("")}</div>
+    ${t.effects.includes("snow") ? `<div class="group-title">장식 효과</div>
+    <div class="group"><label class="grow switch-row" style="padding:12px 14px"><span class="sw-txt"><b>눈 내리는 효과</b><small>배경에 눈송이가 천천히 내립니다</small></span>
+      <input type="checkbox" class="switch" id="snowSw"${snowOn ? " checked" : ""}></label></div>` : ""}
+    <p class="set-note">테마는 색과 장식만 바꾸며 등록된 매물·상담 기록·서류 등 저장된 내용에는 영향이 없습니다. 테마 선택은 기기마다 따로 저장되니 PC와 휴대폰에서 각각 고르세요.</p>`;
+  $("#setBody").querySelectorAll("[data-skin]").forEach(b => b.onclick = () => { applySkin(b.dataset.skin); openSettings(); toast(`${curSkin().name} 테마로 바꿨습니다`); });
+  if ($("#snowSw")) $("#snowSw").onchange = e => { lsSet(SNOW_KEY, e.target.checked ? "1" : "0"); setSnow(e.target.checked); };
+  if (!$("#setDlg").open) $("#setDlg").showModal();
+  icons();
+}
+applySkin(lsGet(SKIN_KEY, document.documentElement.getAttribute("data-skin") || THEMES[0].id));
 
 /* ---------- 시작 ---------- */
 loadLocal();
